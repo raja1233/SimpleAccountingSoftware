@@ -1,0 +1,462 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.CloseRequest;
+using SDN.Common;
+using SDN.Product.Services;
+using SDN.Product.View;
+using SDN.UI.Entities;
+using SDN.UI.Entities.ProductandServices;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SDN.Product.ViewModel
+{
+    public class PandSDescriptionListViewModel : PandSDescriptionListEntity
+    {
+
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        public event PropertyChangedEventHandler PropertyChanged;
+        private int Count = 0;
+        private List<PandSDescriptionListEntity> DefaultList = new List<PandSDescriptionListEntity>();
+        private List<PandSDescriptionListEntity> FullList = new List<PandSDescriptionListEntity>();
+        private List<PandSDescriptionListEntity> cmbList = new List<PandSDescriptionListEntity>();
+        PandSDescriptionListEntity allPosition = new PandSDescriptionListEntity();
+        StackList listitem = new StackList();
+
+
+        //public List<PandSDescriptionListEntity> DefaultList
+        //{
+        //    get
+        //    {
+        //        return _DefaultList;
+        //    }
+        //    set
+        //    {
+        //        _DefaultList = value;
+        //        OnPropertyChanged("DefaultList");
+        //    }
+        //}
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurchaseQuotationListViewModel"/> class.
+        /// </summary>
+        public PandSDescriptionListViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.LoadSupplierBackground();
+            PandSDescriptionListEntity allPosition = new PandSDescriptionListEntity();
+            allPosition.Category1 = "All";
+            allPosition.Category2 = "All";
+            NavigateToPandSFormCommand = new RelayCommand(NavigatetoPandSForm);
+            NavigaetoPandSNewCommand = new RelayCommand(NavigaetoPandSNew);
+            CloseCommand = new DelegateCommand(Close);
+        }
+
+        public PandSDescriptionListViewModel()
+        {
+        }
+        public ICommand CloseCommand { get; set; }
+        public RelayCommand YearQuarterSelectedCommand { get; set; }
+        public RelayCommand CalendarSelectionCommand { get; set; }
+        public RelayCommand SearchCommand { get; set; }
+        public RelayCommand ShowAllCommand { get; set; }
+        public RelayCommand ShowSelectedCommand { get; set; }
+        public RelayCommand NavigateToPandSFormCommand { get; set; }
+        public RelayCommand ShowIncGSTCommand { get; set; }
+        public RelayCommand ShowExcGSTCommand { get; set; }
+        public RelayCommand RefreshCommand { get; set; }
+        public RelayCommand NavigaetoPurchaseCommand { get; set; }
+        public RelayCommand NavigaetoPandSNewCommand { get; set; }
+        #endregion  Constructor
+
+        #region BackgroundWorked
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+            int minHeight = 300;
+            int headerRows = 270;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 26;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.GridHeight = minHeight;
+            RefreshData();
+        }
+        //List<PandSDescriptionListEntity> DefaultList = new List<PandSDescriptionListEntity>();
+        //List<PandSDescriptionListEntity> FullList = new List<PandSDescriptionListEntity>();
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+        }
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            Mouse.OverrideCursor = null;
+            Count = 1;
+
+        }
+        #endregion
+
+        private void RefreshData()
+        {
+            IPandSDescriptionListRepository pandsRepository = new PandSDescriptionListRepository();
+
+            this.PandSDescriptionList = pandsRepository.GetPandSList().OrderBy(x => x.PandSName).ToList();
+            this.ShowAllCount = this.PandSDescriptionList.Count();
+            this.ActiveCount = this.PandSDescriptionList.Where(x => x.IsInactive == "N").Count();
+            this.InActiveCount = this.PandSDescriptionList.Where(x => x.IsInactive == "Y").Count();
+            this.ProductCount = this.PandSDescriptionList.Where(x => x.PandSType == "P").Count();
+            this.ServiceCount = this.PandSDescriptionList.Where(x => x.PandSType == "S").Count();
+            this.ShowSelectedCount = 0;
+            FullList = this.PandSDescriptionList.ToList();
+            DefaultList = this.PandSDescriptionList.ToList();
+            this.PandSDescriptionListcmb = this.PandSDescriptionList.OrderBy(x => x.PandSName).ToList();
+            this.PandSDescriptionListcmbCode = this.PandSDescriptionList.OrderBy(x => x.PandSCode).ToList();
+            this.PandSDescriptionListDesc = this.PandSDescriptionList.GroupBy(x=>x.PSDescription).Select(e=>e.First()).Where(x=>x.PSDescription!=null &&!string.IsNullOrEmpty(x.PSDescription)).OrderBy(x => x.PSDescription).ToList();
+            this.PandSDescriptionListcmbCat2 = this.PandSDescriptionList.GroupBy(x => x.Category2).Select(e => e.First()).OrderBy(x => x.Category2).ToList();
+
+           
+            //GetOptionsandTaxValues();
+            this.ShowBothTrue = true;
+            this.ShowBoth = true;
+            this.ShowActiveTrue = false;
+            this.ShowInactiveTrue = false;
+            this.ShowServices = false;
+            this.ShowProducts = false;
+
+        }
+        private void Close()
+        {
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                var secondlast = listview.AsEnumerable().Reverse().Skip(1).First();
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest(secondlast, true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            catch (Exception)
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest("MainView", true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            //List<string> calledlist = stack.x();
+        }
+        void NavigatetoPandSForm(object param)
+        {
+            SharedValues.ScreenCheckName = "P & S Details";
+            SharedValues.ViewName = "Products & Services Details";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                SharedValues.NewClick = null;
+            string obj = param.ToString();
+            SharedValues.getValue = obj;
+            var mainview = ServiceLocator.Current.GetInstance<PandSDetailsView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            //var tabview = ServiceLocator.Current.GetInstance<>();
+            //var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            //tabregion.Add(tabview);
+            //if (tabregion != null)
+            //{
+            //    tabregion.Activate(tabview);
+            //}
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products & Services Details Form");
+            }
+            else
+            {
+                MessageBox.Show("This screen is not accessible for current user");
+            }
+        }
+        void NavigaetoPandSNew(object param)
+        {
+            SharedValues.ScreenCheckName = "P & S Details";
+            SharedValues.ViewName = "Products & Services Details";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                string obj = param.ToString();
+            SharedValues.NewClick = obj;
+            var mainview = ServiceLocator.Current.GetInstance<PandSDetailsView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products & Services Details Form");
+            }
+            else
+            {
+                MessageBox.Show("This screen is not accessible for current user");
+            }
+        }
+
+        //void GetOptionsandTaxValues()
+        //{
+        //    OptionsEntity oData = new OptionsEntity();
+        //    IPandSDescriptionListRepository pandsRepository = new PandSDescriptionListRepository();
+        //    oData = pandsRepository.GetOptionDetails();
+        //    if (oData != null)
+        //    {
+        //        this.CurrencyName = oData.CurrencyCode;     //there is no currency name field in database         
+        //        this.CurrencyCode = oData.CurrencyCode;
+        //        this.CurrencyFormat = oData.NumberFormat;
+        //        this.DateFormat = oData.DateFormat;
+        //        this.DecimalPlaces = oData.DecimalPlaces;
+        //        if (oData.ShowAmountIncGST == true)
+        //        {
+        //            this.ShowIncTaxTrue = true;
+        //            this.ShowExcTaxTrue = false;
+        //            //int decimalpoints = Convert.ToInt32(DecimalPlaces);
+        //            //foreach (var item in this.PurchaseQuotationList)
+        //            //{
+        //            //    item.QuotationAmount = Math.Round(Convert.ToDouble(item.QuotationAmount), decimalpoints).ToString();
+        //            //}
+        //            //this.PurchaseQuotationList = this.PurchaseQuotationList.Where(x => x.ExcIncGST == true).ToList();
+        //        }
+        //        else
+        //        {
+        //            this.ShowIncTaxTrue = false;
+        //            this.ShowExcTaxTrue = true;
+        //            int decimalpoints = Convert.ToInt32(DecimalPlaces);
+        //            //foreach (var item in this.PurchaseQuotationList)
+        //            //{
+        //            //    //item.QuotationAmount = item.QuotationAmountExcGST;
+        //            //    //item.QuotationAmount = Math.Round(Convert.ToDouble(item.QuotationAmountExcGST), decimalpoints).ToString();
+        //            //    item.QuotationAmount = Math.Round(Convert.ToDouble(item.QuotationAmount), decimalpoints).ToString();
+        //            //}
+        //            //commented on 23 May 2017
+        //            //if (this.PurchaseQuotationList != null)
+        //            //    this.PurchaseQuotationList = this.PurchaseQuotationList.Where(x => x.ExcIncGST == false).ToList();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        this.CurrencyName = "USD";
+        //        this.CurrencyCode = "USD";
+        //        this.CurrencyFormat = "en-US";
+        //        this.DateFormat = "dd/MM/yyyy";
+        //    }
+        //    var objDefaultTax = pandsRepository.GetTaxes().FirstOrDefault();
+        //    if (objDefaultTax != null)
+        //    {
+        //        this.TaxName = objDefaultTax.TaxName;
+        //    }
+        //    else
+        //    {
+        //        this.TaxName = "GST";
+        //    }
+        //}
+
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+            switch (name)
+            {
+                case "ShowActiveTrue":
+                    GetData(this.ShowActiveTrue.ToString(), "ShowActiveTrue");
+                    break;
+                case "ShowProducts":
+                    GetData(this.ShowProducts.ToString(), "ShowProducts");
+                    break;
+                case "ShowServices":
+                    GetData(this.ShowServices.ToString(), "ShowServices");
+                    break;
+                case "ShowBoth":
+                    GetData(this.ShowBoth.ToString(), "ShowBoth");
+                    break;
+                case "ShowInactiveTrue":
+                    GetData(this.ShowInactiveTrue.ToString(), "ShowInactiveTrue");
+                    break;
+                case "ShowBothTrue":
+                    GetData(this.ShowBothTrue.ToString(), "ShowBothTrue");
+                    break;
+                case "SelectedPandSCode":
+                    GetData(this.SelectedPandSCode, "SelectedPSCode");
+                    break;
+                case "SelectedPandSName":
+                    GetData(this.SelectedPandSName, "SelectedPSName");
+                    break;
+                case "SelectedPSDescription":
+                    GetData(this.SelectedPSDescription, "SelectedPSDescription");
+                    break;
+
+                    //case "ShowSelectedTrue":
+                    //    GetData(this.ShowSelectedTrue.ToString(), "ShowSelectedTrue");
+                    //    break;
+            }
+            base.OnPropertyChanged(name);
+        }
+
+        public void GetData(string SearchFilter, string parameter)
+        {
+            if (parameter == "ShowActiveTrue" && SearchFilter == "True")
+            {
+                if (this.ShowProducts == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "N" && x.PandSType=="P").ToList();
+                else if(this.ShowServices==true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "N" && x.PandSType == "S").ToList();
+                else
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "N").ToList();
+                DefaultList = this.PandSDescriptionList;
+            }
+            if (parameter == "ShowInactiveTrue" && SearchFilter == "True")
+            {
+                
+                if (this.ShowProducts == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "Y" && x.PandSType == "P").ToList();
+                else if (this.ShowServices == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "Y" && x.PandSType == "S").ToList();
+                else
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "Y").ToList();
+                DefaultList = this.PandSDescriptionList;
+            }
+            if (parameter == "ShowProducts" && SearchFilter == "True")
+            {
+               
+                if (this.ShowActiveTrue == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "N" && x.PandSType == "P").ToList();
+                else if (this.ShowInactiveTrue == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "Y" && x.PandSType == "P").ToList();
+                else
+                    this.PandSDescriptionList = FullList.Where(x => x.PandSType == "P").ToList();
+                DefaultList = this.PandSDescriptionList;
+
+            }
+            if (parameter == "ShowServices" && SearchFilter == "True")
+            {
+               
+                if (this.ShowActiveTrue == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "N" && x.PandSType == "S").ToList();
+                else if (this.ShowInactiveTrue == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "Y" && x.PandSType == "S").ToList();
+                else
+                    this.PandSDescriptionList = FullList.Where(x => x.PandSType == "S").ToList();
+                DefaultList = this.PandSDescriptionList;
+            }
+            if (parameter == "ShowBoth" && SearchFilter == "True")
+            {
+               
+                if (this.ShowActiveTrue == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "N").ToList();
+                else if (this.ShowInactiveTrue == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.IsInactive == "Y" ).ToList();
+                else
+                    this.PandSDescriptionList = FullList.ToList();
+                DefaultList = this.PandSDescriptionList;
+
+            }
+            if (parameter == "ShowBothTrue" && SearchFilter == "True")
+            {
+               
+                if (this.ShowProducts == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.PandSType == "P").ToList();
+                else if (this.ShowServices == true)
+                    this.PandSDescriptionList = FullList.Where(x => x.PandSType == "S").ToList();
+                else
+                    this.PandSDescriptionList = FullList.ToList();
+
+            }
+            if (parameter == "SelectedPSCode")
+            {
+                if (!string.IsNullOrWhiteSpace(SearchFilter))
+                {
+                    this.PandSDescriptionList = DefaultList.Where(x => x.PandSCode == SearchFilter).ToList();
+                }
+
+                else
+                {
+                    this.PandSDescriptionList = DefaultList;
+                }
+            }
+
+            if (parameter == "SelectedPSName")
+            {
+                if (!string.IsNullOrWhiteSpace(SearchFilter))
+                {
+                    this.PandSDescriptionList = DefaultList.Where(x => x.PandSName == SearchFilter).ToList();
+                }
+
+                else
+                {
+                    this.PandSDescriptionList = DefaultList;
+                }
+
+            }
+            if (parameter == "SelectedPSDescription")
+            {
+                if (!string.IsNullOrWhiteSpace(SearchFilter))
+                {
+                    if (SearchFilter != "All")
+                        this.PandSDescriptionList = DefaultList.Where(x => x.PSDescription == SearchFilter).ToList();
+                    else this.PandSDescriptionList = DefaultList;
+                }
+
+                else
+                {
+                    this.PandSDescriptionList = DefaultList;
+                }
+
+            }
+           
+
+        }
+    }
+}

@@ -1,0 +1,335 @@
+﻿namespace SDN.Settings.DAL
+{
+    using SDN.Settings.DALInterface;     
+    using SDN.UI.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using SASDAL;
+    public class CompanyDAL : ICompanyDAL
+    {
+        SASEntitiesEDM entites = new SASEntitiesEDM();
+
+        public bool AddCompanyDAL(CompanyDetailsEntities companyDetail)
+        {
+            using (var ts = entites.Database.BeginTransaction())
+            {
+                
+                try
+                {
+                    CompanyDetail result = entites.CompanyDetails.FirstOrDefault();// query.ToList();
+                    if (result != null)
+                    {
+                        result.Comp_Email = companyDetail.Comp_Email;
+                        result.Comp_Fax = companyDetail.Comp_Fax;
+                        result.Comp_GST_Dereg_Date = companyDetail.Comp_GST_Dereg_Date==null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_GST_Dereg_Date);
+                        result.Comp_GST_Reg_Date = companyDetail.Comp_GST_Reg_Date == null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_GST_Reg_Date); 
+                        result.Comp_GST_Reg_No = companyDetail.Comp_GST_Reg_No;
+                        result.Comp_Logo = companyDetail.Comp_logo;
+                        result.Comp_Name = companyDetail.CompanyName;
+                        result.Comp_Reg_No = companyDetail.Comp_Reg_No;
+                        result.Comp_Tel = companyDetail.Comp_Tel;
+                        result.Comp_year_end_date = companyDetail.Comp_year_end_date==null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_year_end_date);
+                        result.Comp_year_start_date = companyDetail.Comp_year_start_date == null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_year_start_date);
+                        result.CreatedBy = 0;
+                        result.CreatedDate = DateTime.Now;
+                        result.Software_Ser_No = companyDetail.Software_Ser_No;
+                        result.Comp_Bill_to_city = companyDetail.Company_BillTo_City;
+                        result.Comp_Bill_to_country = companyDetail.Company_BillTo_Country;
+                        result.Comp_Bill_to_line1 = companyDetail.Company_BillTo_Line1;
+                        result.Comp_Bill_to_line2 = companyDetail.Company_BillTo_Line2;
+                        result.Comp_Bill_to_post_code = companyDetail.Company_BillTo_PostalCode;
+                        result.Comp_Bill_to_state = companyDetail.Company_BillTo_State;
+                        result.Comp_Ship_to_city = companyDetail.ShipTo_City;
+                        result.Comp_Ship_to_country = companyDetail.ShipTo_Country;
+                        result.Comp_Ship_to_line1 = companyDetail.ShipTo_Line1;
+                        result.Comp_Ship_to_line2 = companyDetail.ShipTo_Line2;
+                        result.Comp_Ship_to_post_code = companyDetail.ShipTo_PostalCode;
+                        result.Comp_Ship_to_state = companyDetail.ShipTo_State;
+
+                        entites.SaveChanges();
+
+                        //if (companyDetail.ShippingID != 0)
+                        //{
+                        //    ShippingAddress editshipadd = entites.ShippingAddresses.Where(x => x.ID == companyDetail.ShippingID).FirstOrDefault();
+                        //    if (editshipadd!=null)
+                        //    {
+                        //        editshipadd.Ship_to_city = companyDetail.ShipTo_City;
+                        //        editshipadd.Ship_to_country = companyDetail.ShipTo_Country;
+                        //        editshipadd.Ship_to_line1 = companyDetail.ShipTo_Line1;
+                        //        editshipadd.Ship_to_line2 = companyDetail.ShipTo_Line2;
+                        //        editshipadd.Ship_to_post_code = companyDetail.ShipTo_PostalCode;
+                        //        editshipadd.Ship_to_state = companyDetail.ShipTo_State;
+                        //        entites.SaveChanges();
+                        //    }
+
+                        //}
+                        //else
+                        //{
+                        //    if (companyDetail.ShipTo_City != null|| companyDetail.ShipTo_Country!=null|| companyDetail.ShipTo_Line1 !=null|| companyDetail.ShipTo_Line2!=null)
+                        //    {
+                        //        ShippingAddress shipaddress = new ShippingAddress()
+                        //        {
+                        //            Ship_to_city = companyDetail.ShipTo_City,
+                        //            EntityId = companyDetail.ID,
+                        //            EntityType = "Company",
+                        //            Ship_to_country = companyDetail.ShipTo_Country,
+                        //            Ship_to_line1 = companyDetail.ShipTo_Line1,
+                        //            Ship_to_line2 = companyDetail.ShipTo_Line2,
+                        //            Ship_to_post_code = companyDetail.ShipTo_PostalCode,
+                        //            Ship_to_state = companyDetail.ShipTo_State
+                        //        };
+                        //        entites.ShippingAddresses.Add(shipaddress);
+                        //        entites.SaveChanges();
+                        //    }
+                            
+                        //}
+
+                        ts.Commit();
+                        return true;
+                    }
+                    else
+                    {
+                        CompanyDetail CompDetail = new CompanyDetail()
+                        {
+                            Comp_Email = companyDetail.Comp_Email,
+                            Comp_Fax = companyDetail.Comp_Fax,
+                            Comp_GST_Dereg_Date = companyDetail.Comp_GST_Dereg_Date==null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_GST_Dereg_Date),
+                            Comp_GST_Reg_Date = companyDetail.Comp_GST_Reg_Date==null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_GST_Reg_Date),
+                            Comp_GST_Reg_No = companyDetail.Comp_GST_Reg_No,
+                            Comp_Logo = companyDetail.Comp_logo,
+                            Comp_Name = companyDetail.CompanyName,
+                            Comp_Reg_No = companyDetail.Comp_Reg_No,
+                            Comp_Tel = companyDetail.Comp_Tel,
+                            Comp_year_end_date = companyDetail.Comp_year_end_date==null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_year_end_date),
+                            Comp_year_start_date = companyDetail.Comp_year_start_date==null ? null as DateTime? : Convert.ToDateTime(companyDetail.Comp_year_start_date),
+                            CreatedBy = 0,
+                            CreatedDate = DateTime.Now,
+                            Software_Ser_No = companyDetail.Software_Ser_No,
+                            Comp_Bill_to_city = companyDetail.Company_BillTo_City,
+                            Comp_Bill_to_country = companyDetail.Company_BillTo_Country,
+                            Comp_Bill_to_line1 = companyDetail.Company_BillTo_Line1,
+                            Comp_Bill_to_line2 = companyDetail.Company_BillTo_Line2,
+                            Comp_Bill_to_post_code = companyDetail.Company_BillTo_PostalCode,
+                            Comp_Bill_to_state = companyDetail.Company_BillTo_State,
+                            Comp_Ship_to_city = companyDetail.ShipTo_City,
+                            Comp_Ship_to_country = companyDetail.ShipTo_Country,
+                            Comp_Ship_to_line1 = companyDetail.ShipTo_Line1,
+                            Comp_Ship_to_line2 = companyDetail.ShipTo_Line2,
+                            Comp_Ship_to_post_code = companyDetail.ShipTo_PostalCode,
+                            Comp_Ship_to_state = companyDetail.ShipTo_State
+                        };
+                        entites.CompanyDetails.Add(CompDetail);
+                        entites.SaveChanges();
+                        //autoID = CompDetail.ID;
+
+                        //ShippingAddress shipaddress = new ShippingAddress()
+                        //{
+                        //    Ship_to_city = companyDetail.ShipTo_City,
+                        //    EntityId = autoID,
+                        //    EntityType = "Company",
+                        //    Ship_to_country = companyDetail.ShipTo_Country,
+                        //    Ship_to_line1 = companyDetail.ShipTo_Line1,
+                        //    Ship_to_line2 = companyDetail.ShipTo_Line2,
+                        //    Ship_to_post_code = companyDetail.ShipTo_PostalCode,
+                        //    Ship_to_state = companyDetail.ShipTo_State
+                        //};
+                        //entites.ShippingAddresses.Add(shipaddress);
+                        //entites.SaveChanges();
+                        
+                        ts.Commit();
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ts.Rollback();
+                    return false;
+                    throw ex;
+
+                }
+
+            }
+
+        }
+
+        public CompanyDetailsEntities GetCompanyDetails()
+        {
+            CompanyDetailsEntities result = new CompanyDetailsEntities();
+
+            //ObjectQuery<Product> products = entites.Products;
+
+            //products.MergeOption = MergeOption.NoTracking;
+
+            //IQueryable<Product> query = from product in products select product;
+
+            CompanyDetail source = entites.CompanyDetails.FirstOrDefault();// query.ToList();
+            if (source != null)
+            {
+                result.ID = source.ID;
+                result.CompanyName = source.Comp_Name;
+                result.Company_BillTo_City = source.Comp_Bill_to_city;
+                result.Company_BillTo_Country = source.Comp_Bill_to_country;
+                result.Company_BillTo_Line1 = source.Comp_Bill_to_line1;
+                result.Company_BillTo_Line2 = source.Comp_Bill_to_line2;
+                result.Company_BillTo_PostalCode = source.Comp_Bill_to_post_code;
+                result.Company_BillTo_State = source.Comp_Bill_to_state;
+                result.Comp_Email = source.Comp_Email;
+                result.Comp_Fax = source.Comp_Fax;
+                result.Comp_GST_Dereg_Date = source.Comp_GST_Dereg_Date;
+                result.Comp_GST_Reg_Date = source.Comp_GST_Reg_Date;
+                result.Comp_GST_Reg_No = source.Comp_GST_Reg_No;
+                result.Comp_logo = source.Comp_Logo;
+                result.Comp_Reg_No = source.Comp_Reg_No;
+                result.Comp_Tel = source.Comp_Tel;
+                result.Comp_year_end_date = source.Comp_year_end_date;
+                result.Comp_year_start_date = source.Comp_year_start_date;
+                result.Software_Ser_No = source.Software_Ser_No;
+                result.ShipTo_City = source.Comp_Ship_to_city;
+                result.ShipTo_Country = source.Comp_Ship_to_country;
+                result.ShipTo_Line1 = source.Comp_Ship_to_line1;
+                result.ShipTo_Line2 = source.Comp_Ship_to_line2;
+                result.ShipTo_PostalCode = source.Comp_Ship_to_post_code;
+                result.ShipTo_State = source.Comp_Ship_to_state;
+                var DateFormatResult = entites.Options.FirstOrDefault();
+                if (DateFormatResult!=null){
+                    result.DateFormat = DateFormatResult.Date_Format;
+                }
+                else
+                {
+                    result.DateFormat = null;
+                }
+                
+                var TaxInfo = entites.TaxCodesAndRates.FirstOrDefault();
+                if (TaxInfo != null)
+                {
+                    result.Tax_Name = TaxInfo.Tax_Name;
+                }
+                else
+                {
+                    result.Tax_Name = "GST";
+                }
+                //var companyId = source.ID;
+                //result.ShippAddressCount = entites.ShippingAddresses.Where(x => x.EntityId == companyId && x.EntityType == "Company").Count();
+                //var shippingdetails = entites.ShippingAddresses.Where(x => x.EntityId == companyId && x.EntityType == "Company").FirstOrDefault();
+                //if (shippingdetails != null)
+                //{
+                //    result.ShipTo_City = shippingdetails.Ship_to_city;
+                //    result.ShipTo_Country = shippingdetails.Ship_to_country;
+                //    result.ShipTo_Line1 = shippingdetails.Ship_to_line1;
+                //    result.ShipTo_Line2 = shippingdetails.Ship_to_line2;
+                //    result.ShipTo_PostalCode = shippingdetails.Ship_to_post_code;
+                //    result.ShipTo_State = shippingdetails.Ship_to_state;
+                //}
+
+
+            }
+
+            return result;
+
+        }
+        //public IEnumerable<ShippingAddressEntity> ShippingAddressDetails(int ID, string EntityType)
+        //{
+        //    List<ShippingAddressEntity> shipAddress = entites.ShippingAddresses.Where(x => x.EntityId == ID && x.EntityType == EntityType).Select(x => new ShippingAddressEntity
+        //    {
+        //        EntityId = x.EntityId,
+        //        EntityType = x.EntityType,
+        //        ShipTo_City = x.Ship_to_city,
+        //        ShippingID = x.ID,
+        //        ShipTo_Country = x.Ship_to_country,
+        //        ShipTo_Line1 = x.Ship_to_line1,
+        //        ShipTo_Line2 = x.Ship_to_line2,
+        //        ShipTo_PostalCode = x.Ship_to_post_code,
+        //        ShipTo_State = x.Ship_to_state
+        //    }).ToList();
+        //    return shipAddress;
+        //}
+
+        //public IEnumerable<ShippingAddressEntity> ShippingAddressDetails(int ShipId)
+        //{
+        //    List<ShippingAddressEntity> shipAddress = entites.ShippingAddresses.Where(x => x.ID == ShipId).Select(x => new ShippingAddressEntity
+        //    {
+        //        EntityId = x.EntityId,
+        //        EntityType = x.EntityType,
+        //        ShipTo_City = x.Ship_to_city,
+        //        ShippingID = x.ID,
+        //        ShipTo_Country = x.Ship_to_country,
+        //        ShipTo_Line1 = x.Ship_to_line1,
+        //        ShipTo_Line2 = x.Ship_to_line2,
+        //        ShipTo_PostalCode = x.Ship_to_post_code,
+        //        ShipTo_State = x.Ship_to_state
+        //    }).ToList();
+        //    return shipAddress;
+        //}
+
+        //public bool DeleteShippingaddress(int ShippingId)
+        //{
+        //    try
+        //    {
+        //        ShippingAddress shipadd = entites.ShippingAddresses.Where(x => x.ID == ShippingId).FirstOrDefault();
+        //        entites.ShippingAddresses.Remove(shipadd);
+        //        entites.SaveChanges();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return false;
+        //        throw ex;
+        //    }
+
+        //}
+
+        public void AddCompanyLogo(byte[] Image)
+        {
+            CompanyDetail source = entites.CompanyDetails.FirstOrDefault();// query.ToList();
+            if (source != null)
+            {
+                source.Comp_Logo = Image;
+                entites.SaveChanges();
+            }
+            else
+            {
+                CompanyDetail CompDetail = new CompanyDetail()
+                {
+                    Comp_Logo = Image,
+                    Comp_Name = ""
+                    
+                };
+                entites.CompanyDetails.Add(CompDetail);
+                entites.SaveChanges();
+            }
+        }
+        //public List<Country> GetAllCountryModel()
+        //{
+
+        //    //ObjectQuery<Product> products = entites.Products;
+
+        //    //products.MergeOption = MergeOption.NoTracking;
+
+        //    //IQueryable<Product> query = from product in products select product;
+
+        //    List<Country> result = entites.Countries.ToList();// query.ToList();
+
+        //    return result;
+
+        //}
+        //public List<State> GetAllStateModel()
+        //{
+
+        //    //ObjectQuery<Product> products = entites.Products;
+
+        //    //products.MergeOption = MergeOption.NoTracking;
+
+        //    //IQueryable<Product> query = from product in products select product;
+
+        //    List<State> result = entites.States.ToList();// query.ToList();
+
+        //    return result;
+
+        //}
+
+    }
+}

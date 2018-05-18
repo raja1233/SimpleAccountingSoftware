@@ -1,0 +1,280 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASDAL;
+using SDN.Common;
+using SDN.Navigation.View;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SDN.Navigation.ViewModel
+{
+    public class OpenCompanyFileDBNameViewModel : ViewModelBase
+    {
+        #region Private Properties
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+        private ObservableCollection<string> selectDatabaseName;
+        private ObservableCollection<string> selectServerName;
+        private string _SelectedDatabaseItem;
+        private string _SelectedServerItem;
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+        #region Public Properties
+        public ObservableCollection<string> SelectDatabaseName
+        {
+            get
+            {
+                return this.selectDatabaseName;
+            }
+            set
+            {
+                this.selectDatabaseName = value;
+                this.OnPropertyChanged("SelectDatabaseName");
+            }
+        }
+        public ObservableCollection<string> SelectServerName
+        {
+            get
+            {
+                return this.selectServerName;
+            }
+            set
+            {
+                this.selectServerName = value;
+                this.OnPropertyChanged("SelectServerName");
+            }
+        }
+        public string SelectedDatabaseItem
+        {
+            get
+            {
+                return _SelectedDatabaseItem;
+            }
+            set
+            {
+                _SelectedDatabaseItem = value;
+                OnPropertyChanged("SelectedDatabaseItem");
+            }
+        }
+        public string SelectedServerItem
+        {
+            get
+            {
+                return _SelectedServerItem;
+            }
+            set
+            {
+                _SelectedServerItem = value;
+                OnPropertyChanged("SelectedServerItem");
+            }
+        }
+        #endregion
+        #region Constructor
+        public OpenCompanyFileDBNameViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            SelectDatabase();
+            SuccessCommand = new DelegateCommand(GetLoginView);
+            GoBackCommand = new DelegateCommand(GoBack);
+            eventAggregator.GetEvent<HeaderVisibilityChangeEvent>().Publish(false);
+            eventAggregator.GetEvent<FooterVisibilityChangeEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("");
+            eventAggregator.GetEvent<CompanynameChangedEvent>().Publish(" ");
+        }
+        #endregion
+        #region Relay Commands
+        public ICommand SelectDatabaseNameCommand { get; set; }
+        public ICommand GoBackCommand { get; set; }
+
+        public ICommand SuccessCommand { get; set; }
+        #endregion
+        #region Button Commands
+        private void SelectDatabase()
+        {
+
+            ObservableCollection<string> Serverlist = new ObservableCollection<string>();
+            SqlDataSourceEnumerator instance = SqlDataSourceEnumerator.Instance;
+            System.Data.DataTable table = instance.GetDataSources();
+            foreach (System.Data.DataRow row in table.Rows)
+            {
+                if (row["ServerName"] != DBNull.Value && Environment.MachineName.Equals(row["ServerName"].ToString()))
+                {
+                    string item = string.Empty;
+                    item = row["ServerName"].ToString();
+                    if (row["InstanceName"] != DBNull.Value || !string.IsNullOrEmpty(Convert.ToString(row["InstanceName"]).Trim()))
+                    {
+                        item += @"\" + Convert.ToString(row["InstanceName"]).Trim();
+                    }
+                    Serverlist.Add(item);
+                }
+            }
+            SelectServerName = Serverlist;
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = "/C sqllocaldb i";
+            process.StartInfo = startInfo;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            var result = process.StandardOutput.ReadLine();
+            string LocalServerName = string.Concat(@"(LocalDb)\", result);
+            SelectServerName.Add(LocalServerName);
+        }
+        private void GetLoginView()
+        {
+            if(SelectedDatabaseItem != null)
+            {
+                var view = ServiceLocator.Current.GetInstance<LoginUserView>();
+                IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+                region1.Add(view);
+                if (region1 != null)
+                {
+                    region1.Activate(view);
+                }
+                eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+                eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            }
+        }
+        private void GoBack()
+        {
+
+            var view = ServiceLocator.Current.GetInstance<OpenCompanyFileView>();
+            IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+            region1.Add(view);
+            if (region1 != null)
+            {
+                region1.Activate(view);
+            }
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+
+        }
+        #endregion
+        #region Public Methods
+        private void GenerateConnectionString()
+        {
+            //StringBuilder Con = new StringBuilder("metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=';data source=108.168.203.227,7007;user id=SimpleAccounting;password=SimpleA@2017;MultipleActiveResultSets=True;App=EntityFramework;");            //Con.Append("res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=&quot;server=SDN-450\\SQLEXPRESS;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;");
+            // StringBuilder Con = new StringBuilder("metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string='data source=(LocalDb)\\MSSQLLocalDB;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework;");
+            //StringBuilder Con = new StringBuilder("metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=';data source=108.168.203.227,7007;user id=SimpleAccounting;password=SimpleA@2017;MultipleActiveResultSets=True;App=EntityFramework;");            //Con.Append("res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=&quot;server=SDN-450\\SQLEXPRESS;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;");
+            //Con.Append("res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=&quot;server=SDN-450\\SQLEXPRESS;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;");
+          //  (LocalDb)\\MSSQLLocalDB; Trusted_Connection = True; Integrated Security = True; MultipleActiveResultSets = True; App = EntityFramework;
+            StringBuilder Con = new StringBuilder("metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string='data source=");
+            Con.Append(SelectedServerItem);
+            Con.Append("; Trusted_Connection = True; Integrated Security = True; MultipleActiveResultSets = True; App = EntityFramework;");
+            Con.Append("initial catalog=");
+            Con.Append(SelectedDatabaseItem);
+            Con.Append("'");
+  
+            SharedValues.CurrentDataBase = SelectedDatabaseItem;
+            string finalconnectionstring = Con.ToString();
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var connectionString1 = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ConnectionString;
+            var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
+            connectionStringsSection.ConnectionStrings["SASEntitiesEDM"].ConnectionString = finalconnectionstring;
+            config.Save(ConfigurationSaveMode.Modified,true);
+            ConfigurationManager.RefreshSection("connectionStrings");
+            //ConfigurationManager.RefreshSection("startup");
+
+            var connectionString = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ConnectionString;
+
+        }
+        private void GenerateServerConnectionString()
+        {
+            ObservableCollection<string> list = new ObservableCollection<string>();
+            ObservableCollection<string> Storedlist = new ObservableCollection<string>();
+            // string connectionstring = "data source=(LocalDb)\\MSSQLLocalDB;Trusted_Connection=True;Integrated Security=True;";
+            //string connectionstring = "data source=108.168.203.227,7007;user id=SimpleAccounting;password=SimpleA@2017;";
+            StringBuilder connectionstring = new StringBuilder("data source=");
+            connectionstring.Append(SelectedServerItem);
+            connectionstring.Append(";Trusted_Connection=True;Integrated Security=True;");
+            //   string connectionstring = "data source=(LocalDb)\\MSSQLLocalDB;Trusted_Connection=True;Integrated Security=True;";
+            string finalconnectionstring = connectionstring.ToString();
+            using (SqlConnection con = new SqlConnection(finalconnectionstring))
+            {
+                con.Open();
+
+                //Set up a command with the given query and associate
+                 //this with the current connection.
+                using (SqlCommand cmd = new SqlCommand("SELECT name from sys.databases WHERE name NOT IN ('master', 'model', 'tempdb', 'msdb')", con))
+                {
+                    using (IDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            list.Add(dr[0].ToString());
+                        }
+                    }
+                    Storedlist = list;
+                }
+
+            }
+           SelectDatabaseName = Storedlist;
+           if(SelectDatabaseName.Count() == 0)
+            {
+                MessageBox.Show("Not a single database is created for selected server name, go back and Create First ");
+            }
+            else
+            {
+
+            }
+        }
+        #endregion
+            #region BAckground methods
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+            switch (name)
+            {
+                case "SelectedDatabaseItem":
+                    if(SelectedDatabaseItem != null)
+                    {
+                        GenerateConnectionString();
+                    }
+                    break;
+                case "SelectedServerItem":
+                    if (SelectedServerItem != null)
+                    {
+                        GenerateServerConnectionString();
+                    }
+                    break;
+            }
+            base.OnPropertyChanged(name);
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SDN.UI.Entities.Accounts;
+using SASBAL.Accounts;
+using SASClient.Accounts.ViewModel;
+
+namespace SASClient.Accounts.Services
+{
+    public class UndeliveredSalesOrdersWithDepositsRepository : IUndeliveredSalesOrdersWithDepositsRepository
+    {
+        public List<UndeliveredSalesOrdersWithDepositsViewEntity> GetCustomerList()
+        {
+            IUndeliveredSalesOrdersWithDepositsBL obj = new UndeliveredSalesOrdersWithDepositsBL();
+            return obj.GetCustomerList();
+        }
+
+        public string IsChequeNoPresent()
+        {
+            IUndeliveredSalesOrdersWithDepositsBL obj = new UndeliveredSalesOrdersWithDepositsBL();
+            return obj.IsChequeNoPresent();
+        }
+
+        public int SaveUndeliveredSalesOrderData(UndeliveredSalesOrdersWithDepositsModel model)
+        {
+
+            IUndeliveredSalesOrdersWithDepositsBL obj = new UndeliveredSalesOrdersWithDepositsBL();
+            return obj.SaveUndeliveredSalesOrderData(model);
+        }
+    }
+}

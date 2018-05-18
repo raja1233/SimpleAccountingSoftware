@@ -1,0 +1,384 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Newtonsoft.Json;
+using SASClient.Product.Services;
+using SDN.Common;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class GstAndVatSummaryViewModel : GstAndVatSummaryEntity
+    {
+        #region private member
+        private ObservableCollection<QuarterEntity> _quarterlist = new ObservableCollection<QuarterEntity>();
+        private ObservableCollection<MonthEntity> _monthlist = new ObservableCollection<MonthEntity>();
+        IStockCardListRepository purchaseRepository = new StockCardListRepository();
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private int Count = 0;
+        private string jsonSearch;
+        private List<SearchEntity> SearchValues;
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+        public ObservableCollection<QuarterEntity> QuarterList
+        {
+            get
+            {
+                _quarterlist.Clear();
+                QuarterData();
+                return _quarterlist;
+            }
+        }
+        private void QuarterData()
+        {
+            _quarterlist.Add(new QuarterEntity { ID = 1, Quarter = "Jan-Mar" });
+            _quarterlist.Add(new QuarterEntity { ID = 2, Quarter = "Apr-Jun" });
+            _quarterlist.Add(new QuarterEntity { ID = 3, Quarter = "Jul-Sep" });
+            _quarterlist.Add(new QuarterEntity { ID = 4, Quarter = "Oct-Dec" });
+        }
+        public ObservableCollection<MonthEntity> MonthList
+        {
+            get
+            {
+                _monthlist.Clear();
+                MonthData();
+                return _monthlist;
+            }
+        }
+        private void MonthData()
+        {
+            _monthlist.Add(new MonthEntity { ID = 1, Month = "Jan" });
+            _monthlist.Add(new MonthEntity { ID = 2, Month = "Feb" });
+            _monthlist.Add(new MonthEntity { ID = 3, Month = "Mar" });
+            _monthlist.Add(new MonthEntity { ID = 4, Month = "Apr" });
+            _monthlist.Add(new MonthEntity { ID = 5, Month = "May" });
+            _monthlist.Add(new MonthEntity { ID = 6, Month = "June" });
+            _monthlist.Add(new MonthEntity { ID = 7, Month = "July" });
+            _monthlist.Add(new MonthEntity { ID = 8, Month = "Aug" });
+            _monthlist.Add(new MonthEntity { ID = 9, Month = "Sept" });
+            _monthlist.Add(new MonthEntity { ID = 10, Month = "Oct" });
+            _monthlist.Add(new MonthEntity { ID = 11, Month = "Nov" });
+            _monthlist.Add(new MonthEntity { ID = 12, Month = "Dec" });
+
+        }
+       
+        public GstAndVatSummaryViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.LoadSupplierBackground();
+            ShowTaxSummaryCommand = new RelayCommand(ShowTaxSummary);
+            ShowTaxCollectedCommand = new RelayCommand(ShowTaxCollected);
+            ShowTaxPaidDetailsCommand = new RelayCommand(ShowTaxPaidDetails);
+        }
+        public RelayCommand ShowTaxSummaryCommand { get; set; }
+        public RelayCommand ShowTaxCollectedCommand { get; set; }
+        public RelayCommand ShowTaxPaidDetailsCommand { get; set; }
+
+        public void ShowTaxSummary(object param)
+        {
+            this.ShowSummaryTrue = true;
+            this.ShowTaxCollectedTrue = false;
+            this.ShowTaxPaidDetailTrue = false;
+            this.TaxSummaryTrue = true;
+            this.TaxCollectedTrue = false;
+            this.TaxPaidDetailsTrue = false;
+        }
+        public void ShowTaxCollected(object param)
+        {
+            this.ShowSummaryTrue = false;
+            this.ShowTaxCollectedTrue = true;
+            this.ShowTaxPaidDetailTrue = false;
+            this.TaxSummaryTrue = false;
+            this.TaxCollectedTrue = true;
+            this.TaxPaidDetailsTrue = false;
+        }
+        public void ShowTaxPaidDetails(object param)
+        {
+            this.ShowSummaryTrue = false;
+            this.ShowTaxCollectedTrue = false;
+            this.ShowTaxPaidDetailTrue = true;
+            this.TaxSummaryTrue = false;
+            this.TaxCollectedTrue =false;
+            this.TaxPaidDetailsTrue = true;
+        }
+        public void onSelectionChange(object param)
+        {
+            
+
+        }
+        public void SetData(string SearchFilter, string parameter)
+        {
+
+            if (parameter == "SelectedFormName" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                Search(null);
+            }
+            if (parameter == "Year" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                this.ShowSelectedTrue = true;
+                //this.ShowAllTrue = false;
+                this.YearmonthQuartTrue = true;//change after client feedback on 22 may 2017
+                Search(null);
+            }
+
+            if (parameter == "Quarter" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                this.ShowSelectedTrue = true;
+                //this.ShowAllTrue = false;
+                this.YearmonthQuartTrue = true;//added after feedback
+                if (this.SelectedSearchYear == null)
+                    this.SelectedSearchYear = DateTime.Now.Year.ToString();
+                switch (SearchFilter)
+                {
+                    case "1":
+                        if (this.SelectedSearchMonth == "1" || this.SelectedSearchMonth == "2" || this.SelectedSearchMonth == "3")
+                            break;
+                        else
+                            this.SelectedSearchMonth = null;
+                        break;
+                    case "2":
+                        if (this.SelectedSearchMonth == "4" || this.SelectedSearchMonth == "5" || this.SelectedSearchMonth == "6")
+                            break;
+                        else
+                            this.SelectedSearchMonth = null;
+                        break;
+                    case "3":
+                        if (this.SelectedSearchMonth == "7" || this.SelectedSearchMonth == "8" || this.SelectedSearchMonth == "9")
+                            break;
+                        else
+                            this.SelectedSearchMonth = null;
+                        break;
+                    case "4":
+                        if (this.SelectedSearchMonth == "10" || this.SelectedSearchMonth == "11" || this.SelectedSearchMonth == "12")
+                            break;
+                        else
+                            this.SelectedSearchMonth = null;
+                        break;
+                }
+                //this.SelectedSearchMonth = null;
+                Search(null);
+            }
+            if (parameter == "Month" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                this.ShowSelectedTrue = true;
+                //this.ShowAllTrue = false;
+                this.YearmonthQuartTrue = true;//added after feedback
+                if (this.SelectedSearchYear == null)
+                    this.SelectedSearchYear = DateTime.Now.Year.ToString();
+                if (this.SelectedSearchQuarter == null)
+                {
+                    if (SearchFilter == "1" || SearchFilter == "2" || SearchFilter == "3")
+                        this.SelectedSearchQuarter = 1.ToString();
+                    if (SearchFilter == "4" || SearchFilter == "5" || SearchFilter == "6")
+                        this.SelectedSearchQuarter = 2.ToString();
+                    if (SearchFilter == "7" || SearchFilter == "8" || SearchFilter == "9")
+                        this.SelectedSearchQuarter = 3.ToString();
+                    if (SearchFilter == "10" || SearchFilter == "11" || SearchFilter == "12")
+                        this.SelectedSearchQuarter = 4.ToString();
+
+                }
+                else
+                {
+                    if (SearchFilter == "1" || SearchFilter == "2" || SearchFilter == "3")
+                        this.SelectedSearchQuarter = 1.ToString();
+                    if (SearchFilter == "4" || SearchFilter == "5" || SearchFilter == "6")
+                        this.SelectedSearchQuarter = 2.ToString();
+                    if (SearchFilter == "7" || SearchFilter == "8" || SearchFilter == "9")
+                        this.SelectedSearchQuarter = 3.ToString();
+                    if (SearchFilter == "10" || SearchFilter == "11" || SearchFilter == "12")
+                        this.SelectedSearchQuarter = 4.ToString();
+                }
+                Search(null);
+            }
+        }
+        void Search(object param)
+        {
+            //UIServices.SetBusyState();
+            //DoProcessing();
+            if (Count != 0)
+            {
+                SearchValues = new List<SearchEntity>();
+                if (this.SelectedSearchYear != null && this.SelectedSearchYear != string.Empty)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Year";
+                    value.FieldValue = this.SelectedSearchYear;
+                    SearchValues.Add(value);
+                    var year = Convert.ToInt32(this.SelectedSearchYear);
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Year";
+                    value.FieldValue = "0";
+                    SearchValues.Add(value);
+                }
+
+                if (this.SelectedSearchQuarter != null && this.SelectedSearchQuarter != string.Empty)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Quarter";
+                    value.FieldValue = this.SelectedSearchQuarter;
+                    int month1;
+                    int month2;
+                    int month3;
+                    if (Convert.ToInt32(this.SelectedSearchQuarter) == 1)
+                    {
+                        month1 = 1;
+                        month2 = 2;
+                        month3 = 3;
+                    }
+                    else if (Convert.ToInt32(this.SelectedSearchQuarter) == 2)
+                    {
+                        month1 = 4;
+                        month2 = 5;
+                        month3 = 6;
+                    }
+                    else if (Convert.ToInt32(this.SelectedSearchQuarter) == 3)
+                    {
+                        month1 = 7;
+                        month2 = 8;
+                        month3 = 9;
+                    }
+                    else
+                    {
+                        month1 = 10;
+                        month2 = 11;
+                        month3 = 12;
+                    }
+                    SearchValues.Add(value);
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Quarter";
+                    value.FieldValue = "0";
+                    SearchValues.Add(value);
+                }
+
+                if (this.SelectedSearchMonth != null && this.SelectedSearchMonth != string.Empty)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Month";
+                    value.FieldValue = this.SelectedSearchMonth;
+                    SearchValues.Add(value);
+                    var month = Convert.ToInt32(this.SelectedSearchMonth);
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Month";
+                    value.FieldValue = "0";
+                    SearchValues.Add(value);
+                }
+                jsonSearch = JsonConvert.SerializeObject(SearchValues);
+                this.JsonData = jsonSearch;
+
+                if (Count != 0)
+                {
+                    
+                }
+
+            }
+
+        }
+      
+        #region background region
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+
+            int minHeight = 300;
+            int headerRows = 260;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 67;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.SIGridHeight = minHeight;
+            RefreshData();
+        }
+
+
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+            Count = 1;
+
+        }
+
+        #endregion end background
+        #region public method
+        public void RefreshData()
+        {
+            
+            this.YearRange = purchaseRepository.GetYearRange().ToList();
+            this.ShowSummaryTrue = true;
+            this.ShowTaxCollectedTrue = false;
+            this.ShowTaxPaidDetailTrue = false;
+            this.TaxSummaryTrue = true;
+            this.TaxCollectedTrue = false;
+            this.TaxPaidDetailsTrue = false;
+        }
+
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+
+            switch (name)
+            {
+               
+
+            }
+
+            base.OnPropertyChanged(name);
+        }
+        public void GetData(string SearchFilter, string parameter)
+        {
+
+           
+        }
+        #endregion end public method
+    }
+}

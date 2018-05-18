@@ -1,0 +1,82 @@
+﻿using SDN.UI.Entities.Export;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.File
+{
+    public class ExportDataDAL: IExportDataDAL
+    {
+        SASEntitiesEDM entities = new SASEntitiesEDM();
+        public List<SalesQuotationEntity> GetSalesQuotationsList( string StartDate, string EndDate)
+        {
+            List<SalesQuotationEntity> salesquotation = entities.Database.SqlQuery<SalesQuotationEntity>("USP_CreditNoteList @SDate,@EDate",
+                new SqlParameter("SDate", StartDate),
+                      new SqlParameter("EDate", EndDate)).ToList();
+            return salesquotation;
+        }
+        //public List<SalesQuotationEntity> GetSalesQuotationsList(string StartDate, string EndDate)
+        //{
+        //    List<SalesQuotationEntity> salesquotation = entities.Database.SqlQuery<SalesQuotationEntity>("USP_CreditNoteList @SDate,@EDate",
+        //        new SqlParameter("SDate", StartDate),
+        //              new SqlParameter("EDate", EndDate)).ToList();
+        //    return salesquotation;
+        //}
+        //public List<SalesQuotationEntity> GetSalesQuotationsList(string StartDate, string EndDate)
+        //{
+        //    List<SalesQuotationEntity> salesquotation = entities.Database.SqlQuery<SalesQuotationEntity>("USP_CreditNoteList @SDate,@EDate",
+        //        new SqlParameter("SDate", StartDate),
+        //              new SqlParameter("EDate", EndDate)).ToList();
+        //    return salesquotation;
+        //     public List<SalesQuotationEntity> GetSalesQuotationsList(string StartDate, string EndDate)
+        //{
+        //    List<SalesQuotationEntity> salesquotation = entities.Database.SqlQuery<SalesQuotationEntity>("USP_CreditNoteList @SDate,@EDate",
+        //        new SqlParameter("SDate", StartDate),
+        //              new SqlParameter("EDate", EndDate)).ToList();
+        //    return salesquotation;
+        //     public List<SalesQuotationEntity> GetSalesQuotationsList(string StartDate, string EndDate)
+        //{
+        //    List<SalesQuotationEntity> salesquotation = entities.Database.SqlQuery<SalesQuotationEntity>("USP_CreditNoteList @SDate,@EDate",
+        //        new SqlParameter("SDate", StartDate),
+        //              new SqlParameter("EDate", EndDate)).ToList();
+        //    return salesquotation;
+        //}
+        //public List<SalesQuotationEntity> GetSalesQuotationsList(string StartDate, string EndDate)
+        //{
+        //    List<SalesQuotationEntity> salesquotation = entities.Database.SqlQuery<SalesQuotationEntity>("USP_CreditNoteList @SDate,@EDate",
+        //        new SqlParameter("SDate", StartDate),
+        //              new SqlParameter("EDate", EndDate)).ToList();
+        //    return salesquotation;
+        //}
+
+        public List<Customer_Detail> GetCustomerDetailList()
+        {
+            List<Customer_Detail> salesquotation = entities.Database.SqlQuery<Customer_Detail>("USP_ExportCustomerDetails").ToList();
+            return salesquotation;
+        }
+        public List<Supplier_Detail> GetSupplierDetailList()
+        {
+            List<Supplier_Detail> supplierlist = entities.Database.SqlQuery<Supplier_Detail>("USP_ExportSupplierDetails").ToList();
+            return supplierlist;
+        }
+        public List<PandS_Details> GetPandSDetailList()
+        {
+            List<PandS_Details> pandslist = entities.Database.SqlQuery<PandS_Details>("USP_ExportPandSDetails").ToList();
+            return pandslist;
+        }
+        public List<Account_Detail> GetAccountDetailList()
+        {
+            List<Account_Detail> accountlist = entities.Database.SqlQuery<Account_Detail>("USP_ExportAccountDetails").ToList();
+            return accountlist;
+        }
+        public List<Tax_Codes_and_Rates> GetTaxCodeRatelList()
+        {
+            List<Tax_Codes_and_Rates> taxcodelist = entities.Database.SqlQuery<Tax_Codes_and_Rates>("USP_ExportTaxCodeRate").ToList();
+            return taxcodelist;
+        }
+    }
+}

@@ -1,0 +1,400 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.Accounts.Services;
+using SASClient.CashBank.Views;
+using SASClient.File.Views;
+using SDN.Common;
+using SDN.Purchasing.View;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class UndeliveredPurchaseOrdersDepositsViewModel : UndeliveredPurchaseOrdersDepositsEntity
+    {
+        #region private property
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private IUndeliveredPurchaseOrdersDepositsRepository UndeliveredPurchaseRepository = new UndeliveredPurchaseOrdersDepositsRepository();
+        private List<UndeliveredPurchaseOrdersDepositsViewModel> _FullList;
+        private static IEnumerable<UndeliveredPurchaseOrdersDepositsEntity> UndeliveredPurchaseList;
+        private ObservableCollection<UndeliveredPurchaseOrdersDepositsGridViewModel> _UndeliveredPurchaseOrdersDepositsDetailsEntity;
+        private ObservableCollection<UndeliveredPurchaseOrdersDepositsEntity> _UndeliveredPurchaseService;
+        private ObservableCollection<UndeliveredPurchaseOrdersDepositsGridViewModel> TempList;
+        private string casErrors;
+        #endregion
+        #region public property
+        public ObservableCollection<UndeliveredPurchaseOrdersDepositsEntity> UndeliveredPurchaseService
+        {
+            get
+            {
+                return _UndeliveredPurchaseService;
+            }
+            set
+            {
+                if (_UndeliveredPurchaseService != value)
+                {
+                    _UndeliveredPurchaseService = value;
+                    OnPropertyChanged("UndeliveredPurchaseService");
+                }
+            }
+        }
+        public string CASErrors
+        {
+            get { return casErrors; }
+            set
+            {
+                casErrors = value;
+                OnPropertyChanged("CASErrors");
+            }
+        }
+        public ObservableCollection<UndeliveredPurchaseOrdersDepositsGridViewModel> UndeliveredPurchaseOrdersDepositsDetailsEntity
+        {
+            get
+            {
+                return _UndeliveredPurchaseOrdersDepositsDetailsEntity;
+            }
+            set
+            {
+                _UndeliveredPurchaseOrdersDepositsDetailsEntity = value;
+                OnPropertyChanged("UndeliveredPurchaseOrdersDepositsDetailsEntity");
+            }
+        }
+        #endregion
+        #region constructor property
+        public UndeliveredPurchaseOrdersDepositsViewModel(IRegionManager regionManager, IEventAggregator eventAggregator) : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            LoadSupplierBackground();
+            _UndeliveredPurchaseOrdersDepositsDetailsEntity = new ObservableCollection<UndeliveredPurchaseOrdersDepositsGridViewModel>();
+            createNewUndeliveredPurchase();
+            SaveCommand = new RelayCommand(SaveUndeliveredPurchase);
+            NavigateToSuppliersFormCommand = new RelayCommand(NavigateToSupplierDetails);
+            NavigateToAccountsDetailsListFormCommand = new RelayCommand(NavigateToAccountsDetailList);
+            NavigateToImportDataCommand = new RelayCommand(NavigateToImportData);
+
+        }
+        public RelayCommand SaveCommand { get; set; }
+        public RelayCommand NavigateToSuppliersFormCommand { get; set; }
+        public RelayCommand NavigateToAccountsDetailsListFormCommand { get; set; }
+        public RelayCommand NavigateToImportDataCommand { get; set; }
+
+        public void NavigateToAccountsDetailList(object param)
+        {
+            SharedValues.getValue = "AccountsDetailsListTab";
+            var view = ServiceLocator.Current.GetInstance<AccountsDetailsListView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+
+            var tabview = ServiceLocator.Current.GetInstance<SASClient.Accounts.Views.AccountsTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Details List");
+        }
+        public void NavigateToImportData(object param)
+        {
+            SharedValues.getValue = "ImportDataTab";
+            var tabview = ServiceLocator.Current.GetInstance<ImportDataView>();
+
+            var tabregion = this.regionManager.Regions[RegionNames.MainRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            var view2 = ServiceLocator.Current.GetInstance<FileTabView>();
+
+            IRegion region2 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+
+            region2.Add(view2);
+            if (region2 != null)
+            {
+                region2.Activate(view2);
+            }
+            var SubTabView = ServiceLocator.Current.GetInstance<FileSubTabView>();
+            var subMenuRegion = regionManager.Regions[RegionNames.SubMenuBarRegion];
+
+            subMenuRegion.Add(SubTabView);
+
+            if (subMenuRegion != null)
+            {
+                subMenuRegion.Activate(SubTabView);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Import Data");
+        }
+        public void NavigateToSupplierDetails(object param)
+        {
+
+            //SharedValues.getValue = "SupplierDetailTab";
+            //var view = ServiceLocator.Current.GetInstance<SDN.Suppliers.Views.SuppliersView>();
+
+            //IRegion region = this.regionManager.Regions[RegionNames.MainRegion];
+
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+
+            //var view2 = ServiceLocator.Current.GetInstance<SDN.Customers.Views.SuppliersTabView>();
+
+            //IRegion region2 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+
+            //region2.Add(view2);
+            //if (region2 != null)
+            //{
+            //    region2.Activate(view2);
+            //}
+
+            //eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            //eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            //eventAggregator.GetEvent<TitleChangedEvent>().Publish("Suppliers Details Form");
+            SharedValues.getValue = "SupplierDetailTab";
+            var mainview = ServiceLocator.Current.GetInstance<SupplierDetailView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            var tabview = ServiceLocator.Current.GetInstance<SupplierTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Suppliers Details Form");
+        }
+        public void createNewUndeliveredPurchase()
+        {
+
+            var row = new UndeliveredPurchaseOrdersDepositsGridViewModel(UndeliveredPurchaseList);
+            //row.SelectedPSID = 0;
+            if (UndeliveredPurchaseOrdersDepositsDetailsEntity != null)
+            {
+                if (UndeliveredPurchaseOrdersDepositsDetailsEntity.Count > 0)
+                {
+                    UndeliveredPurchaseOrdersDepositsDetailsEntity.Clear();
+                    // var row = new CollectAmountDataGridViewModel();
+                    //  PQDetailsEntity.Add(row);
+                    OnPropertyChanged("UndeliveredPurchaseOrdersDepositsDetailsEntity");
+                }
+            }
+            UndeliveredPurchaseOrdersDepositsDetailsEntity.Add(row);
+            OnPropertyChanged("UndeliveredPurchaseOrdersDepositsDetailsEntity");
+        }
+
+        #endregion
+        #region public method
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+
+            int minHeight = 500;
+            int headerRows = 300;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows -5;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.SIGridHeight = minHeight;
+            RefreshData();
+        }
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            Mouse.OverrideCursor = null;
+
+        }
+        public void RefreshData()
+        {
+            try
+            {
+                UndeliveredPurchaseList = UndeliveredPurchaseRepository.getSupplierList();
+                if (UndeliveredPurchaseList != null)
+                {
+                    UndeliveredPurchaseService = new ObservableCollection<UndeliveredPurchaseOrdersDepositsEntity>(UndeliveredPurchaseList);
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+        public int ManageDuplicateUndeliveredPurchase()
+        {
+            int rowFocusindex = -1;
+            //ShowAllCount = PSDetailsEntity.Where(e => e.SelectedPSID != 0).Count();
+            TempList = new ObservableCollection<UndeliveredPurchaseOrdersDepositsGridViewModel>();
+            TempList = UndeliveredPurchaseOrdersDepositsDetailsEntity;
+
+            var query = TempList.GroupBy(x => x.ID)
+              .Where(g => g.Count() > 1)
+              .ToList();
+            if (query.Count > 0 && UndeliveredPurchaseOrdersDepositsDetailsEntity.Count > 1)
+            {
+
+                var obj1 = query[0].ElementAt(0);
+                var obj2 = query[0].ElementAt(1);
+                int? qty = 1;
+
+                qty = query[0].ElementAt(0).CountQty + query[0].ElementAt(1).CountQty;
+
+                var index1 = TempList.IndexOf(query[0].ElementAt(0));
+                var index2 = TempList.IndexOf(query[0].ElementAt(1));
+                OnPropertyChanged("UndeliveredPurchaseOrdersDepositsDetailsEntity");
+                TempList = UndeliveredPurchaseOrdersDepositsDetailsEntity;
+            }
+            else
+            {
+                int count = UndeliveredPurchaseOrdersDepositsDetailsEntity.Count(x => x.ID == 0);
+                if (count == 0)
+                {
+                    var row = new UndeliveredPurchaseOrdersDepositsGridViewModel(UndeliveredPurchaseList);
+                    // row.CountQty = 0;
+                    //   row.GSTRate = TaxRate;
+
+                    UndeliveredPurchaseOrdersDepositsDetailsEntity.Add(row);
+                    OnPropertyChanged("UndeliveredPurchaseOrdersDepositsDetailsEntity");
+                    TempList = UndeliveredPurchaseOrdersDepositsDetailsEntity;
+                    rowFocusindex = -1;
+                }
+                else
+                {
+                    var emptyRow = TempList.Where(y => y.ID == 0).FirstOrDefault();
+                    rowFocusindex = UndeliveredPurchaseOrdersDepositsDetailsEntity.IndexOf(emptyRow);
+                }
+
+            }
+            return rowFocusindex;
+        }
+        public void SaveUndeliveredPurchase(object param)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Confirmation", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+
+                string msg = ValidateJournal();
+                if (msg != string.Empty)
+                {
+                    CASErrors = msg;
+                    Mouse.OverrideCursor = null;
+                    return;
+                }
+
+                CASErrors = string.Empty;
+                UndeliveredPurchaseOrdersDepositsModel JForm = GetDataIntoModel();
+                UndeliveredPurchaseRepository.SaveUndeliveredPurchaseOrdersDepositsData(JForm);
+
+                Mouse.OverrideCursor = null;
+            }
+        }
+        public string ValidateJournal()
+        {
+            string msg = string.Empty;
+            UndeliveredPurchaseOrdersDepositsModel JForm = GetDataIntoModel();
+            var tempInvoiceNumber = UndeliveredPurchaseRepository.IsChequeNoPresent();
+            string result = JForm.UndeliveredPurchaseOrdersDepositsDetailsData.Where(x => x.OrderNo == tempInvoiceNumber).Select(x => x.OrderNo).FirstOrDefault();
+            if (result != null)
+            {
+                msg = "Entry against Cheque No is already done";
+            }
+
+
+            return msg;
+        }
+        public UndeliveredPurchaseOrdersDepositsModel GetDataIntoModel()
+        {
+            UndeliveredPurchaseOrdersDepositsModel JForm = new UndeliveredPurchaseOrdersDepositsModel();
+            JForm.UndeliveredPurchaseOrdersDepositsDetailsData = new List<UndeliveredPurchaseOrdersDepositsEntity>();
+            //UnpaidSalesInvoiceEntity model = new UnpaidSalesInvoiceEntity();
+
+            //JForm.UnpaidSalesInvoiceData = model;
+
+            foreach (var item in UndeliveredPurchaseOrdersDepositsDetailsEntity)
+            {
+                if (item.ID != null)
+                {
+                    UndeliveredPurchaseOrdersDepositsEntity jEntity = new UndeliveredPurchaseOrdersDepositsEntity();
+                    jEntity.ID = item.ID;
+                    jEntity.SupplierName = item.SupplierName;
+                    jEntity.OrderNo = "SI-" + item.OrderNo;
+                    jEntity.UndeliveredAmount = item.UndeliveredAmount;
+                    jEntity.DepositAmount = item.DepositAmount;
+                    jEntity.OrderDate = item.OrderDate;
+                    if (item.ID != 0 && Convert.ToInt32(item.ID) > 0)
+                    {
+                        JForm.UndeliveredPurchaseOrdersDepositsDetailsData.Add(jEntity);
+                    }
+                }
+            }
+
+            return JForm;
+        }
+        #endregion
+    }
+}

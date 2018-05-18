@@ -1,0 +1,222 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.CloseRequest;
+using SDN.Common;
+using SDN.Navigation.Services;
+using SDN.Navigation.View;
+using SDN.Settings.ViewModels;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Login;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Xml;
+
+namespace SDN.Navigation.ViewModel
+{
+    public class LoginUserViewModel : LoginUserEntity
+    {
+        #region private properties
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+       
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        static List<LoginUserEntity> loginentity = new List<LoginUserEntity>();
+        StackList itemlist = new StackList();
+        List<string> loginlist = new List<string>();
+        private ObservableCollection<UserRoleModel> _UserRoleModelCollection = new ObservableCollection<UserRoleModel>();
+        private ObservableCollection<LoginUserEntity> _LoginUserEntity = new ObservableCollection<LoginUserEntity>();
+       
+        #endregion
+        #region public properties
+        object _getLogin;
+        
+        public object getLogin
+        {
+            get
+            {
+                return _getLogin;
+            }
+            set
+            {
+                if (_getLogin != value)
+                {
+                    _getLogin = value;
+                    OnPropertyChanged("getLogin");
+                    // OnUserChange();
+                }
+            }
+        }
+        public ObservableCollection<LoginUserEntity> LoginsUserEntity
+        {
+            get
+            {
+
+                //_UsersSecurityEntity = new ObservableCollection<UsersSecurityEntity>(securityRepository.GetUsers());
+                // _UsersSecurityEntity = new ObservableCollection<UsersSecurityEntity>();
+                return _LoginUserEntity;
+                //return _UsersSecurityEntity = new ObservableCollection<UsersSecurityEntity>(securityRepository.GetUsers());
+            }
+            set
+            {
+                if (_LoginUserEntity != value)
+                {
+                    _LoginUserEntity = value;
+                    OnPropertyChanged("LoginsUserEntity");
+                }
+            }
+        }
+        public ObservableCollection<UserRoleModel> UserRoleModelCollection
+        {
+            get
+            {
+                return _UserRoleModelCollection;
+            }
+            set
+            {
+                _UserRoleModelCollection = value;
+                OnPropertyChanged("UserRoleModelCollection");
+            }
+        }
+        #endregion
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoginUserViewModel"/> class.
+        /// </summary>
+        /// <param name="regionManager">The region manager.</param>
+        /// <param name="eventAggregator">The event aggregator.</param>
+        public LoginUserViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            eventAggregator.GetEvent<HeaderVisibilityChangeEvent>().Publish(false);
+        }
+        #region Relay Commands
+        public RelayCommand LoginClickCommand { get; set; }
+        #endregion
+        #endregion
+        #region Command properties
+        #endregion
+        #region button Commands
+        #endregion
+        #region public method
+
+        public void LoginUser()
+        {
+            var connectionString2 = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ConnectionString;
+
+            string exefolder = System.Windows.Forms.Application.StartupPath;
+            string reportPath = System.IO.Path.Combine(exefolder, "SDN.SimpleAccounting.exe");
+           
+            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(reportPath);
+            if (config != null)
+            {
+                ConnectionStringsSection section = (ConnectionStringsSection)config.GetSection("connectionStrings");
+                section.ConnectionStrings["SASEntitiesEDM"].ConnectionString = connectionString2;
+                section.SectionInformation.ForceSave = true;
+                
+            }
+            config.Save(ConfigurationSaveMode.Modified, true);
+            ConfigurationManager.RefreshSection("connectionStrings");
+            
+           
+            //string reportPath1 = System.IO.Path.Combine(exefolder, "SDN.SimpleAccounting.exe");
+            //var path = reportPath1.Remove(reportPath1.IndexOf("SDN.SimpleAccounting\\bin\\Debug\\SDN.SimpleAccounting.exe"));
+            //var z = path + "DataAccess\\SASDAL\\App.Config";
+            //ExeConfigurationFileMap configMap = new ExeConfigurationFileMap();
+            //configMap.ExeConfigFilename = z;
+            //Configuration config2 = ConfigurationManager.OpenMappedExeConfiguration(configMap, ConfigurationUserLevel.None);
+            ////config2.ConnectionStrings.ConnectionStrings.CurrentConfiguration.ConnectionStrings;
+            //var conString = config2.ConnectionStrings.ConnectionStrings[0].ConnectionString;
+            ////string reportPath2 = System.IO.Path.Combine(z, "App");
+            ////System.Configuration.Configuration config2 = ConfigurationManager.OpenMachineConfiguration();
+            //if (config2 != null)
+            //{
+            //    ConnectionStringsSection section1 = (ConnectionStringsSection)config2.GetSection("connectionStrings");
+            //    section1.ConnectionStrings["SASEntitiesEDM"].ConnectionString = connectionString2;
+            //    section1.SectionInformation.ForceSave = true;
+            //}
+            //config2.Save(ConfigurationSaveMode.Modified, true);
+            //ConfigurationManager.RefreshSection("connectionStrings");
+
+            // Mouse.OverrideCursor = Cursors.Wait;
+            var siRepository = new LoginUserRepository();
+            var uid = UserName.ToLower();
+            var pwd = Password;
+            loginentity = siRepository.GetUsers();
+            var currentuser = 0;
+            UserRoleModelCollection = new ObservableCollection<UserRoleModel>(siRepository.GetAllUserRoles());
+            foreach (var item in loginentity)
+            {
+                if(item.UserName.ToLower() == uid)
+                {
+                    currentuser = item.ID;
+                }
+            }
+            var storecurrentuser = currentuser;
+            loginentity = siRepository.GetUserRoles(storecurrentuser);
+            SharedValues.UserList = loginentity.Select(x=> x.TabName);
+            //itemlist.AddToList();
+            var sif = siRepository.GetAuthorizedUser(uid, pwd);
+            
+            if (sif == true)
+            {
+               
+               this.regionManager.RegisterViewWithRegion(RegionNames.FooterRegion,
+                   () => ServiceLocator.Current.GetInstance<FooterView>());
+                var view = ServiceLocator.Current.GetInstance<MainView>();
+                IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+                region1.Add(view);
+                if (region1 != null)
+                {
+                    region1.Activate(view);
+                }
+                eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+                eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                eventAggregator.GetEvent<TitleChangedEvent>().Publish("Home");
+            }
+            
+            //secure.OnUserChange();
+        }
+       
+        public void AccessableScreens()
+        {
+            List<string> listview = (List<string>)Application.Current.Resources["views"];
+        }
+        #endregion
+        #region private method
+        public override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+           
+
+            base.OnPropertyChanged(name);
+        }
+        #endregion
+        #region Background Methods
+        #endregion
+    }
+}

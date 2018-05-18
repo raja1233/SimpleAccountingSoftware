@@ -1,0 +1,887 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Acc-Type" Type="int" />
+          <Property Name="Acc-Open-Bal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Acc-Cur-Bal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Acc-Year-to-date" Type="datetime" />
+          <Property Name="Acc-Inactive" Type="char" MaxLength="1" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" />
+          <Property Name="Content-Type" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CategoriesContent">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat-Id" Type="int" />
+          <Property Name="Content-Limit" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Cat-Contents" Type="nvarchar" MaxLength="200" />
+          <Property Name="Set-Default" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="Predefined" Type="bit" />
+        </EntityType>
+        <EntityType Name="CompanyDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Comp-Name" Type="nvarchar" MaxLength="70" Nullable="false" />
+          <Property Name="Comp-Reg-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-GST-Reg-Date" Type="datetime" />
+          <Property Name="Comp-GST-Dereg-Date" Type="datetime" />
+          <Property Name="Comp-Tel" Type="nvarchar" MaxLength="30" />
+          <Property Name="Comp-Fax" Type="nvarchar" MaxLength="30" />
+          <Property Name="Comp-Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-year-start-date" Type="date" />
+          <Property Name="Comp-year-end-date" Type="date" />
+          <Property Name="Comp-Logo" Type="varbinary(max)" />
+          <Property Name="Software-Ser-No" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-Bill-to-city" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-Bill-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-Bill-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Comp-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-Ship-to-city" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comp-Ship-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-Ship-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comp-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="CountryId" />
+          </Key>
+          <Property Name="CountryId" Type="int" Nullable="false" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="2" />
+          <Property Name="NumCode" Type="tinyint" />
+          <Property Name="PhoneCode" Type="tinyint" />
+          <Property Name="Inactive" Type="nchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
+          <Property Name="DeletedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="CountryCurrency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="200" />
+          <Property Name="CurrencyName" Type="nvarchar" MaxLength="10" />
+          <Property Name="CurrencySymbol" Type="nvarchar" MaxLength="10" />
+          <Property Name="CurrencyDecimalCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrencyHexaCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CurrencyCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
+          <Property Name="DeletedOn" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="Priority" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="MasterModules">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Module-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Module-Id" Type="int" Nullable="false" />
+          <Property Name="Tab-Id" Type="int" Nullable="false" />
+          <Property Name="Tab-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Order-Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Options">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Date-Format" Type="nvarchar" MaxLength="30" />
+          <Property Name="Number-Format" Type="nvarchar" MaxLength="30" />
+          <Property Name="Decimal-Places" Type="tinyint" />
+          <Property Name="Currency-Code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Starting-Sales-Inv-No" Type="nvarchar" MaxLength="10" />
+          <Property Name="Name-to-Print-Sales-Invoice" Type="nvarchar" MaxLength="100" />
+          <Property Name="Def-Cash-Bank-Acc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Show-Amount-Inc-GST" Type="bit" />
+          <Property Name="Show-Account-Balance" Type="bit" />
+          <Property Name="Cus-Detail-Allow-Chg-Limit" Type="bit" />
+          <Property Name="PS-Detail-Allow-Chg-Act" Type="bit" />
+          <Property Name="Allow-to-Create-Sales-Inv" Type="bit" />
+          <Property Name="Show-PS-Name" Type="bit" />
+          <Property Name="Show-PS-Name-Desc" Type="bit" />
+          <Property Name="Allow-Edit-PS-Name-Desc" Type="bit" />
+          <Property Name="Allow-Edit-PS-Price" Type="bit" />
+          <Property Name="Allow-Edit-Discount" Type="bit" />
+          <Property Name="Hide-Discount-Column" Type="bit" />
+          <Property Name="PS-Qty-Jump-Next-Line" Type="bit" />
+          <Property Name="Print-PS-Name" Type="bit" />
+          <Property Name="Print-PS-Name-Desc" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="Print-Del-Sales-Inv" Type="bit" />
+        </EntityType>
+        <EntityType Name="PurchaseAndSales_Categories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" />
+          <Property Name="Content-Type" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PurchaseAndSales_CategoriesContent">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat-Id" Type="int" />
+          <Property Name="Cat-Contents" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="State">
+          <Key>
+            <PropertyRef Name="StateId" />
+          </Key>
+          <Property Name="StateId" Type="int" Nullable="false" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="50" />
+          <Property Name="StateCode" Type="nvarchar" MaxLength="5" />
+          <Property Name="CountryId" Type="int" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
+          <Property Name="DeletedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="TaxCodesAndRates">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Tax-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Tax-Description" Type="nvarchar" MaxLength="100" />
+          <Property Name="Tax-Code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Tax-Rate" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Tax-Inactive" Type="char" MaxLength="1" />
+          <Property Name="Tax-Default" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="Predefined" Type="bit" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="User-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="User-Password" Type="nvarchar" MaxLength="255" />
+          <Property Name="User-Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="User-Type" Type="int" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="IsSuperAdmin" Type="bit" />
+          <Property Name="DeletedBy" Type="int" />
+          <Property Name="DeletedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserSecurity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User-Id" Type="int" />
+          <Property Name="Tab-Id" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <Association Name="FK_CategoriesContent_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="CategoriesContent" Type="Self.CategoriesContent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CategoriesContent">
+              <PropertyRef Name="Cat-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories">
+          <End Role="PurchaseAndSales_Categories" Type="Self.PurchaseAndSales_Categories" Multiplicity="0..1" />
+          <End Role="PurchaseAndSales_CategoriesContent" Type="Self.PurchaseAndSales_CategoriesContent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseAndSales_Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PurchaseAndSales_CategoriesContent">
+              <PropertyRef Name="Cat-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="simpleaccountingModelStoreContainer">
+          <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoriesContent" EntityType="Self.CategoriesContent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CompanyDetails" EntityType="Self.CompanyDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CountryCurrency" EntityType="Self.CountryCurrency" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MasterModules" EntityType="Self.MasterModules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Options" EntityType="Self.Options" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseAndSales_Categories" EntityType="Self.PurchaseAndSales_Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseAndSales_CategoriesContent" EntityType="Self.PurchaseAndSales_CategoriesContent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="State" EntityType="Self.State" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaxCodesAndRates" EntityType="Self.TaxCodesAndRates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserSecurity" EntityType="Self.UserSecurity" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CategoriesContent_Categories" Association="Self.FK_CategoriesContent_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="CategoriesContent" EntitySet="CategoriesContent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" Association="Self.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories">
+            <End Role="PurchaseAndSales_Categories" EntitySet="PurchaseAndSales_Categories" />
+            <End Role="PurchaseAndSales_CategoriesContent" EntitySet="PurchaseAndSales_CategoriesContent" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Acc_Type" Type="Int32" />
+          <Property Name="Acc_Open_Bal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Acc_Cur_Bal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Acc_Year_to_date" Type="DateTime" Precision="3" />
+          <Property Name="Acc_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cat_Code" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Content_Type" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CategoriesContents" Relationship="Self.FK_CategoriesContent_Categories" FromRole="Categories" ToRole="CategoriesContent" />
+        </EntityType>
+        <EntityType Name="CategoriesContent">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Id" Type="Int32" />
+          <Property Name="Content_Limit" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Cat_Contents" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Set_Default" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="Predefined" Type="Boolean" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_CategoriesContent_Categories" FromRole="CategoriesContent" ToRole="Categories" />
+        </EntityType>
+        <EntityType Name="CompanyDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Comp_Name" Type="String" MaxLength="70" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Comp_Reg_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_GST_Reg_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_GST_Reg_Date" Type="DateTime" Precision="3" />
+          <Property Name="Comp_GST_Dereg_Date" Type="DateTime" Precision="3" />
+          <Property Name="Comp_Tel" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Fax" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_year_start_date" Type="DateTime" Precision="0" />
+          <Property Name="Comp_year_end_date" Type="DateTime" Precision="0" />
+          <Property Name="Comp_Logo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Software_Ser_No" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Bill_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Bill_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Bill_to_city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Bill_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Bill_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Bill_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Ship_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Ship_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Ship_to_city" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Ship_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Ship_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comp_Ship_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="CountryId" />
+          </Key>
+          <Property Name="CountryId" Type="Int32" Nullable="false" />
+          <Property Name="CountryName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="NumCode" Type="Byte" />
+          <Property Name="PhoneCode" Type="Byte" />
+          <Property Name="Inactive" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="CountryCurrency">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountryName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencySymbol" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyDecimalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyHexaCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="DeletedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="Priority" Type="Byte" />
+        </EntityType>
+        <EntityType Name="Option">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Date_Format" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Number_Format" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Decimal_Places" Type="Byte" />
+          <Property Name="Currency_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Starting_Sales_Inv_No" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Name_to_Print_Sales_Invoice" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Def_Cash_Bank_Acc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Show_Amount_Inc_GST" Type="Boolean" />
+          <Property Name="Show_Account_Balance" Type="Boolean" />
+          <Property Name="Cus_Detail_Allow_Chg_Limit" Type="Boolean" />
+          <Property Name="PS_Detail_Allow_Chg_Act" Type="Boolean" />
+          <Property Name="Allow_to_Create_Sales_Inv" Type="Boolean" />
+          <Property Name="Show_PS_Name" Type="Boolean" />
+          <Property Name="Show_PS_Name_Desc" Type="Boolean" />
+          <Property Name="Allow_Edit_PS_Name_Desc" Type="Boolean" />
+          <Property Name="Allow_Edit_PS_Price" Type="Boolean" />
+          <Property Name="Allow_Edit_Discount" Type="Boolean" />
+          <Property Name="Hide_Discount_Column" Type="Boolean" />
+          <Property Name="PS_Qty_Jump_Next_Line" Type="Boolean" />
+          <Property Name="Print_PS_Name" Type="Boolean" />
+          <Property Name="Print_PS_Name_Desc" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Print_Del_Sales_Inv" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="State">
+          <Key>
+            <PropertyRef Name="StateId" />
+          </Key>
+          <Property Name="StateId" Type="Int32" Nullable="false" />
+          <Property Name="StateName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StateCode" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CountryId" Type="Int32" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="TaxCodesAndRate">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Tax_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Tax_Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Tax_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Tax_Rate" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Tax_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Tax_Default" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="Predefined" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK_CategoriesContent_Categories">
+          <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="CategoriesContent" Type="Self.CategoriesContent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CategoriesContent">
+              <PropertyRef Name="Cat_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SDNSettingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="CategoriesContents" EntityType="Self.CategoriesContent" />
+          <EntitySet Name="CompanyDetails" EntityType="Self.CompanyDetail" />
+          <EntitySet Name="Countries" EntityType="Self.Country" />
+          <EntitySet Name="CountryCurrencies" EntityType="Self.CountryCurrency" />
+          <EntitySet Name="Options" EntityType="Self.Option" />
+          <EntitySet Name="States" EntityType="Self.State" />
+          <EntitySet Name="TaxCodesAndRates" EntityType="Self.TaxCodesAndRate" />
+          <AssociationSet Name="FK_CategoriesContent_Categories" Association="Self.FK_CategoriesContent_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="CategoriesContent" EntitySet="CategoriesContents" />
+          </AssociationSet>
+          <EntitySet Name="PurchaseAndSales_Categories" EntityType="simpleaccountingModel.PurchaseAndSales_Categories" />
+          <EntitySet Name="PurchaseAndSales_CategoriesContent" EntityType="simpleaccountingModel.PurchaseAndSales_CategoriesContent" />
+          <AssociationSet Name="FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" Association="simpleaccountingModel.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories">
+            <End Role="PurchaseAndSales_Categories" EntitySet="PurchaseAndSales_Categories" />
+            <End Role="PurchaseAndSales_CategoriesContent" EntitySet="PurchaseAndSales_CategoriesContent" />
+          </AssociationSet>
+          <EntitySet Name="MasterModules" EntityType="simpleaccountingModel.MasterModule" />
+          <EntitySet Name="Users" EntityType="simpleaccountingModel.User" />
+          <EntitySet Name="UserSecurities" EntityType="simpleaccountingModel.UserSecurity" />
+        </EntityContainer>
+        <EntityType Name="PurchaseAndSales_Categories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cat_Code" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Content_Type" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PurchaseAndSales_CategoriesContent" Relationship="simpleaccountingModel.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" FromRole="PurchaseAndSales_Categories" ToRole="PurchaseAndSales_CategoriesContent" />
+        </EntityType>
+        <EntityType Name="PurchaseAndSales_CategoriesContent">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Id" Type="Int32" />
+          <Property Name="Cat_Contents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="PurchaseAndSales_Categories" Relationship="simpleaccountingModel.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" FromRole="PurchaseAndSales_CategoriesContent" ToRole="PurchaseAndSales_Categories" />
+        </EntityType>
+        <Association Name="FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories">
+          <End Type="simpleaccountingModel.PurchaseAndSales_Categories" Role="PurchaseAndSales_Categories" Multiplicity="0..1" />
+          <End Type="simpleaccountingModel.PurchaseAndSales_CategoriesContent" Role="PurchaseAndSales_CategoriesContent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseAndSales_Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PurchaseAndSales_CategoriesContent">
+              <PropertyRef Name="Cat_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="MasterModule">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Module_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Module_Id" Type="Int32" Nullable="false" />
+          <Property Name="Tab_Id" Type="Int32" Nullable="false" />
+          <Property Name="Tab_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Order_Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="User_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="User_Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="User_Email" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="User_Type" Type="Int32" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="IsSuperAdmin" Type="Boolean" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="UserSecurity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_Id" Type="Int32" />
+          <Property Name="Tab_Id" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="simpleaccountingModelStoreContainer" CdmEntityContainer="SDNSettingEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Account">
+              <MappingFragment StoreEntitySet="Accounts">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+                <ScalarProperty Name="Acc_Type" ColumnName="Acc-Type" />
+                <ScalarProperty Name="Acc_Open_Bal" ColumnName="Acc-Open-Bal" />
+                <ScalarProperty Name="Acc_Cur_Bal" ColumnName="Acc-Cur-Bal" />
+                <ScalarProperty Name="Acc_Year_to_date" ColumnName="Acc-Year-to-date" />
+                <ScalarProperty Name="Acc_Inactive" ColumnName="Acc-Inactive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cat_Name" ColumnName="Cat-Name" />
+                <ScalarProperty Name="Cat_Code" ColumnName="Cat-Code" />
+                <ScalarProperty Name="Content_Type" ColumnName="Content-Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoriesContents">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CategoriesContent">
+              <MappingFragment StoreEntitySet="CategoriesContent">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cat_Id" ColumnName="Cat-Id" />
+                <ScalarProperty Name="Content_Limit" ColumnName="Content-Limit" />
+                <ScalarProperty Name="Cat_Contents" ColumnName="Cat-Contents" />
+                <ScalarProperty Name="Set_Default" ColumnName="Set-Default" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Predefined" ColumnName="Predefined" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CompanyDetails">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CompanyDetail">
+              <MappingFragment StoreEntitySet="CompanyDetails">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Comp_Name" ColumnName="Comp-Name" />
+                <ScalarProperty Name="Comp_Reg_No" ColumnName="Comp-Reg-No" />
+                <ScalarProperty Name="Comp_GST_Reg_No" ColumnName="Comp-GST-Reg-No" />
+                <ScalarProperty Name="Comp_GST_Reg_Date" ColumnName="Comp-GST-Reg-Date" />
+                <ScalarProperty Name="Comp_GST_Dereg_Date" ColumnName="Comp-GST-Dereg-Date" />
+                <ScalarProperty Name="Comp_Tel" ColumnName="Comp-Tel" />
+                <ScalarProperty Name="Comp_Fax" ColumnName="Comp-Fax" />
+                <ScalarProperty Name="Comp_Email" ColumnName="Comp-Email" />
+                <ScalarProperty Name="Comp_year_start_date" ColumnName="Comp-year-start-date" />
+                <ScalarProperty Name="Comp_year_end_date" ColumnName="Comp-year-end-date" />
+                <ScalarProperty Name="Comp_Logo" ColumnName="Comp-Logo" />
+                <ScalarProperty Name="Software_Ser_No" ColumnName="Software-Ser-No" />
+                <ScalarProperty Name="Comp_Bill_to_line1" ColumnName="Comp-Bill-to-line1" />
+                <ScalarProperty Name="Comp_Bill_to_line2" ColumnName="Comp-Bill-to-line2" />
+                <ScalarProperty Name="Comp_Bill_to_city" ColumnName="Comp-Bill-to-city" />
+                <ScalarProperty Name="Comp_Bill_to_state" ColumnName="Comp-Bill-to-state" />
+                <ScalarProperty Name="Comp_Bill_to_country" ColumnName="Comp-Bill-to-country" />
+                <ScalarProperty Name="Comp_Bill_to_post_code" ColumnName="Comp-Bill-to-post-code" />
+                <ScalarProperty Name="Comp_Ship_to_line1" ColumnName="Comp-Ship-to-line1" />
+                <ScalarProperty Name="Comp_Ship_to_line2" ColumnName="Comp-Ship-to-line2" />
+                <ScalarProperty Name="Comp_Ship_to_city" ColumnName="Comp-Ship-to-city" />
+                <ScalarProperty Name="Comp_Ship_to_state" ColumnName="Comp-Ship-to-state" />
+                <ScalarProperty Name="Comp_Ship_to_country" ColumnName="Comp-Ship-to-country" />
+                <ScalarProperty Name="Comp_Ship_to_post_code" ColumnName="Comp-Ship-to-post-code" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Country">
+              <MappingFragment StoreEntitySet="Country">
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="NumCode" ColumnName="NumCode" />
+                <ScalarProperty Name="PhoneCode" ColumnName="PhoneCode" />
+                <ScalarProperty Name="Inactive" ColumnName="Inactive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CountryCurrencies">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CountryCurrency">
+              <MappingFragment StoreEntitySet="CountryCurrency">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="CurrencyName" ColumnName="CurrencyName" />
+                <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+                <ScalarProperty Name="CurrencyDecimalCode" ColumnName="CurrencyDecimalCode" />
+                <ScalarProperty Name="CurrencyHexaCode" ColumnName="CurrencyHexaCode" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="DeletedOn" ColumnName="DeletedOn" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Options">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Option">
+              <MappingFragment StoreEntitySet="Options">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Date_Format" ColumnName="Date-Format" />
+                <ScalarProperty Name="Number_Format" ColumnName="Number-Format" />
+                <ScalarProperty Name="Decimal_Places" ColumnName="Decimal-Places" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency-Code" />
+                <ScalarProperty Name="Starting_Sales_Inv_No" ColumnName="Starting-Sales-Inv-No" />
+                <ScalarProperty Name="Name_to_Print_Sales_Invoice" ColumnName="Name-to-Print-Sales-Invoice" />
+                <ScalarProperty Name="Def_Cash_Bank_Acc" ColumnName="Def-Cash-Bank-Acc" />
+                <ScalarProperty Name="Show_Amount_Inc_GST" ColumnName="Show-Amount-Inc-GST" />
+                <ScalarProperty Name="Show_Account_Balance" ColumnName="Show-Account-Balance" />
+                <ScalarProperty Name="Cus_Detail_Allow_Chg_Limit" ColumnName="Cus-Detail-Allow-Chg-Limit" />
+                <ScalarProperty Name="PS_Detail_Allow_Chg_Act" ColumnName="PS-Detail-Allow-Chg-Act" />
+                <ScalarProperty Name="Allow_to_Create_Sales_Inv" ColumnName="Allow-to-Create-Sales-Inv" />
+                <ScalarProperty Name="Show_PS_Name" ColumnName="Show-PS-Name" />
+                <ScalarProperty Name="Show_PS_Name_Desc" ColumnName="Show-PS-Name-Desc" />
+                <ScalarProperty Name="Allow_Edit_PS_Name_Desc" ColumnName="Allow-Edit-PS-Name-Desc" />
+                <ScalarProperty Name="Allow_Edit_PS_Price" ColumnName="Allow-Edit-PS-Price" />
+                <ScalarProperty Name="Allow_Edit_Discount" ColumnName="Allow-Edit-Discount" />
+                <ScalarProperty Name="Hide_Discount_Column" ColumnName="Hide-Discount-Column" />
+                <ScalarProperty Name="PS_Qty_Jump_Next_Line" ColumnName="PS-Qty-Jump-Next-Line" />
+                <ScalarProperty Name="Print_PS_Name" ColumnName="Print-PS-Name" />
+                <ScalarProperty Name="Print_PS_Name_Desc" ColumnName="Print-PS-Name-Desc" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Print_Del_Sales_Inv" ColumnName="Print-Del-Sales-Inv" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="States">
+            <EntityTypeMapping TypeName="simpleaccountingModel.State">
+              <MappingFragment StoreEntitySet="State">
+                <ScalarProperty Name="StateId" ColumnName="StateId" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="StateCode" ColumnName="StateCode" />
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TaxCodesAndRates">
+            <EntityTypeMapping TypeName="simpleaccountingModel.TaxCodesAndRate">
+              <MappingFragment StoreEntitySet="TaxCodesAndRates">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Tax_Name" ColumnName="Tax-Name" />
+                <ScalarProperty Name="Tax_Description" ColumnName="Tax-Description" />
+                <ScalarProperty Name="Tax_Code" ColumnName="Tax-Code" />
+                <ScalarProperty Name="Tax_Rate" ColumnName="Tax-Rate" />
+                <ScalarProperty Name="Tax_Inactive" ColumnName="Tax-Inactive" />
+                <ScalarProperty Name="Tax_Default" ColumnName="Tax-Default" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Predefined" ColumnName="Predefined" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseAndSales_Categories">
+            <EntityTypeMapping TypeName="simpleaccountingModel.PurchaseAndSales_Categories">
+              <MappingFragment StoreEntitySet="PurchaseAndSales_Categories">
+                <ScalarProperty Name="Content_Type" ColumnName="Content-Type" />
+                <ScalarProperty Name="Cat_Code" ColumnName="Cat-Code" />
+                <ScalarProperty Name="Cat_Name" ColumnName="Cat-Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseAndSales_CategoriesContent">
+            <EntityTypeMapping TypeName="simpleaccountingModel.PurchaseAndSales_CategoriesContent">
+              <MappingFragment StoreEntitySet="PurchaseAndSales_CategoriesContent">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Cat_Contents" ColumnName="Cat-Contents" />
+                <ScalarProperty Name="Cat_Id" ColumnName="Cat-Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MasterModules">
+            <EntityTypeMapping TypeName="simpleaccountingModel.MasterModule">
+              <MappingFragment StoreEntitySet="MasterModules">
+                <ScalarProperty Name="Order_Id" ColumnName="Order-Id" />
+                <ScalarProperty Name="Tab_Name" ColumnName="Tab-Name" />
+                <ScalarProperty Name="Tab_Id" ColumnName="Tab-Id" />
+                <ScalarProperty Name="Module_Id" ColumnName="Module-Id" />
+                <ScalarProperty Name="Module_Name" ColumnName="Module-Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="simpleaccountingModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="IsSuperAdmin" ColumnName="IsSuperAdmin" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="User_Type" ColumnName="User-Type" />
+                <ScalarProperty Name="User_Email" ColumnName="User-Email" />
+                <ScalarProperty Name="User_Password" ColumnName="User-Password" />
+                <ScalarProperty Name="User_Name" ColumnName="User-Name" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserSecurities">
+            <EntityTypeMapping TypeName="simpleaccountingModel.UserSecurity">
+              <MappingFragment StoreEntitySet="UserSecurity">
+                <ScalarProperty Name="Tab_Id" ColumnName="Tab-Id" />
+                <ScalarProperty Name="User_Id" ColumnName="User-Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

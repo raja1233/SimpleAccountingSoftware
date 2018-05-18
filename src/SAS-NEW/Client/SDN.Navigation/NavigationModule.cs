@@ -1,0 +1,66 @@
+﻿using Microsoft.Practices.Prism.Modularity;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SDN.Common;
+using SDN.Navigation.View;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Navigation
+{
+    public class NavigationModule : IModule
+    {
+        #region Private Properties
+
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NavigationModule"/> class.
+        /// </summary>
+        /// <param name="regionManager">The region manager.</param>
+        public NavigationModule(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+        }
+
+        #endregion
+
+        #region Public Method
+
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
+        
+        public void Initialize()
+        {
+
+            //Resolving Instances with Unity
+            this.regionManager.RegisterViewWithRegion(RegionNames.HeaderRegion,
+                 () => ServiceLocator.Current.GetInstance<HeaderView>());
+
+            //Resolving Instances with Unity
+            //this.regionManager.RegisterViewWithRegion(RegionNames.MainRegion,
+            //     () => ServiceLocator.Current.GetInstance<MainView>());
+
+            this.regionManager.RegisterViewWithRegion(RegionNames.MainRegion,
+                 () => ServiceLocator.Current.GetInstance<OpenCompanyFileView>());
+
+            //this.regionManager.RegisterViewWithRegion(RegionNames.FooterRegion,
+            //   () => ServiceLocator.Current.GetInstance<FooterView>());
+
+
+
+        }
+
+        #endregion
+    }
+}

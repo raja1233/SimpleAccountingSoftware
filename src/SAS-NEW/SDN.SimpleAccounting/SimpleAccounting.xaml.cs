@@ -1,0 +1,190 @@
+﻿using System.Windows;
+using Microsoft.Practices.Prism.Regions;
+using MahApps.Metro.Controls;
+using System;
+using System.Configuration;
+using SDN.Common;
+using System.Windows.Controls;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using System.Linq;
+using SASClient.CloseRequest;
+using Microsoft.Practices.Prism.Events;
+using System.Windows.Media;
+
+namespace SDN.SimpleAccounting
+{
+    /// <summary>
+    /// Interaction logic for SimpleAccounting.xaml
+    /// </summary>
+    public partial class SimpleAccounting : MetroWindow
+    {
+        public event EventHandler DropDownOpened;
+        public SimpleAccountingViewModel _ViewModel;
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        //public CloseView CloseView;
+
+        public SimpleAccounting(SimpleAccountingViewModel model)
+        {
+            InitializeComponent();
+            DataContext = model;
+            _ViewModel = model;
+            if(_ViewModel.IsBlankHeaderRegionVisible == true)
+            {
+                grdTitle1.Background = Brushes.White;
+            }
+            
+            // this.Closing += OnMainWindowClose;     
+
+        }
+
+        //public SimpleAccounting()
+        //{
+        //    InitializeComponent();
+
+        //}
+        //private void ComboBox_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    // ... A List.
+        //    List<string> data = new List<string>();
+        //    List<string> listview = (List<string>)Application.Current.Resources["views"];
+        //    if(listview != null && listview.Count == 0)
+        //    {
+        //        data.Add(listview.ToString());
+        //    }
+        //    else { data.Add("abc"); }
+
+        //    // ... Get the ComboBox reference.
+        //    var comboBox = sender as ComboBox;
+
+        //    // ... Assign the ItemsSource to the List.
+        //    comboBox.ItemsSource = data;
+
+        //    // ... Make the first item selected.
+        //    comboBox.SelectedIndex = 0;
+        //}
+        //private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    // ... Get the ComboBox.
+        //    var comboBox = sender as ComboBox;
+
+        //    // ... Set SelectedItem as Window Title.
+        //    string value = comboBox.SelectedItem as string;
+        //    this.Title = "Selected: " + value;
+        //}
+
+        private void Btn_Click(object sender, RoutedEventArgs e)
+        {
+
+            _ViewModel.loadHistoryItem();
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                if (listview.Count > 0 && listview != null)
+                {
+                    listview.Reverse();
+                   
+                    if (comboBox1.IsDropDownOpen == true)
+                    {
+                        comboBox1.IsDropDownOpen = false;
+                    }
+                    else
+                    {
+                        comboBox1.IsDropDownOpen = true;
+
+                    }
+                }
+             
+            }
+            catch (Exception)
+            {
+                List<string> listview = new List<string>();
+            }
+
+        }
+       
+        private void App_Refresh(object sender, RoutedEventArgs e)
+        {
+            _ViewModel.loadRefreshItem();
+
+        }
+        private void OnMainWindowClose(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+           var result= MessageBox.Show("Are you sure to exit?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question,MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes)
+            {
+                App.Current.Shutdown();
+                
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+     
+        private void CloseApplication_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Please  save changes in all open Screens before close screen", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+            if (result == MessageBoxResult.Yes)
+            {
+                App.Current.Shutdown();
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+     
+        //private void History_Click(object sender, RoutedEventArgs e)
+        //{
+        // var result = SharedValues.getValue;
+
+        //}
+        //private void AddPresetButton_Click(object sender, RoutedEventArgs e)
+        //{
+
+        //    //DataContext.History = SharedValues.getValue;
+
+        //        (sender as Button).ContextMenu.IsEnabled = true;
+        //        (sender as Button).ContextMenu.PlacementTarget = (sender as Button);
+        //        (sender as Button).ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        //        (sender as Button).ContextMenu.IsOpen = true;
+
+
+
+        //}
+        private void MinimizeApplication_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+            bool isMinimized = true;
+
+            //this.ShowInTaskbar = !isMinimized;
+            //systemTrayIcon.Visible = isMinimized;
+            //if (isMinimized)
+            //{
+            //    systemTrayIcon.ShowBalloonTip(500, "SAS", "Application minimized to tray.", ToolTipIcon.Info);
+            //}
+        }
+
+
+        //private void WindowCommands_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    if (btn.IsInitialized)
+        //    {
+        //        comboBox1.Width = 180;
+        //        comboBox1.IsDropDownOpen = false;
+        //        //comboBox1.IsDropDownOpen = false;
+
+        //    }
+        //    else
+        //    {
+        //        comboBox1.IsDropDownOpen = false;
+        //    }
+
+        //}
+
+
+    }
+}

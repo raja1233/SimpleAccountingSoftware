@@ -1,0 +1,123 @@
+﻿using System;
+using System.Collections.Generic;
+using SDN.Common;
+
+namespace SDN.UI.Entities.CashandBank
+{
+    public class AccountsDetailsListEntity : ViewModelBase
+    {
+        #region "Private Members"
+
+        private int _ID;
+        private string _AccountType;
+        private string _isInactive;
+        private string _AccountName;
+        private decimal? _OpeningBalance;
+        private decimal? _YearToDate;
+        private string _YearToDateStr;
+        private string _CurrentBalanceStr;
+        private decimal? _CurrentBalance;
+        private string  _IsHyperLink;
+
+        #endregion
+
+        #region "Public Properties"
+
+        public int ID
+        {
+            get { return _ID; }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public string IsHyperLink
+        {
+            get { return _IsHyperLink; }
+            set
+            {
+                _IsHyperLink = value;
+                
+                OnPropertyChanged("NoHyperlink");
+            }
+        }
+        public string AccountType
+        {
+            get { return _AccountType; }
+            set
+            {
+                _AccountType = value;
+                OnPropertyChanged("AccountType");
+            }
+        }
+        public string AccountName
+        {
+            get { return _AccountName; }
+            set
+            {
+                _AccountName = value;
+                OnPropertyChanged("AccountName");
+            }
+        }
+
+        public decimal? OpeningBalance
+        {
+            get { return _OpeningBalance; }
+            set
+            {
+                _OpeningBalance = value;
+                OnPropertyChanged("OpeningBalance");
+            }
+        }
+
+        public decimal? YearToDate
+        {
+            get { return _YearToDate; }
+            set
+            {
+                _YearToDate = value;
+                OnPropertyChanged("YearToDate");
+            }
+        }
+
+        public decimal? CurrentBalance
+        {
+            get { return _CurrentBalance; }
+            set
+            {
+                _CurrentBalance = value;
+                OnPropertyChanged("CurrentBalance");
+            }
+        }
+
+        public string IsInactive
+        {
+            get { return _isInactive; }
+            set
+            {
+                _isInactive = value;
+                OnPropertyChanged("IsInactive");
+            }
+        }
+        public string YearToDateStr
+        {
+            get { return _YearToDateStr; }
+            set
+            {
+                _YearToDateStr = value;
+                OnPropertyChanged("YearToDateStr");
+            }
+        }
+        public string CurrentBalanceStr
+        {
+            get { return _CurrentBalanceStr; }
+            set
+            {
+                _CurrentBalanceStr = value;
+                OnPropertyChanged("CurrentBalanceStr");
+            }
+        }
+        #endregion
+    }
+}

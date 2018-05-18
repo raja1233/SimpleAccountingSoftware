@@ -1,0 +1,206 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.CloseRequest;
+using SASClient.HomeScreen.Views;
+using SDN.Common;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace SASClient.HomeScreen.ViewModel
+{
+    public class HomeScreenTabViewModel : HomeScreenTabEntity
+    {
+        #region Private Properties
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+
+        /// <summary>
+        /// The HomeScreen details click command
+        /// </summary>
+        private readonly DelegateCommand notificationClickCommand = null;
+
+        /// <summary>
+        /// The HomeScreen history click command
+        /// </summary>
+        private readonly DelegateCommand todoListClickCommand = null;
+
+        /// <summary>
+        /// The HomeScreen statement click command
+        /// </summary>
+        private readonly DelegateCommand auditTrailClickCommand = null;
+
+        /// <summary>
+        /// The P & S Sold to HomeScreen click command
+        /// </summary>
+        private readonly DelegateCommand pandsSoldtoHomeScreenClickCommand = null;
+
+        /// <summary>
+        /// The P & S Sold to HomeScreen click command
+        /// </summary>
+        private readonly DelegateCommand exportDataClickCommand = null;
+        StackList listitem = new StackList();
+        #endregion
+
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets the HomeScreen click command.
+        /// </summary>
+        /// <value>
+        /// The HomeScreen click command.
+        /// </value>
+        public DelegateCommand NotificationClickCommand
+        {
+            get
+            {
+                return (this.notificationClickCommand ?? new DelegateCommand(this.NotificationView));
+
+            }
+        }
+        public DelegateCommand TodoListClickCommand
+        {
+            get
+            {
+                return (this.todoListClickCommand ?? new DelegateCommand(this.TodoListView));
+
+            }
+        }
+
+        public DelegateCommand AuditTrailClickCommand
+        {
+            get
+            {
+                return (this.auditTrailClickCommand ?? new DelegateCommand(this.AuditTrailView));
+
+            }
+        }
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeScreenTabViewModel"/> class.
+        /// </summary>
+        /// <param name="regionManager">The region manager.</param>
+        public HomeScreenTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.setdefaultTab();
+        }
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Shows the HomeScreen view.
+        /// </summary>
+        private void NotificationView()
+        {
+            SharedValues.ScreenCheckName = "Notifications";
+            SharedValues.ViewName = "Notifications";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                var view = ServiceLocator.Current.GetInstance<NotificationsView>();
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Notifications");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.");
+            }
+        }
+        private void TodoListView()
+        {
+            SharedValues.ScreenCheckName = "To Do List";
+            SharedValues.ViewName = "To Do List";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                var view = ServiceLocator.Current.GetInstance<ToDoUnpaidDetailView>();
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("To Do List - Unpaid Invoice Detail");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.");
+            }
+        }
+
+        private void AuditTrailView()
+        {
+            SharedValues.ScreenCheckName = "Audit Trail";
+            SharedValues.ViewName = "Audit Trail";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                var view = ServiceLocator.Current.GetInstance<AuditTrailView>();
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Audit Trail");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.");
+            }
+        }
+
+        #endregion
+
+        private void setdefaultTab()
+        {
+            if (SharedValues.getValue == "NotificationTab")
+            {
+                this.NotificationTabTrue = true;
+            }
+            else if (SharedValues.getValue == "TodoListTabTrue")
+            {
+                this.TodoListTabTrue = true;
+            }
+            else if (SharedValues.getValue == "AuditTrailTabTrue")
+            {
+                this.AuditTrailTabTrue = true;
+            }
+          
+            else
+            {
+                this.NotificationTabTrue = true;
+            }
+        }
+    }
+}

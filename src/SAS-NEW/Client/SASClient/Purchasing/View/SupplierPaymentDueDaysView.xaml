@@ -1,0 +1,323 @@
+﻿<UserControl x:Class="SASClient.Purchasing.View.SupplierPaymentDueDaysView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SASClient.Purchasing.View"
+           xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+            
+                xmlns:my="clr-namespace:SDN.Common;assembly=SDN.Common"
+             mc:Ignorable="d" Width="1024"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer  HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.Resources>
+                <helpers:TextInputToVisibilityConverter  x:Key="TextInputToVisibilityConverter"/>
+                <helpers:DateTimeConverter x:Key="DateTimeFormatter"></helpers:DateTimeConverter>
+
+                <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Style>
+                <!--Watermark style start here-->
+                <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
+                <SolidColorBrush x:Key="brushWatermarkForeground" Color="Gray" />
+                <SolidColorBrush x:Key="brushWatermarkBorder" Color="Black" />
+                <!--Watermark style End here-->
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="256"></ColumnDefinition>
+                <ColumnDefinition Width="256"></ColumnDefinition>
+                <ColumnDefinition Width="256"></ColumnDefinition>
+                <ColumnDefinition Width="246"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" VerticalAlignment="Top" Grid.Row="0" Height="30" Margin="15,13,0,0"  
+                 Style="{StaticResource WaterMarkStyle}"  Text="Search" Foreground="{StaticResource brushWatermarkForeground}" >
+                <TextBlock.Visibility>
+                    <MultiBinding Converter="{StaticResource TextInputToVisibilityConverter}">
+                        <Binding ElementName="cmbSuppNameSearch" Path="Text.IsEmpty" />
+                        <Binding ElementName="cmbSuppNameSearch" Path="IsFocused" />
+                    </MultiBinding>
+                </TextBlock.Visibility>
+            </TextBlock>
+            <ComboBox  Grid.Column="0" Grid.Row="0" IsEditable="True" Margin="10 10 0 0" HorizontalAlignment="Left" MaxHeight="30" VerticalAlignment="Top" MaxWidth="179" MinWidth="179"
+                      ItemsSource="{Binding ListDueDayscmbSup}" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}"
+                      DisplayMemberPath="Name" SelectedValuePath="Name" Name="cmbSuppNameSearch"
+                      SelectedValue="{Binding SelectedSearchName ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+
+            </ComboBox>
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"  Margin="10,40,2,0">
+                <Grid>
+                    <DataGrid x:Name="CustomGridLines" ItemsSource="{Binding BackGroundLines}" Grid.Column="0"  HorizontalAlignment="Left"
+                          Height="{Binding ElementName=dg1,Path=ActualHeight}" GridLinesVisibility="All"   Width="{Binding ElementName=dg1,Path=ActualWidth}"
+                          HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" AutoGenerateColumns="False" 
+                           HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                          ColumnHeaderStyle="{StaticResource BackHeaderStyle20}" HeadersVisibility="All"  >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="" Binding="{Binding Col0}"  Width="220"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col1}"  Width="153"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col2}"  Width="153"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col3}"  Width="153"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col4}"  Width="153"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col5}"  Width="153"></DataGridTextColumn>
+                            
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                    <DataGrid Background="Transparent"  IsTextSearchEnabled="True" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                          HorizontalScrollBarVisibility="Hidden"   Height="{Binding GridHeight}"  Grid.Column="0"  Margin="0 0 0 0"
+                      GridLinesVisibility="All"  BorderThickness="1" x:Name="dg1" ItemsSource="{Binding ListDueDays}" CanUserAddRows="False" 
+                           ColumnHeaderStyle="{StaticResource HeaderStyle20}"    CanUserDeleteRows="False" SelectionMode="Single" VerticalAlignment="Top" AutoGenerateColumns="False"   >
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn x:Name="SupplierName" Width="220" MaxWidth="220" MinWidth="220"  Header="Supplier Name" SortMemberPath="Name"  >
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                             
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=SupplierName,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0">
+                                                <TextBlock Text="{TemplateBinding Content}">
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                            </DockPanel>
+                                        
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock >
+                                          <Hyperlink Command="{Binding DataContext.NavigateToSupplierCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                                 CommandParameter="{Binding ID}">
+                                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap" TextDecorations="None" />
+                                           </Hyperlink>
+                                       </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn x:Name="Balance" Width="153" MaxWidth="153" MinWidth="153" Header="Balance" Binding="{Binding Path=BalanceStr}" SortMemberPath="Balance" HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=Balance,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock Text="{TemplateBinding Content}">
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                            </DockPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn x:Name="OneDay" MinWidth="153" MaxWidth="153" Header="1-30 Days"  Width="Auto"
+                                                SortMemberPath="Oneto30Days" HeaderStyle="{StaticResource HeaderStyle20Right}">
+
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                               
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=OneDay,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock Text="{TemplateBinding Content}">
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                            </DockPanel>
+                                           
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock HorizontalAlignment="Right" > 
+                                                <TextBlock HorizontalAlignment="Right" Text="{Binding Oneto30DaysStr}" TextWrapping="Wrap" />
+                                       </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn x:Name="ThirtyDay" Width="153" MaxWidth="153" MinWidth="153" Header="31-60 Days" Binding="{Binding Path=Thirtyoneto60DaysStr}" SortMemberPath="Thirtyoneto60Days" HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                                
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=ThirtyDay,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock Text="{TemplateBinding Content}">
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                            </DockPanel>
+                                            
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Name="SixtyDay" Width="153" MaxWidth="153" MinWidth="153" Header="61-90 Days" SortMemberPath="Sixtyoneto90DaysStr" Binding="{Binding Path=Sixtyoneto90DaysStr}" HeaderStyle="{StaticResource HeaderStyle20Right}" >
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                              
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=SixtyDay,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock Text="{TemplateBinding Content}"   />
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"
+                                           Grid.Column="0" Grid.Row="0" />
+                                            </DockPanel>
+                                         
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn x:Name="NinetyDay" Width="153" MaxWidth="153" MinWidth="153"
+                                                SortMemberPath="GreaterThen90Days" HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition ></RowDefinition>
+                                                
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=NinetyDay,Path=ActualWidth}" />
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock TextWrapping="Wrap" >
+                                      >90 Days
+                                                </TextBlock>
+                                                <Image  Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20" 
+                                           HorizontalAlignment="Left" />
+                                            </DockPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock HorizontalAlignment="Right">
+                                        
+                                                <TextBlock Text="{Binding GreaterThen90DaysStr}" HorizontalAlignment="Right"/>
+                                         
+                                       </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="left" Margin="3,0,0,0" >
+                    <Grid  Width="{Binding ElementName=SupplierName,Path=ActualWidth}" >
+                        <Border Style="{StaticResource BorderStyleLeft}">
+                            <TextBlock  Text="Total" FontWeight="Bold"></TextBlock>
+                        </Border>
+                    </Grid>
+
+                    <!--<Border BorderBrush="Gray" BorderThickness="1">-->
+                    <Grid  Width="{Binding ElementName=Balance,Path=ActualWidth}">
+                        <Border Style="{StaticResource BorderStyleLeft}">
+                            <TextBlock Text="{Binding BalanceTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisplayTotalStyle}" ></TextBlock>
+                        </Border>
+                    </Grid>
+                    <!--</Border>-->
+                    <!--<Border BorderBrush="Gray" BorderThickness="1">-->
+                    <Grid Width="{Binding ElementName=OneDay,Path=ActualWidth}">
+                        <Border Style="{StaticResource BorderStyleLeft}">
+                            <TextBlock Text="{Binding OneToThirtyTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisplayTotalStyle}" ></TextBlock>
+                        </Border>
+                    </Grid>
+                    <!--</Border>-->
+                    <!--<Border BorderBrush="Gray" BorderThickness="1" >-->
+                    <Grid Width="{Binding ElementName=ThirtyDay,Path=ActualWidth}">
+                        <Border Style="{StaticResource BorderStyleLeft}">
+                            <TextBlock Text="{Binding OneToSixtyTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisplayTotalStyle}"></TextBlock>
+                        </Border>
+                    </Grid>
+                    <!--</Border>-->
+                    <!--<Border BorderBrush="Gray" BorderThickness="1">-->
+                    <Grid Width="{Binding ElementName=SixtyDay,Path=ActualWidth}">
+                        <Border Style="{StaticResource BorderStyleLeft}">
+                            <TextBlock Text="{Binding OneToNinetyTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisplayTotalStyle}" ></TextBlock>
+                        </Border>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=NinetyDay,Path=ActualWidth}">
+                        <Border Style="{StaticResource BorderStyleLeft}">
+                            <TextBlock Text="{Binding GreaterthanNinetyTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisplayTotalStyle}"  ></TextBlock>
+                        </Border>
+                    </Grid>
+                 
+                    <!--</Border>-->
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Margin="10 0 0 0" Grid.Row="1" VerticalAlignment="Bottom" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" >
+                <TextBlock   FontStyle="Italic" Foreground="Gray">
+                    <Run Text="Amounts include"></Run>
+                    <Run Text="{Binding TaxName}"></Run>
+                </TextBlock>
+                <TextBlock  Text="  Amounts are in " FontStyle="Italic" Foreground="Gray"></TextBlock>
+                <TextBlock Text="{Binding CurrencyName}" FontStyle="Italic" Foreground="Gray"></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Right"  Margin="10,10,0,0" >
+                <!--<Button Content="New"  Margin="10 0" Style="{DynamicResource ButtonStyle}" Command="{Binding NavigaetoPurchaseCommand}" CommandParameter="New"/>-->
+                <Button Content="Close" Command="{Binding Path=CloseCommand }" Margin="10 0 0 0" Style="{DynamicResource ButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

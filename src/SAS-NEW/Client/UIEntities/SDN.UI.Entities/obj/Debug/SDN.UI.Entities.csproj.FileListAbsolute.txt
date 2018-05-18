@@ -1,0 +1,6 @@
+D:\DayUsers\src\SAS-NEW\SDN.SimpleAccounting\bin\SDN.UI.Entities.dll.config
+D:\DayUsers\src\SAS-NEW\SDN.SimpleAccounting\bin\SDN.UI.Entities.dll
+D:\DayUsers\src\SAS-NEW\SDN.SimpleAccounting\bin\SDN.UI.Entities.pdb
+D:\DayUsers\src\SAS-NEW\Client\UIEntities\SDN.UI.Entities\obj\Debug\SDN.UI.Entities.csprojResolveAssemblyReference.cache
+D:\DayUsers\src\SAS-NEW\Client\UIEntities\SDN.UI.Entities\obj\Debug\SDN.UI.Entities.dll
+D:\DayUsers\src\SAS-NEW\Client\UIEntities\SDN.UI.Entities\obj\Debug\SDN.UI.Entities.pdb

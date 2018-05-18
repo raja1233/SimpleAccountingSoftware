@@ -1,0 +1,782 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Product.ViewModel
+{
+
+    using Microsoft.Practices.Prism.Events;
+    using Microsoft.Practices.Prism.Regions;
+    using Microsoft.Practices.ServiceLocation;
+    using Newtonsoft.Json;
+    using SDN.Common;
+    using SDN.Product.View;
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Product;
+    using SDN.UI.Entities.Sales;
+    using Services;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Windows.Input;
+
+    public class PandSHistoryViewModel: PandSHistoryEntity
+    {
+        private ObservableCollection<QuarterEntity> _quarterlist = new ObservableCollection<QuarterEntity>();
+        private ObservableCollection<MonthEntity> _monthlist = new ObservableCollection<MonthEntity>();
+        private List<SearchEntity> SearchValues;
+        private string jsonSearch;
+        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private int Count = 0;
+
+        public ObservableCollection<QuarterEntity> QuarterList
+        {
+            get
+            {
+                _quarterlist.Clear();
+                QuarterData();
+                return _quarterlist;
+            }
+        }
+        private void QuarterData()
+        {
+            _quarterlist.Add(new QuarterEntity { ID = 1, Quarter = "Jan-Mar" });
+            _quarterlist.Add(new QuarterEntity { ID = 2, Quarter = "Apr-Jun" });
+            _quarterlist.Add(new QuarterEntity { ID = 3, Quarter = "Jul-Sep" });
+            _quarterlist.Add(new QuarterEntity { ID = 4, Quarter = "Oct-Dec" });
+        }
+        public ObservableCollection<MonthEntity> MonthList
+        {
+            get
+            {
+                _monthlist.Clear();
+                MonthData();
+                return _monthlist;
+            }
+        }
+        private void MonthData()
+        {
+            _monthlist.Add(new MonthEntity { ID = 1, Month = "Jan" });
+            _monthlist.Add(new MonthEntity { ID = 2, Month = "Feb" });
+            _monthlist.Add(new MonthEntity { ID = 3, Month = "Mar" });
+            _monthlist.Add(new MonthEntity { ID = 4, Month = "Apr" });
+            _monthlist.Add(new MonthEntity { ID = 5, Month = "May" });
+            _monthlist.Add(new MonthEntity { ID = 6, Month = "June" });
+            _monthlist.Add(new MonthEntity { ID = 7, Month = "July" });
+            _monthlist.Add(new MonthEntity { ID = 8, Month = "Aug" });
+            _monthlist.Add(new MonthEntity { ID = 9, Month = "Sept" });
+            _monthlist.Add(new MonthEntity { ID = 10, Month = "Oct" });
+            _monthlist.Add(new MonthEntity { ID = 11, Month = "Nov" });
+            _monthlist.Add(new MonthEntity { ID = 12, Month = "Dec" });
+
+        }
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PandSHistoryViewModel"/> class.
+        /// </summary>
+        public PandSHistoryViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            IPandSHistoryRepository purchaseRepository = new PandSHistoryRepository();
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.LoadSupplierBackground();
+            SearchCommand = new RelayCommand(Search);
+            ShowAllCommand = new RelayCommand(ShowAll);
+            ShowSelectedCommand = new RelayCommand(ShowSelected);
+            NavigateToClientCommand = new RelayCommand(NavigatetoSupplier);
+            ShowIncGSTCommand = new RelayCommand(showincGST);
+            ShowExcGSTCommand = new RelayCommand(showexcGST);
+            RefreshCommand = new RelayCommand(refreshcommand);
+            //NavigaetoSalesCommand = new RelayCommand(NavigatetoSalesInvoice);
+            //YearQuarterSelectedCommand = new RelayCommand(OnYearQuarterMonthChange);
+            //CalendarSelectionCommand = new RelayCommand(OnCalendarSelection);
+            SelectedSearchQuarter = "2";
+
+            this.ShowBoth = true;
+            this.ShowProducts = false;
+            this.ShowServices = false;
+
+            IsSalesTrue = true;
+            IsSalesFalse = false;
+
+            this.YearRange = purchaseRepository.GetYearRange().ToList();
+
+        }
+
+        public PandSHistoryViewModel()
+        {
+        }
+        public RelayCommand YearQuarterSelectedCommand { get; set; }
+        public RelayCommand CalendarSelectionCommand { get; set; }
+        public RelayCommand SearchCommand { get; set; }
+        public RelayCommand ShowAllCommand { get; set; }
+        public RelayCommand ShowSelectedCommand { get; set; }
+        public RelayCommand NavigateToClientCommand { get; set; }
+        public RelayCommand ShowIncGSTCommand { get; set; }
+        public RelayCommand ShowExcGSTCommand { get; set; }
+        public RelayCommand RefreshCommand { get; set; }
+        public RelayCommand NavigaetoSalesCommand { get; set; }
+        #endregion  Constructor
+
+        #region ButtonCommands
+        void refreshcommand(object param)
+        {
+            RefreshData();
+        }
+
+
+        void OnShowProducts(object param)
+        {
+            ShowProducts = true;
+            ShowServices = false;
+            ShowBoth = false;
+        }
+        void OnShowServices(object param)
+        {
+            ShowProducts = false;
+            ShowServices = true;
+            ShowBoth = false;
+        }
+        void OnShowBoth(object param)
+        {
+            ShowProducts = false;
+            ShowServices = false;
+            ShowBoth = true;
+        }
+       
+        void showincGST(object param)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            int decimalpoints = Convert.ToInt32(this.DecimalPlaces);
+            this.IncludingGSTTrue = true;
+            Search(null);
+            Mouse.OverrideCursor = null;
+        }
+        void showexcGST(object param)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            int decimalpoints = Convert.ToInt32(this.DecimalPlaces);
+            this.IncludingGSTTrue = false;
+            Search(null);
+            Mouse.OverrideCursor = null;
+        }
+        void NavigatetoSupplier(object param)
+        {
+            if (param != null)
+            {
+                string obj = param.ToString();
+                SharedValues.getValue = obj;
+            }
+            var mainview = ServiceLocator.Current.GetInstance<SDN.Customers.Views.CustomersView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            var tabview = ServiceLocator.Current.GetInstance<SDN.Customers.Views.CustomersTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Details Form");
+        }
+        void NavigatetoCustomerView(object param)
+        {
+            if (param != null)
+            {
+                string obj = param.ToString();
+                SharedValues.NewClick = obj;
+            }
+
+            var mainview = ServiceLocator.Current.GetInstance<PandSDetailsView>();
+
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }////
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Sales Invoice Form");
+        }
+        void ShowAll(object param)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+          //  this.YearmonthQuartTrue = false;//added after client feedback
+           // this.StartEndDateTrue = false;//added after client feedback
+            this.PandSHistoryList = FullPQList.OrderBy(x => x.ProductCode).ToList();
+            this.PandSHistoryListcmb = FullPQList.OrderBy(x => x.ProductCode).ToList();
+            //this.PandSHistorycmbCredit = this.PandSHistorycmb.GroupBy(x => x.CashCreditNo).Select(g => g.First()).OrderBy(x => x.CreditCashNO).Where(y => y.CashCreditNo != null).ToList();
+            //this.PandSHistorycmbSup = this.PandSHistory.GroupBy(x => x.CustomerName).Select(y => y.First()).OrderBy(x => x.CustomerName).Distinct().ToList();
+            //this.PandSHistorycmbInv = this.PandSHistory.GroupBy(x => x.InvoiceNo).Select(y => y.First()).OrderBy(x => x.SortInvoiceNo).Distinct().ToList();
+            //if (this.ShowAllTrue == false)
+            //    this.ShowSelectedCount = this.PandSHistory.Count();
+            //else
+            //    this.ShowSelectedCount = 0;
+
+            this.SelectedSearchEndDate = null;
+            this.SelectedSearchMonth = null;
+            this.SelectedSearchQuarter = null;
+            this.SelectedSearchYear = null;
+            this.SelectedSearchStartDate = null;
+            this.SelectedSearchEndDate = null;
+            if (this.IncludingGST == true)
+                this.PandSHistoryList = FullPQList.Where(x => x.ExcIncGST == true).OrderBy(x => x.ProductCode).ToList();
+            else
+                this.PandSHistoryList = FullPQList.Where(x => x.ExcIncGST == false).OrderBy(x => x.ProductCode).ToList();
+            Search(null);
+            Mouse.OverrideCursor = null;
+        }
+        void ShowSelected(object param)
+        {
+            Search(null);
+        }
+        void Search(object param)
+        {
+
+            if (Count != 0)
+            {
+                SearchValues = new List<SearchEntity>();
+                //this.ShowSelectedTrue = true;
+                //this.ShowAllTrue = false;
+                if (this.SelectedSearchYear != null || this.SelectedSearchYear == string.Empty)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Year";
+                    value.FieldValue = this.SelectedSearchYear;
+                    SearchValues.Add(value);
+                   
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Year";
+                    value.FieldValue = "0";
+                    SearchValues.Add(value);
+
+                }
+                if (this.SelectedSearchQuarter != null || this.SelectedSearchQuarter == string.Empty)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Quarter";
+                    value.FieldValue = this.SelectedSearchQuarter;
+                    int month1;
+                    int month2;
+                    int month3;
+                    if (Convert.ToInt32(this.SelectedSearchQuarter) == 1)
+                    {
+                        month1 = 1;
+                        month2 = 2;
+                        month3 = 3;
+                    }
+                    else if (Convert.ToInt32(this.SelectedSearchQuarter) == 2)
+                    {
+                        month1 = 4;
+                        month2 = 5;
+                        month3 = 6;
+                    }
+                    else if (Convert.ToInt32(this.SelectedSearchQuarter) == 3)
+                    {
+                        month1 = 7;
+                        month2 = 8;
+                        month3 = 9;
+                    }
+                    else
+                    {
+                        month1 = 10;
+                        month2 = 11;
+                        month3 = 12;
+                    }
+                   
+                    SearchValues.Add(value);
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Quarter";
+                    value.FieldValue = "0";
+                    SearchValues.Add(value);
+                }
+                
+                
+                if (this.IsSalesTrue==true)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "IsSales";
+                    value.FieldValue = "true";
+                    SearchValues.Add(value);
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "IsSales";
+                    value.FieldValue = "false";
+                    SearchValues.Add(value);
+                }
+                if (ShowProducts == true)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Products";
+                    value.FieldValue = "1";
+                    SearchValues.Add(value);
+                }
+                else if (ShowServices == true)
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Products";
+                    value.FieldValue = "2";
+                    SearchValues.Add(value);
+                }
+                else
+                {
+                    SearchEntity value = new SearchEntity();
+                    value.FieldName = "Products";
+                    value.FieldValue = "0";
+                    SearchValues.Add(value);
+                }
+
+
+                //this.PandSHistory = this.PandSHistoryInternal;
+                jsonSearch = JsonConvert.SerializeObject(SearchValues);
+                this.JsonData = jsonSearch;
+
+                IPandSHistoryRepository purchaseRepository = new PandSHistoryRepository();
+                var results = purchaseRepository.SaveSearchJson(jsonSearch, Convert.ToInt32(ScreenId.PandSHistoryList), "PandSHistory_List");
+                if (Count != 0)
+                {
+                    this.PandSHistoryList = purchaseRepository.GetAllSalesInvoiceJson(jsonSearch, this.IncludingGSTTrue).ToList();
+                    //changedateformat(this.PandSHistory);
+                 
+                }
+
+                this.PandSHistoryListcmb = this.PandSHistoryList.OrderBy(x => x.ProductCode).ToList();
+                //this.PandSHistorycmbCredit = this.PandSHistorycmb.GroupBy(x => x.CashCreditNo).Select(g => g.First()).OrderBy(x => x.CreditCashNO).Where(y => y.CashCreditNo != null).ToList();
+                //this.PandSHistorycmbSup = this.PandSHistory.GroupBy(x => x.CustomerName).Select(y => y.First()).OrderBy(x => x.CustomerName).Distinct().ToList();
+                //this.PandSHistorycmbInv = this.PandSHistory.GroupBy(x => x.InvoiceNo).Select(y => y.First()).OrderBy(x => x.SortInvoiceNo).Distinct().ToList();
+                //if (this.ShowAllTrue == true)
+                //    this.ShowSelectedCount = 0;
+                //else
+                //    this.ShowSelectedCount = this.PandSHistory.Count();
+                DefaultList = this.PandSHistoryListcmb;
+
+                //TotalInvoiceAmount = Convert.ToString(PandSHistory.Sum(e => e.InvoiceAmountValue));
+                //TotalCCDAmount = Convert.ToString(PandSHistory.Sum(e => e.TotalAmount));
+                this.TotalCusM1 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM1));
+                this.TotalCusM2 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM2));
+                this.TotalCusM3 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM3));
+                this.TotalCusQuarter = Convert.ToString(PandSHistoryList.Sum(e => e.QuarterTotal));
+                this.TotalCusYear = Convert.ToString(PandSHistoryList.Sum(e => e.YearTotal));
+            }
+
+        }
+        #endregion
+
+        #region BackgroundWorked
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        List<PandSHistoryEntity> DefaultList = new List<PandSHistoryEntity>();
+        List<PandSHistoryEntity> FullPQList = new List<PandSHistoryEntity>();
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+            int minHeight = 300;
+            int headerRows = 260;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 41;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.SIGridHeight = minHeight;
+            RefreshData();
+        }
+
+        private void RefreshData()
+        {
+            IPandSHistoryRepository purchaseRepository = new PandSHistoryRepository();
+            // this.DateFormat = purchaseRepository.GetDateFormat();
+            //this.ShowAllCount = purchaseRepository.GetAllSalesInvoice().Count();
+            GetOptionsandTaxValues();
+            this.JsonData = purchaseRepository.GetLastSelectionData(Convert.ToInt32(ScreenId.PandSHistoryList));
+            this.PandSHistoryList = purchaseRepository.GetAllSalesInvoiceJson(this.JsonData, this.IncludingGSTTrue).ToList();
+           // this.PandSHistoryListcmb = purchaseRepository.GetAllSalesInvoice().OrderBy(x => x.ProductCode).ToList();
+
+          
+            DefaultList = this.PandSHistoryList;
+            FullPQList = this.PandSHistoryList;
+            PandSHistoryListcmb = PandSHistoryList;
+            //this.ShowAllCount = this.PandSHistorycmb.Count();
+            SetDefaultSearchSelection(this.JsonData);
+            var Updateddate = this.PandSHistoryListcmb.Max(x => x.CreatedDate);
+            string date = this.DateFormat as string;
+            //this.LastUpdateDate = Convert.ToDateTime(Updateddate).ToString(date);
+
+            //TotalInvoiceAmount = Convert.ToString(PandSHistory.Sum(e => e.InvoiceAmountValue));
+            //TotalCCDAmount = Convert.ToString(PandSHistory.Sum(e => e.TotalAmount));
+            this.TotalCusM1 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM1));
+            this.TotalCusM2 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM2));
+            this.TotalCusM3 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM3));
+            this.TotalCusQuarter = Convert.ToString(PandSHistoryList.Sum(e => e.QuarterTotal));
+            this.TotalCusYear = Convert.ToString(PandSHistoryList.Sum(e => e.YearTotal));
+            //this.GetData(this.SelectedSearchSupplier);
+        }
+        void GetOptionsandTaxValues()
+        {
+            OptionsEntity oData = new OptionsEntity();
+            IPandSHistoryRepository purchaseRepository = new PandSHistoryRepository();
+            oData = purchaseRepository.GetOptionSettings();
+            if (oData != null)
+            {
+                this.CurrencyName = oData.CurrencyCode;     //there is no currency name field in database         
+                this.CurrencyCode = oData.CurrencyCode;
+                this.CurrencyFormat = oData.NumberFormat;
+                this.DateFormat = oData.DateFormat;
+                this.DecimalPlaces = oData.DecimalPlaces;
+                if (oData.ShowAmountIncGST == true)
+                {
+                    this.IncludingGSTTrue = true;
+                    this.IncludingGSTFalse = false;
+                    //int decimalpoints = Convert.ToInt32(DecimalPlaces);
+                    //foreach (var item in this.PandSHistory)
+                    //{
+                    //    item.InvoiceAmount = Math.Round(Convert.ToDouble(item.InvoiceAmount), decimalpoints).ToString();
+                    //}
+                    //this.PandSHistory = this.PandSHistory.Where(x => x.ExcIncGST == true).ToList();
+                }
+                else
+                {
+                    this.IncludingGSTTrue = false;
+                    this.IncludingGSTFalse = true;
+                    int decimalpoints = Convert.ToInt32(DecimalPlaces);
+                    //foreach (var item in this.PandSHistory)
+                    //{
+                    //    //item.InvoiceAmount = item.InvoiceAmountExcGST;
+                    //    //item.InvoiceAmount = Math.Round(Convert.ToDouble(item.InvoiceAmountExcGST), decimalpoints).ToString();
+                    //    item.InvoiceAmount = Math.Round(Convert.ToDouble(item.InvoiceAmount), decimalpoints).ToString();
+                    //}
+                    if (this.PandSHistoryList != null)
+                        this.PandSHistoryList = this.PandSHistoryList.ToList();
+                }
+            }
+            else
+            {
+                this.CurrencyName = "USD";
+                this.CurrencyCode = "USD";
+                this.CurrencyFormat = "en-US";
+                this.DateFormat = "dd/MM/yyyy";
+            }
+
+
+
+            TaxModel objDefaultTax = new TaxModel();
+            objDefaultTax = purchaseRepository.GetDefaultTaxes();
+            if (objDefaultTax != null)
+            {
+                this.TaxName = objDefaultTax.TaxName;
+                //this.TaxName = objDefaultTax.TaxRate;
+            }
+            else
+            {
+                this.TaxName = "GST Free";
+                //this.TaxRate = 0;
+            }
+        }
+
+      
+       
+        public void SetDefaultSearchSelection(string jsondata)
+        {
+            if (jsondata != null && jsondata != "[]")
+            {
+                //this.ShowSelectedTrue = true;
+                //this.ShowAllTrue = false;
+                var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(jsondata);
+                foreach (var item in objResponse1)
+                {
+                    switch (item.FieldName)
+                    {
+                        case "Year":
+                            this.SelectedSearchYear = item.FieldValue;
+
+                            break;
+                        case "Quarter":
+                            this.SelectedSearchQuarter = item.FieldValue;
+                            this.YearmonthQuartTrue = true;
+                            this.StartEndDateTrue = false;
+                            this.EnableYearDropDown = true;
+                            this.EnableMonthDropDown = true;
+                            this.EnableQuarterDropDown = true;
+                            break;
+                        case "Month":
+                            this.SelectedSearchMonth = item.FieldValue;
+                            this.YearmonthQuartTrue = true;
+                            this.StartEndDateTrue = false;
+                            this.EnableYearDropDown = true;
+                            this.EnableMonthDropDown = true;
+                            this.EnableQuarterDropDown = true;
+                            break;
+                        case "StartDate":
+                            this.SelectedSearchStartDate = Convert.ToDateTime(item.FieldValue);
+                            this.YearmonthQuartTrue = false;
+                            this.StartEndDateTrue = true;
+                            this.EnableYearDropDown = false;
+                            this.EnableMonthDropDown = false;
+                            this.EnableQuarterDropDown = false;
+                            break;
+                        case "EndDate":
+                            this.SelectedSearchEndDate = Convert.ToDateTime(item.FieldValue);
+                            this.YearmonthQuartTrue = false;
+                            this.StartEndDateTrue = true;
+                            this.EnableYearDropDown = false;
+                            this.EnableMonthDropDown = false;
+                            this.EnableQuarterDropDown = false;
+                            break;
+                    }
+                }
+                Search(null);
+            }
+            else
+            {
+                this.ShowAllTrue = true;
+                this.ShowSelectedTrue = false;
+                this.YearmonthQuartTrue = false;
+                this.StartEndDateTrue = false;
+                
+            }
+        }
+        public void LoadSearchResult(string customerName)
+        {
+            IPandSHistoryRepository purchaseRepository = new PandSHistoryRepository();
+           //this.ShowAllCount = purchaseRepository.GetAllSalesInvoice().Count();
+            this.PandSHistoryList = purchaseRepository.GetAllSalesInvoice().Where(x => x.ProductCode == customerName).ToList();
+        }
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+            switch (name)
+            {
+                case "SelectedPandSCode":
+                    GetData(this.SelectedPandSCode, "ProductCode");
+                    break;
+                case "SelectedPandSName":
+                    GetData(this.SelectedPandSName, "ProductName");
+                    break;
+                //case "SelectedCreditNoteNo":
+                //    GetData(this.SelectedCreditNoteNo, "CreditNote");
+                //    break;
+                case "SelectedSearchQuarter":
+                    SetData(this.SelectedSearchQuarter, "Quarter");
+                    break;
+               
+                case "SelectedSearchYear":
+                    SetData(this.SelectedSearchYear, "Year");
+                    break;
+               
+
+                    //case "SelectedSearchQuarter":
+                    //    this.SelectedSearchMonth = null;
+                    //    break;
+                    //case "SelectedSearchMonth":
+                    //    this.SelectedSearchQuarter = null;
+                    //    break;
+                    //case "SelectedSearchQNo":
+                    //    GetData(this.SelectedSearchQNo , "Supplier");
+                    //    break;
+                    //case "SelectedSearchYear":
+                    //    GetData(this.SelectedSearchYear, "SearchYear");
+                    //    break;
+                    //case "SelectedSearchQuater":
+                    //    GetData(this.SelectedSearchQuater, "SearchQuater");
+                    //    break;
+                    //case "SelectedSearchMonth":
+                    //    GetData(this.SelectedSearchMonth, "SearchMonth");
+                    //    break;
+                    //case "SelectedSearchStartDate":
+                    //    GetData(this.SelectedSearchStartDate, "SearchStartDate");
+                    //    break;
+                    //case "SelectedSearchEndDate":
+                    //    GetData(this.SelectedSearchEndDate, "SearchEndDate");
+                    //    break;
+            }
+
+            base.OnPropertyChanged(name);
+        }
+
+        public void SetData(string SearchFilter, string parameter)
+        {
+            if (parameter == "Year" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                this.ShowSelectedTrue = true;
+                this.ShowAllTrue = false;
+                this.YearmonthQuartTrue = true;//change after client feedback on 22 may 2017
+                Search(null);
+            }
+         
+           
+            if (parameter == "Quarter" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                this.ShowSelectedTrue = true;
+                this.ShowAllTrue = false;
+                this.YearmonthQuartTrue = true;//added after feedback
+                if (this.SelectedSearchYear == null)
+                    this.SelectedSearchYear = DateTime.Now.Year.ToString();
+                switch (SearchFilter)
+                {
+                    case "1":
+                        this.FirstMonth = "Jan";
+                        this.SecondMonth = "Feb";
+                        this.ThirdMonth = "Mar";
+                        this.QuarterName = "Quarter 1";
+                        break;
+                    case "2":
+                        this.FirstMonth = "Apr";
+                        this.SecondMonth = "May";
+                        this.ThirdMonth = "Jun";
+                        this.QuarterName = "Quarter 2";
+                        break;
+                    case "3":
+                        this.FirstMonth = "Jul";
+                        this.SecondMonth = "Aug";
+                        this.ThirdMonth = "Sep";
+                        this.QuarterName = "Quarter 3";
+                        break;
+                    case "4":
+                        this.FirstMonth = "Oct";
+                        this.SecondMonth = "Nov";
+                        this.ThirdMonth = "Dec";
+                        this.QuarterName = "Quarter 4";
+                        break;
+                }
+                //this.SelectedSearchMonth = null;
+                Search(null);
+            }
+            if (parameter == "Month" && SearchFilter != string.Empty && SearchFilter != null)
+            {
+                this.ShowSelectedTrue = true;
+                this.ShowAllTrue = false;
+                this.YearmonthQuartTrue = true;//added after feedback
+                if (this.SelectedSearchYear == null)
+                    this.SelectedSearchYear = DateTime.Now.Year.ToString();
+                if (this.SelectedSearchQuarter == null)
+                {
+                    if (SearchFilter == "1" || SearchFilter == "2" || SearchFilter == "3")
+                        this.SelectedSearchQuarter = 1.ToString();
+                    if (SearchFilter == "4" || SearchFilter == "5" || SearchFilter == "6")
+                        this.SelectedSearchQuarter = 2.ToString();
+                    if (SearchFilter == "7" || SearchFilter == "8" || SearchFilter == "9")
+                        this.SelectedSearchQuarter = 3.ToString();
+                    if (SearchFilter == "10" || SearchFilter == "11" || SearchFilter == "12")
+                        this.SelectedSearchQuarter = 4.ToString();
+
+                }
+                else
+                {
+                    if (SearchFilter == "1" || SearchFilter == "2" || SearchFilter == "3")
+                        this.SelectedSearchQuarter = 1.ToString();
+                    if (SearchFilter == "4" || SearchFilter == "5" || SearchFilter == "6")
+                        this.SelectedSearchQuarter = 2.ToString();
+                    if (SearchFilter == "7" || SearchFilter == "8" || SearchFilter == "9")
+                        this.SelectedSearchQuarter = 3.ToString();
+                    if (SearchFilter == "10" || SearchFilter == "11" || SearchFilter == "12")
+                        this.SelectedSearchQuarter = 4.ToString();
+                }
+                Search(null);
+            }
+        }
+
+        public void SearchPQList()
+        {
+
+        }
+
+        public void GetData(string SearchFilter, string parameter)
+       {
+            //IPandSHistoryRepository purchaseRepository = new PandSHistoryRepository();
+            //var result = purchaseRepository.GetAllPurInvoice().ToList();
+            if (SearchFilter != null || SearchFilter == string.Empty)
+            {
+                if (parameter == "ProductCode")
+                {
+                   PandSHistoryList= DefaultList.Where(x => (x.ProductCode == SearchFilter || x.ProductName == SearchFilter)).ToList();
+                }
+                if (parameter == "ProductName")
+                {
+                    PandSHistoryList = DefaultList.Where(x => (x.ProductCode == SearchFilter || x.ProductName == SearchFilter)).ToList();
+                }
+            }
+            else
+            {
+                PandSHistoryList = DefaultList;
+            }
+           
+            //changedateformat(PandSHistory);
+            //changeNumberformat(PandSHistory);
+            //TotalInvoiceAmount = Convert.ToString(PandSHistory.Sum(e => e.InvoiceAmountValue));
+            //TotalCCDAmount = Convert.ToString(PandSHistory.Sum(e => e.TotalAmount));
+            this.TotalCusM1 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM1));
+            this.TotalCusM2 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM2));
+            this.TotalCusM3 = Convert.ToString(PandSHistoryList.Sum(e => e.TotalM3));
+            this.TotalCusQuarter = Convert.ToString(PandSHistoryList.Sum(e => e.QuarterTotal));
+            this.TotalCusYear = Convert.ToString(PandSHistoryList.Sum(e => e.YearTotal));
+        }
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            Mouse.OverrideCursor = null;
+            Count = 1;
+        }
+
+
+        #endregion
+    }
+}

@@ -1,0 +1,284 @@
+﻿<UserControl x:Class="SDN.Settings.Views.UsersSecurityView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Settings.Views"
+             xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+             xmlns:my="clr-namespace:SDN.Common;assembly=SDN.Common"
+              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" Width="1024" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="items" Source="{Binding Path=.}"/>
+        <helpers:RowToIndexConverter x:Key="RowToIndexConverter"/>
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <helpers:SelectedItemConvertor x:Key="SelectedItemToItemsSource"/>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <Grid Margin="10 10 10 10">         
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" Grid.ColumnSpan="2" Text="Add/edit User then select User and click on a Menu Name or Screen Name" FontStyle="Italic" Foreground="Gray" ></TextBlock>
+        <!--<Button Style="{StaticResource ButtonStyle}" Grid.Row="1" Grid.Column="0" Command="{Binding SaveCommand}">Save</Button>-->
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width=".50*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Row="0" Grid.Column="1" Margin="-30 0 0 5">
+                    <Button  Content="Delete" VerticalAlignment="Bottom"  Style="{StaticResource ButtonStyle}"  HorizontalAlignment="Left" Command="{Binding DeleteRowCommand}" ></Button>
+                    <Button  Content="New " VerticalAlignment="Bottom" Style="{StaticResource ButtonStyle}"  Margin="10,0,0,0" HorizontalAlignment="Left" Command="{Binding AddNewRowCommand}" ></Button>
+                    <Button  Content="Save" VerticalAlignment="Bottom" Style="{StaticResource ButtonStyle}"  Margin="10,0,0,0" HorizontalAlignment="Left" Command="{Binding SaveCommand}" ></Button>
+                </DockPanel>
+                <CheckBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Margin="-97 0 0 5" HorizontalAlignment="Center" Name="cbxAll2" Command="{Binding DataContext.CheckIsActive , RelativeSource={RelativeSource FindAncestor,
+                           AncestorType={x:Type UserControl}}}"  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+            </Grid>
+            <ScrollViewer Margin="0 0 33 0" VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.Row="2" BorderThickness="1">
+                <Grid>
+                    <DataGrid x:Name="CustomGridLines" ItemsSource="{Binding BackGroundLines}" Grid.Column="0" 
+                          Height="{Binding ElementName=datagrid1,Path=ActualHeight}" GridLinesVisibility="All"   Width="{Binding ElementName=datagrid1,Path=ActualWidth}"
+                          HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" AutoGenerateColumns="False" 
+                           HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                          ColumnHeaderStyle="{StaticResource BackHeaderStyle20}" HeadersVisibility="All" Margin="0,0,0,0"  >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="" Binding="{Binding Col0}" Width="205"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col1}"  Width="160"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col2}"  Width="80"></DataGridTextColumn>
+                             
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid ColumnHeaderStyle="{StaticResource HeaderStyle20}" Grid.ColumnSpan="4"  CanUserDeleteRows="False" Name="datagrid1"  BorderBrush="Black" BorderThickness="1" Background="Transparent" VerticalAlignment="Top"
+             SelectedItem="{Binding SelectedUser}"  Height="{Binding UserGridHeight}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="True" ItemsSource="{Binding  UserSecurityEntity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  CanUserResizeColumns="False" CanUserResizeRows="False" GridLinesVisibility="All" >
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="User Name" Width="205" x:Name="userName"  SortMemberPath="UserName">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=userName,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0">
+                                                <TextBlock Name="txtuserName">
+                                <Run Text="User Name"></Run>
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+
+                                            </DockPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox BorderThickness="0" Height="22" Text="{Binding UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxLength="30" PreviewKeyDown="OnPreviewKeyDown"  >
+                                        </TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="160" CanUserSort="False" >
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="Password"  ></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox BorderThickness="0" Height="22" Text="{Binding Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxLength="30" PreviewKeyDown="OnPreviewKeyDown"  >
+                                        </TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridCheckBoxColumn Width="80" CanUserSort="False" Header="Inactive" Binding="{Binding Isinactive}">
+                            </DataGridCheckBoxColumn>
+                        </DataGrid.Columns>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                                     Value="True">
+                                        <Setter Property="BorderBrush"
+                                                 Value="Black" />
+                                        <Setter Property="Background"
+                                                    Value="Black" />
+                                        <Setter Property="Foreground"
+                                                 Value="White" />
+
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                                     Value="True">
+                                        <Setter Property="BorderBrush"
+                                                 Value="Black" />
+                                        <Setter Property="Background"
+                                                    Value="Black" />
+                                        <Setter Property="Foreground"
+                                                 Value="White" />
+
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </Grid>
+            </ScrollViewer>
+            <Grid Grid.Row="1" Grid.Column="1" Height="40" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+                <DockPanel Grid.Row="0" Grid.Column="0" Margin="-23 0 0 5">
+                    <CheckBox VerticalAlignment="Bottom" Margin="15 0 0 0" HorizontalAlignment="Left"  Command="{Binding DataContext.CheckAllRoles , RelativeSource={RelativeSource FindAncestor,
+                           AncestorType={x:Type UserControl}}}"  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+
+            </DockPanel>
+            <DockPanel Grid.Row="0" Grid.Column="0" Margin="0 0 0 5" >
+
+                <CheckBox VerticalAlignment="Bottom" Margin="0 0 82 0" HorizontalAlignment="Right"  Command="{Binding DataContext.CheckAllRolesTab , RelativeSource={RelativeSource FindAncestor,
+                           AncestorType={x:Type UserControl}}}"  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+
+            </DockPanel>
+        </Grid>
+        <ScrollViewer Margin="-23,0,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden"  Grid.Column="1" Grid.Row="2" BorderThickness="1">
+                <Grid>
+                    <DataGrid x:Name="CustomGridLinesRole" ItemsSource="{Binding BackGroundLines}" Grid.Column="0" 
+                          Height="{Binding ElementName=RoleGrid,Path=ActualHeight}" GridLinesVisibility="All"   Width="{Binding ElementName=RoleGrid,Path=ActualWidth}"
+                          HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" AutoGenerateColumns="False" 
+                           HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                          ColumnHeaderStyle="{StaticResource BackHeaderStyle20}" HeadersVisibility="All" Margin="0,0,0,0"  >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="" Binding="{Binding Col0}" Width="30"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col1}"  Width="135"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col2}"  Width="30"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col3}"  Width="300"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col0}"  Width="5"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid HeadersVisibility="All" Grid.Column="0" Grid.ColumnSpan="4" Name="RoleGrid" CanUserDeleteRows="False" Height="{Binding UserGridHeight}" SelectedValue="{Binding SelectedUserRole,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  BorderBrush="Black" BorderThickness="1" AutoGenerateColumns="False" VerticalAlignment="Top"
+               CanUserReorderColumns="False" CanUserResizeColumns="False" Width="512" CanUserResizeRows="False" CanUserSortColumns="False" ItemsSource="{Binding  UserRoleModelCollection,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  CanUserAddRows="False"  GridLinesVisibility="All" 
+                  ColumnHeaderStyle="{StaticResource HeaderStyle20}"  Background="Transparent" HorizontalScrollBarVisibility="Hidden"  >
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn   Width="30" IsReadOnly="True" Header=""  Binding="{Binding CheckModule, NotifyOnTargetUpdated=True , UpdateSourceTrigger=PropertyChanged }">
+                                <DataGridCheckBoxColumn.CellStyle>
+                                    <!--<Style>
+                                        <EventSetter Event="CheckBox.Checked" Handler="OnChecked"/>
+                                        <EventSetter Event="CheckBox.Unchecked" Handler="OnChecked"/>                                         
+                                    </Style>-->
+                                    <Style TargetType="DataGridCell">
+                                        <EventSetter Event="CheckBox.Checked" Handler="OnChecked"/>
+                                        <EventSetter Event="CheckBox.Unchecked" Handler="OnChecked"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected"
+                                                     Value="True">
+                                                <Setter Property="BorderBrush"
+                                                 Value="Black" />
+                                                <Setter Property="Background"
+                                                    Value="Black" />
+                                                <Setter Property="Foreground"
+                                                 Value="White" />
+
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridCheckBoxColumn.CellStyle>
+                                <DataGridCheckBoxColumn.ElementStyle>
+
+                                    <Style TargetType="CheckBox">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="BorderBrush"    Value="Black" />                                             
+                                                <Setter Property="Background" Value="Black" />                                                   
+                                                <Setter Property="Foreground" Value="White" />                                                
+                                            </Trigger>
+                                            
+                                        </Style.Triggers>
+                                    </Style>
+
+                                </DataGridCheckBoxColumn.ElementStyle>
+                                <!--<DataGridCheckBoxColumn.HeaderTemplate>                                 
+                                    <DataTemplate x:Name="dtAllChkBx">
+                                <CheckBox Height="20" HorizontalAlignment="Center" Name="cbxAll" Command="{Binding DataContext.CheckAllRoles , RelativeSource={RelativeSource FindAncestor,
+                           AncestorType={x:Type UserControl}}}"  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+                            </DataTemplate>
+                                </DataGridCheckBoxColumn.HeaderTemplate>-->
+                            </DataGridCheckBoxColumn>
+                            <DataGridTextColumn Width="135" IsReadOnly="True" Header="Menu Name"  Binding="{Binding ModuleName}">
+                            </DataGridTextColumn>
+                            <DataGridCheckBoxColumn Width="30" Header="" Binding="{Binding CheckTab}">
+                                <!--<DataGridCheckBoxColumn.HeaderTemplate>                                    
+                                    <DataTemplate x:Name="dtAllChkBx1">
+                                    <CheckBox Height="20" HorizontalAlignment="Center" Name="cbxAll1" Command="{Binding DataContext.CheckAllRolesTab , RelativeSource={RelativeSource FindAncestor,
+                           AncestorType={x:Type UserControl}}}"  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" />
+                            </DataTemplate>
+                                </DataGridCheckBoxColumn.HeaderTemplate>-->
+                            </DataGridCheckBoxColumn>
+                            <DataGridTextColumn Width="300" IsReadOnly="True" Header="Screen Name" Binding="{Binding TabName}">
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                                     Value="True">
+                                        <Setter Property="BorderBrush"
+                                                 Value="Black" />
+                                        <Setter Property="Background"
+                                                    Value="Black" />
+                                        <Setter Property="Foreground"
+                                                 Value="White" />
+
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                                     Value="True">
+                                        <Setter Property="BorderBrush"
+                                                 Value="Black" />
+                                        <Setter Property="Background"
+                                                    Value="Black" />
+                                        <Setter Property="Foreground"
+                                                 Value="White" />
+
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                </Grid>
+            </ScrollViewer>
+        <DockPanel Grid.Row="3" Grid.Column="1"  Margin="0 35 0 0" HorizontalAlignment="Right">
+            <Button Grid.Row="3" Grid.Column="1"  Content="Save"  Style="{StaticResource ButtonStyle}"  Margin="10,0,10,0"  Command="{Binding SaveRolesCommand}" ></Button>
+                <Button Grid.Row="3" Grid.Column="1" Command="{Binding CloseCommand}" Content="Close"  Style="{StaticResource ButtonStyle}"  Margin="10,0,0,0"></Button>
+        </DockPanel>
+            <TextBlock Grid.Row="3" VerticalAlignment="Bottom"  Grid.Column="0" HorizontalAlignment="Left" Margin="0 0 0 0" Text="Password: Minimum 6 characters." FontStyle="Italic" Foreground="Gray"></TextBlock>
+        <!--<Button Click="Button_Click" Content="Add empty row" Width="100" Height="30" Grid.Column="1" Grid.Row="0" HorizontalAlignment="left" VerticalAlignment="Top"/>-->
+
+    </Grid>
+    </ScrollViewer>
+</UserControl>

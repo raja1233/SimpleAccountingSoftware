@@ -1,0 +1,235 @@
+﻿using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.CashBank
+{
+   public class TransferMoneyDAL: ITransferMoneyDAL
+    {
+        public List<AccountsEntity> GetAccountDetails()
+        {
+            List<AccountsEntity> lstAccnts = new List<AccountsEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    lstAccnts = entities.Database.SqlQuery<AccountsEntity>("USP_GetAccountName").ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return lstAccnts;
+        }
+
+        public int SaveTransferMoney(TransferMoneyEntity transferMoney)
+        {
+            int autoId = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    TransferMoney cbt = new TransferMoney();
+                    cbt.From_Acc_Id = transferMoney.SelectedtransferFromCashAndBankAcntID;
+                    cbt.To_Acc_Id = transferMoney.SelectedtransferToCashBankAcntID;
+                    cbt.Cheque = transferMoney.IsCheque;
+                    cbt.Cheque_No = transferMoney.CashChequeNo;
+                    cbt.Cheque_Date =transferMoney.CashChequeDate;
+                    cbt.Remarks = transferMoney.Remarks;
+                    cbt.Amount = transferMoney.Amount;
+                    cbt.Remarks = transferMoney.Remarks;
+                    cbt.CreatedBy = 1;
+                    cbt.CreatedDate = DateTime.Now;
+                    entities.TransferMoneys.Add(cbt);
+                    entities.SaveChanges();
+
+                    Account acntFrom = entities.Accounts.SingleOrDefault(e => e.ID == transferMoney.SelectedtransferFromCashAndBankAcntID);
+                    if(acntFrom != null)
+                    {
+                        acntFrom.Acc_Cur_Bal = (acntFrom.Acc_Cur_Bal == null?0:acntFrom.Acc_Cur_Bal) - transferMoney.Amount;
+                        entities.SaveChanges();
+                    }
+
+                    Account acntTo = entities.Accounts.SingleOrDefault(e => e.ID == transferMoney.SelectedtransferToCashBankAcntID);
+                    if (acntTo != null)
+                    {
+                        acntTo.Acc_Cur_Bal = (acntTo.Acc_Cur_Bal==null?0:acntTo.Acc_Cur_Bal) + transferMoney.Amount;
+                        entities.SaveChanges();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return autoId;
+        }
+        public int UpdateTransferMoney(TransferMoneyEntity transferMoney)
+        {
+            int autoId = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    TransferMoney cbt = entities.TransferMoneys.SingleOrDefault(e => e.Cheque_No == transferMoney.CashChequeNo);
+                    if (cbt != null)
+                    {
+                        //delete last updated data
+                        Account acnt1 = entities.Accounts.SingleOrDefault(e => e.ID == cbt.From_Acc_Id);
+                        if (acnt1 != null)
+                        {
+                            acnt1.Acc_Cur_Bal = (acnt1.Acc_Cur_Bal==null?0:acnt1.Acc_Cur_Bal) + cbt.Amount;
+                            entities.SaveChanges();
+                        }
+
+                        Account acnt2 = entities.Accounts.SingleOrDefault(e => e.ID == cbt.To_Acc_Id);
+                        if (acnt2 != null)
+                        {
+                            acnt2.Acc_Cur_Bal = (acnt2.Acc_Cur_Bal == null?0:acnt2.Acc_Cur_Bal) - cbt.Amount;
+                            entities.SaveChanges();
+                        }
+
+                        //Update values  
+                        cbt.From_Acc_Id = transferMoney.SelectedtransferFromCashAndBankAcntID;
+                        cbt.To_Acc_Id = transferMoney.SelectedtransferToCashBankAcntID;
+                        cbt.Cheque = transferMoney.IsCheque;
+                        cbt.Cheque_No = transferMoney.CashChequeNo;
+                        cbt.Cheque_Date = Convert.ToDateTime(transferMoney.CashChequeDateStr);
+                        cbt.Remarks = transferMoney.Remarks;
+                        cbt.Amount = transferMoney.Amount;
+                        cbt.Remarks = transferMoney.Remarks;
+                        cbt.CreatedBy = 1;
+                        cbt.CreatedDate = DateTime.Now;
+
+                        entities.SaveChanges();
+                        
+                        Account acntFrom = entities.Accounts.SingleOrDefault(e => e.ID == transferMoney.SelectedtransferFromCashAndBankAcntID);
+                        if (acntFrom != null)
+                        {
+                            acntFrom.Acc_Cur_Bal = (acntFrom.Acc_Cur_Bal==null?0:acntFrom.Acc_Cur_Bal) - transferMoney.Amount;
+                            entities.SaveChanges();
+                        }
+
+                        Account acntTo = entities.Accounts.SingleOrDefault(e => e.ID == transferMoney.SelectedtransferToCashBankAcntID);
+                        if (acntTo != null)
+                        {
+                            acntTo.Acc_Cur_Bal = (acntTo.Acc_Cur_Bal==null?0: acntTo.Acc_Cur_Bal) + transferMoney.Amount;
+                            entities.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return autoId;
+        }
+
+        public TransferMoneyEntity GetTransferMoneyDetails(string cashChequeNo)
+        {
+            TransferMoneyEntity transferMoney = new TransferMoneyEntity();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    TransferMoney cbt = entities.TransferMoneys.SingleOrDefault(e => e.Cheque_No == cashChequeNo);
+                    if (cbt != null)
+                    {
+                        transferMoney.ID = cbt.ID;
+                        transferMoney.SelectedtransferFromCashAndBankAcntID = cbt.From_Acc_Id;
+                        transferMoney.SelectedtransferToCashBankAcntID = cbt.To_Acc_Id;
+                        transferMoney.IsCheque = cbt.Cheque;
+                        transferMoney.CashChequeNo = cbt.Cheque_No;
+                        transferMoney.CashChequeDate = cbt.Cheque_Date;
+                        transferMoney.Remarks = cbt.Remarks;
+                        transferMoney.Amount = cbt.Amount;
+                        transferMoney.Remarks = cbt.Remarks;
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return transferMoney;
+        }
+
+        public bool IsChequeNoPresent(string cashChequeNo)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = entities.TransferMoneys.Where(e => e.Cheque_No == cashChequeNo
+                  ).ToList();
+                    if (po.Count > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string GetLastCashNo()
+        {
+            
+            string cNo = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.TransferMoneys
+                              where pqs.Cheque == false
+                              orderby pqs.CreatedDate descending
+                              select new
+                              {
+                                  pqs.CreatedDate,
+                                  pqs.Cheque_No,
+                                  pqs.ID,
+                                  pqs.Cheque
+
+                              }
+
+                               ).ToList();
+                    if (pq.Count > 0)
+                    {
+                        cNo = pq.Take(1).SingleOrDefault().Cheque_No;
+                        if (cNo != null)
+                        {
+                            string[] str = cNo.Split('-');
+                            if (str != null)
+                            {
+                                cNo = Convert.ToString(Convert.ToInt64(str[1]) + 1);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        cNo = Convert.ToString(1);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return cNo;
+        }
+    }
+}

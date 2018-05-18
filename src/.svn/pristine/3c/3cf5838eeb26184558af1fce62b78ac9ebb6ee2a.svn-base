@@ -1,0 +1,435 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities.Product
+{
+    using SDN.Common;
+    using System.Collections.ObjectModel;
+    using System.Globalization;
+
+    public class CountAndAdjustStockEntity: ViewModelBase
+    {
+        #region "Private Members"
+        private string stockCountNo;
+        private DateTime? stockDate;
+        private decimal? adjustedAmount;
+        private string adjustedAmountStr;
+        private byte stockType;
+        private short? type;
+        private bool? isIncreaseDecreaseStock;
+        private bool? isStockDamaged;
+        private bool? isStockTake;
+        private List<ContentModel> psCategory1;
+        private List<ContentModel> psCategory2;
+      
+        private decimal? _decimalPlaces;
+        private string _currencyName;
+        private string _DateFormat;
+        private string _TaxName;
+        private int psFormGridHeight;
+        #endregion
+
+        #region "Properties"
+
+        public string StockCountNo
+        {
+            get { return stockCountNo; }
+            set { stockCountNo = value;
+                OnPropertyChanged("StockCountNo");
+            }
+        }
+        public DateTime? StockDate
+        {
+            get { return stockDate; }
+            set { stockDate = value;
+                OnPropertyChanged("StockDate");
+            }
+        }
+
+        public byte StockType
+        {
+            get { return stockType; }
+            set { stockType = value;
+                OnPropertyChanged("StockType");
+            }
+        }
+
+        public short? Type
+        {
+            get { return type; }
+            set { type = value;
+                OnPropertyChanged("Type");
+            }
+        }
+
+        public decimal? AdjustedAmount
+        {
+            get { return adjustedAmount; }
+            set { adjustedAmount = value;
+                OnPropertyChanged("AdjustedAmount");
+            }
+        }
+        public string AdjustedAmountStr
+        {
+            get
+            {
+                //return _QuotationAmount;
+                if (adjustedAmountStr == null)
+                    return this.adjustedAmountStr;
+                else
+                {
+                    if (adjustedAmountStr != "")
+                    {
+                        var balance = adjustedAmountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.adjustedAmountStr;
+                }
+            }
+            set
+            {
+                adjustedAmountStr = value;
+                OnPropertyChanged("AdjustedAmountStr");
+            }
+        }
+
+        public bool? IsIncreaseDecreaseStock
+        {
+            get { return isIncreaseDecreaseStock; }
+            set { isIncreaseDecreaseStock = value;
+                OnPropertyChanged("IsIncreaseDecreaseStock");
+            }
+        }
+        public bool? IsStockDamaged
+        {
+            get { return isStockDamaged; }
+            set { isStockDamaged = value; OnPropertyChanged("IsStockDamaged"); }
+
+        }
+        public bool? IsStockTake
+        {
+          get { return isStockTake; }
+            set {
+                isStockTake = value;
+                OnPropertyChanged("IsStockTake");
+                   }
+        }
+
+        public List<ContentModel> PSCategory1
+        {
+            get { return psCategory1; }
+            set { psCategory1 = value;
+                OnPropertyChanged("PSCategory1");
+            }
+        }
+        public List<ContentModel> PSCategory2
+        {
+           get { return psCategory2; }
+            set { psCategory2 = value;
+                OnPropertyChanged("PSCategory2");
+            }
+        }
+        
+
+        public string TaxName
+        {
+            get
+            {
+                return _TaxName;
+            }
+            set
+            {
+                _TaxName = value;
+                OnPropertyChanged("TaxName");
+            }
+        }
+        public string DateFormat
+        {
+            get { return _DateFormat; }
+            set { SetProperty(ref _DateFormat, value, "DateFormat"); }
+        }
+        public string CurrencyName
+        {
+            get
+            {
+                return _currencyName;
+            }
+            set
+            {
+
+                if (_currencyName != value)
+                {
+                    _currencyName = value;
+                    OnPropertyChanged("CurrencyName");
+                }
+            }
+        }
+        public decimal? DecimalPlaces
+        {
+            get { return _decimalPlaces; }
+
+            set
+            {
+                if (_decimalPlaces != value)
+                {
+                    _decimalPlaces = value;
+                    OnPropertyChanged("DecimalPlaces");
+                }
+            }
+        }
+
+        public int PSFormGridHeight
+        {
+            get { return psFormGridHeight; }
+            set { psFormGridHeight = value;
+                OnPropertyChanged("PSFormGridHeight");
+            }
+        }
+        #endregion
+
+    }
+
+    public class CountAndAdjustStockDetailsEntity: ViewModelBase
+    {
+        #region "Private members"
+
+        #region "Private Properties"
+        private int? id;
+        private int? psID;
+        private string pandSCode;
+        private string pandSName;
+        private int? systemQty;
+        private int? countQty;
+        private int? difference;
+        private decimal? averageCost;
+        private string avgCost;
+        private decimal? amount;
+        private string amountStr;
+        private decimal? adjustedAmount;
+        private string adjustedAmountStr;
+        private ObservableCollection<PandSDetailsModel> productAndServices;
+      
+
+        #endregion "End Private Properties"
+
+        #region "Public Properties"
+
+
+        public int? ID
+        {
+
+            get { return id; }
+
+            set
+            {
+                id = value;
+                OnPropertyChanged("ID");
+            }
+        }
+      
+        public int? PSID
+        {
+            get { return psID; }
+            set { psID = value;
+                OnPropertyChanged("PSID");
+            }
+        }
+
+        public string PandSCode
+        {
+            get
+            {
+                return pandSCode;
+            }
+            set
+            {
+                pandSCode = value;
+                OnPropertyChanged("PandSCode");
+            }
+        }
+        public string PandSName
+        {
+            get
+            {
+                return pandSName;
+            }
+            set
+            {
+                pandSName = value;
+                OnPropertyChanged("PandSName");
+            }
+        }
+
+        public int? SystemQty
+        {
+            get { return systemQty; }
+            set { systemQty = value; }
+        }
+        public int? CountQty
+        {
+            get { return countQty; }
+            set { countQty = value;
+                OnPropertyChanged("CountQty");
+            }
+        }
+        public int? Difference
+        {
+            get { return difference;
+            }
+            set
+            {
+                difference = value;
+                OnPropertyChanged("Difference");
+            }
+
+        }
+        public decimal? AverageCost
+        {
+            get { return averageCost; }
+            set { averageCost = value;
+                OnPropertyChanged("AverageCost");
+            }
+        }
+        public string AvgCost
+        {
+            get { return avgCost; }
+            set { avgCost = value;
+                OnPropertyChanged("AvgCost");
+            }
+        }
+        public decimal? Amount
+        {
+            get { return amount; }
+            set { amount = value;
+                OnPropertyChanged("Amount");
+            }
+        }
+        public string AmountStr
+        {   
+            get
+            {
+                //return _QuotationAmount;
+                if (amountStr == null)
+                    return this.amountStr;
+                else
+                {
+                    if (amountStr != "")
+                    {
+                        var balance = amountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.amountStr;
+                }
+            }
+            set
+            {
+                amountStr = value;
+                OnPropertyChanged("AmountStr");
+            }
+        }
+        public decimal? AdjustedAmount
+        {
+            get { return adjustedAmount; }
+            set { adjustedAmount = value;
+                OnPropertyChanged("AdjustedAmount");
+            }
+        }
+        public string AdjustedAmountStr
+        {
+            get
+            {
+                //return _QuotationAmount;
+                if (adjustedAmountStr == null)
+                    return this.adjustedAmountStr;
+                else
+                {
+                    if (adjustedAmountStr != "")
+                    {
+                        var balance = adjustedAmountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.adjustedAmountStr;
+                }
+            }
+            set
+            {
+                adjustedAmountStr = value;
+                OnPropertyChanged("AdjustedAmountStr");
+            }
+        }
+        public ObservableCollection<PandSDetailsModel> ProductAndServices
+        {
+            get
+            {
+                return productAndServices;
+            }
+            set
+            {
+                productAndServices = value;
+                OnPropertyChanged("ProductAndServices");
+            }
+        }
+     
+        #endregion "End Private Properties"
+
+
+        #endregion
+
+    }
+
+    public class CountAndAdjustStockForm : ViewModelBase
+    {
+        #region "Private members"
+        private CountAndAdjustStockEntity countAndAdjustStock;
+        private List<CountAndAdjustStockDetailsEntity> countAndAdjustStockDetails;
+        #endregion
+
+        #region "Properties"
+
+        public CountAndAdjustStockEntity CountAndAdjustStock
+        {
+            get { return countAndAdjustStock; }
+            set { countAndAdjustStock = value;
+                OnPropertyChanged("CountAndAdjustStock");
+            }
+        }
+
+        public List<CountAndAdjustStockDetailsEntity> CountAndAdjustStockDetails
+        {
+            get { return countAndAdjustStockDetails; }
+            set { countAndAdjustStockDetails = value;
+                OnPropertyChanged("CountAndAdjustStockDetails");
+            }
+        }
+
+        #endregion
+    }
+}

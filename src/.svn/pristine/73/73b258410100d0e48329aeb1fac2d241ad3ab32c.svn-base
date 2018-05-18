@@ -1,0 +1,27 @@
+﻿
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.Services
+{
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Purchase;
+    public interface IAdjustDebitNoteFormRepository
+    {
+        List<AdjustDebitNoteEntity> GetDebitNotes(string SupplierId);
+        IEnumerable<SupplierDetailEntity> GetAllSupplier();
+        string GetCountOfPOSuppliers();
+        string GetCountOfPISuppliers();
+        bool IsChequeNoPresent(string cashChequeNo);
+        int SaveAdjustDebitNote(AdjustDebitNoteForm psForm, int Type);
+        int UpdateAdjustDebitNote(AdjustDebitNoteForm psForm, int Type);
+        AdjustDebitNoteForm GetNewPS(int? SupplierID);
+        AdjustDebitNoteForm GetAdjustDebitNoteDetails(string cashChequeNo);
+        AdjustDebitNoteForm AdjustDebitNoteDetails(string AdjustedNo);
+        string GetLatestInvoiceNo();
+    }
+}

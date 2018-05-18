@@ -1,0 +1,5 @@
+D:\DayUsers\src\SAS-NEW\SDN.SimpleAccounting\bin\SASBAL.dll
+D:\DayUsers\src\SAS-NEW\SDN.SimpleAccounting\bin\SASBAL.pdb
+D:\DayUsers\src\SAS-NEW\Business\SASBAL\obj\Debug\SASBAL.csprojResolveAssemblyReference.cache
+D:\DayUsers\src\SAS-NEW\Business\SASBAL\obj\Debug\SASBAL.dll
+D:\DayUsers\src\SAS-NEW\Business\SASBAL\obj\Debug\SASBAL.pdb

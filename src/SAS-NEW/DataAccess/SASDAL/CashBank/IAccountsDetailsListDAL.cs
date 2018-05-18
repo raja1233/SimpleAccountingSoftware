@@ -1,0 +1,16 @@
+﻿using SDN.UI.Entities.CashandBank;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.CashBank
+{
+    public interface IAccountsDetailsListDAL
+    {
+        List<AccountsDetailsListEntity> GetAllAccountsDetailsList();
+        AccountsDetailsListEntity StartNewFinancialYear(string status);
+        string UpdatePreviousAccount();
+    }
+}

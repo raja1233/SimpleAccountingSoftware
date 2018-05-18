@@ -1,0 +1,313 @@
+﻿<UserControl 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Customers.Views"
+            xmlns:ctr="clr-namespace:SDN.Common;assembly=SDN.Common"
+             xmlns:Convertors="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"              
+              xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="SDN.Customers.Views.CustomersView"
+               xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+             mc:Ignorable="d"  
+             d:DesignHeight="768" d:DesignWidth="1024" Loaded="UserControl_Loaded"   >
+    
+        <ScrollViewer  HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid Margin="10,10,10,10">         
+            <Grid.Resources>
+                <helpers:EmptyIntConverter x:Key="EmptyIntConverter"/>
+                <Convertors:YesNoBoolConverter x:Key="YesNoBool"></Convertors:YesNoBoolConverter>              
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="Margin" Value="0,0,0,4" />
+                    <Setter Property="Height" Value="25" />
+                    <Setter Property="BorderBrush" Value="Black" />
+                    <!--<Setter Property="BorderThickness" Value="1"/>                 
+                    <Setter Property="BorderBrush" Value="Black"/>-->
+                </Style>
+                <!--<Style TargetType="{x:Type ComboBox}">                    
+                    <Setter Property="Margin" Value="0,0,0,4" />
+                    <Setter Property="Height" Value="25" />
+                </Style>-->
+                <Style TargetType="{x:Type CheckBox}">
+                    <Setter Property="Margin" Value="0,0,0,4" />
+                </Style>         
+            </Grid.Resources>       
+                <Grid.RowDefinitions >
+                <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition   Width="Auto"/>
+                <ColumnDefinition MaxWidth="300"   Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition  MaxWidth="150" Width="Auto"/>                
+                <ColumnDefinition  Width="Auto"/>
+                <ColumnDefinition Width="300"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0" Grid.Row="1">
+                <TextBlock  Text="Customer Name ("></TextBlock>
+                <TextBlock  Text="{Binding TotalCustomer}" Margin="2,1,2,1"></TextBlock>                 
+                <TextBlock  Text=")"></TextBlock>
+            </DockPanel>
+            
+            <TextBlock x:Name="lblBilltoAddress" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="2"     Text="Bill to Address"  />
+            <TextBlock Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Text="Customer Name" ></TextBlock>
+            <DockPanel Grid.Column="1" Grid.Row="3">
+                <TextBlock  Margin="-6,0,2,4" Text="*" Foreground="Red">
+                </TextBlock>
+                <TextBox MaxWidth="290"  x:Name="txtCustomerName" Text="{Binding CustomerName ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="1" MaxLength="100"/>
+            </DockPanel>
+            <TextBlock Grid.Column="0" Grid.Row="4"   Text="Company Registration No." TextWrapping="Wrap" />
+            <TextBox TabIndex="2" MaxWidth="290" Grid.Column="1" Grid.Row="4" Text="{Binding Comp_Reg_No ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" MaxLength="50" />
+            <DockPanel Grid.Column="0" Grid.Row="5" >
+                <TextBlock Text="Balance Amount" Margin="0,0,2,4"></TextBlock>
+                <!--<Border DockPanel.Dock="Left" BorderBrush="Gray" BorderThickness="0" HorizontalAlignment="Left"  Margin="2,0,2,4">
+                    <TextBlock Text="{Binding CurrencyName}" Margin="1,0,1,0"  MaxWidth="50"></TextBlock>
+                </Border>-->
+                             
+            </DockPanel>
+
+
+           
+
+            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" Margin="5,1,5,1" >
+                <Button x:Name="GoNext" Content=" &lt; "  HorizontalAlignment="Left"  VerticalAlignment="Center" MaxWidth="30"  Margin="5 0" Style="{DynamicResource ButtonStyle}" Command="{Binding PreviousCommand}" IsEnabled="{Binding BackwardEnabled}"/>
+                <Button x:Name="GoBack" Content=" &gt; " Grid.Column="2" HorizontalAlignment="Left"  VerticalAlignment="Center" MaxWidth="30"  Margin="10 0" Style="{DynamicResource ButtonStyle}" Command="{Binding NextCommand}" IsEnabled="{Binding  ForwardEnabled}"/>
+            </StackPanel>           
+            <DockPanel Grid.Column="3"  Grid.ColumnSpan="2"  Grid.Row="1">
+                <TextBlock  Text="Active ("></TextBlock>
+                <TextBlock  Text="{Binding ActiveCustomer}" Margin="2,1,2,1"></TextBlock>               
+                <TextBlock  Text=")"></TextBlock>
+                <TextBlock  Margin="30,0,0,0" Text="Inactive ("></TextBlock>
+                <TextBlock  Text="{Binding InActiveCustomer}" Margin="2,1,2,1"></TextBlock>
+                <TextBlock  Text=")"></TextBlock>
+            </DockPanel> 
+            <!--<DockPanel Grid.Column="5" Grid.Row="1">
+                <TextBlock  Text="Inactive ("></TextBlock>
+                <TextBlock  Text="{Binding InActiveCustomer}" Margin="2,1,2,1"></TextBlock>               
+                <TextBlock  Text=")"></TextBlock>
+            </DockPanel>-->
+
+            <!--<StackPanel  Grid.Column="5" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Right"   Margin="0,4,0,4">
+                <Label  HorizontalAlignment="Right" Foreground="Black"  Margin="10,0,0,2" Content="Last Updated" />
+                <TextBlock x:Name="LastUpdatedDate"   Margin="10,0,0,2" Grid.Row="0" HorizontalAlignment="Right"  Text="{Binding LastUpdateDate}"  />
+            </StackPanel>
+            <Button x:Name="btnRefresh" Content="Refresh" Grid.Column="5"   Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="75"  Margin="0,4,0,4" Style="{DynamicResource ButtonStyle}" Command="{Binding RefreshCommand}"/>-->
+            <CheckBox x:Name="chkInActive" Content="Inactive"   HorizontalAlignment="Left" Margin="0,10,0,4" Grid.Row="2" VerticalAlignment="Center"  IsChecked="{Binding IsInActive,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource YesNoBool}}" />
+            <ComboBox x:Name="cmbCustSearchname" Grid.Column="1" Grid.Row="1" Margin="0,0,0,4" MaxWidth="290"
+                      ItemsSource="{Binding SearchCustomer}" BorderBrush="Black"
+                      DisplayMemberPath="Cus_Name" SelectedValuePath="ID"   
+                      SelectedIndex="{Binding SelectedSearchCustmer, Converter={StaticResource EmptyIntConverter}}"
+                      SelectedValue="{Binding SelectedSearchCustmer ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }"
+                      IsEnabled="True" IsEditable="True"
+                      />
+            <TextBox x:Name="txtBalance" MaxWidth="290" Grid.Column="1" Grid.Row="5" Text="{Binding Balance ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="3" IsEnabled="False"/>
+            <TextBlock Grid.Column="0" Grid.Row="6" Text="Customer Type"  HorizontalAlignment="Left"  />
+            <ComboBox x:Name="cmbCustomerType" Grid.Column="1" Grid.Row="6" TabIndex="4" Margin="0,0,0,4" MaxWidth="290"
+                      ItemsSource="{Binding CustomerType}" BorderBrush="Black"
+                      DisplayMemberPath="Cat_Contents" SelectedValuePath="ID" 
+                      SelectedValue="{Binding SelectedCustomerType  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Column="0" Grid.Row="7" Text="Salesman"   />
+            <ComboBox x:Name="cmbSalesman" Grid.Column="1" Grid.Row="7"  TabIndex="5" Margin="0,0,0,4" MaxWidth="290"
+                      ItemsSource="{Binding SalesmanType}" BorderBrush="Black"
+                      DisplayMemberPath="Cat_Contents" SelectedValuePath="ID"
+                      SelectedValue="{Binding SelectedSalesman  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                      
+                      IsEnabled="True"/>
+            <TextBlock Grid.Column="0" Grid.Row="8" Text="Credit Limit Days "   />
+
+            <ComboBox x:Name="cmbCreditLimitDays" Grid.Column="1" Grid.Row="8" TabIndex="6" Margin="0,0,0,4" MaxWidth="290"
+                  ItemsSource="{Binding CreditLimitDays}" BorderBrush="Black"
+                  DisplayMemberPath="DisplayDays" SelectedValuePath="ID"
+                  SelectedValue="{Binding SelectedCreditLimitDays}"
+                     ></ComboBox>
+
+            <!-- DisplayDays-->
+                <DockPanel Grid.Column="0" Grid.Row="9" >
+                <TextBlock Text="Credit Limit Amount " Margin="0,0,2,4"></TextBlock>                 
+                <!--<Border DockPanel.Dock="Left" BorderBrush="Gray" BorderThickness="0" HorizontalAlignment="Left"  Margin="2,0,2,4">
+                    <TextBlock Text="{Binding CurrencyName}" Margin="1,0,1,0"  MaxWidth="50"></TextBlock>
+                </Border>-->
+
+            </DockPanel>
+            <ComboBox x:Name="cmbCreditLimitAmount" Grid.Column="1" Grid.Row="9" TabIndex="7" Margin="0,0,0,4" MaxWidth="290"
+                    ItemsSource="{Binding CreditLimitAmount}" BorderBrush="Black"
+                    DisplayMemberPath="Cat_Contents_Display" SelectedValuePath="ID" 
+                    SelectedValue="{Binding SelectedCreditLimitAmount  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                      />
+            <TextBlock Grid.Column="0" Grid.Row="10" Text="Discount " />
+
+            <ComboBox x:Name="cmbDiscount" Grid.Column="1" Grid.Row="10" TabIndex="8" Margin="0,0,0,4" MaxWidth="290"
+                  ItemsSource="{Binding Discount}"  BorderBrush="Black"
+                  DisplayMemberPath="DisplayDiscount" 
+                  SelectedValuePath="ID"
+                  SelectedValue="{Binding SelectedDiscount  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"                      
+                      />
+            <TextBlock Grid.Column="0" Grid.Row="11"  Text="Telephone" />
+            <TextBox MaxWidth="290" x:Name="txtTelephone" Grid.Column="1" Grid.Row="11" Text="{Binding Telephone}" TabIndex="9" MaxLength="30" PreviewTextInput="PhoneValidationTextBox"/>
+            <TextBlock Grid.Column="0" Grid.Row="12" Text="Fax"   />
+            <TextBox MaxWidth="290" x:Name="txtFax" Grid.Column="1" Grid.Row="12" Text="{Binding Fax}" TabIndex="10"  MaxLength="20" PreviewTextInput="FaxValidationTextBox"/>
+            <TextBlock Grid.Column="0" Grid.Row="13" Text="Email"   />
+            <TextBox MaxWidth="290" x:Name="txtEmail" Grid.Column="1" Grid.Row="13" Text="{Binding Email}" TabIndex="11"  MaxLength="100"/>
+            <TextBlock Grid.Column="0" Grid.Row="14" Text="Contact Person"   />
+            <TextBox MaxWidth="290" x:Name="txtContactPerson" Grid.Column="1" Grid.Row="14" Text="{Binding ContactPerson}" TabIndex="12"  MaxLength="100"/>
+            <DockPanel Grid.Column="0" Grid.Row="15" >
+                <TextBlock Text="{Binding TaxName}"  Margin="0,0,2,0" ></TextBlock>
+                <TextBlock  Text="Registration No"   />              
+            </DockPanel>
+            <TextBox MaxWidth="290" x:Name="txtGstRegistrationNo" Grid.Column="1" Grid.Row="15" Text="{Binding GstRegistrationNo  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="13"  MaxLength="50"/>
+            
+            <DockPanel Grid.Column="0" Grid.Row="16" Grid.RowSpan="2"  VerticalAlignment="Center">
+                <TextBlock  Text="Charge Customer "   />
+                <TextBlock Text="{Binding TaxName}"  Margin="2,0,2,0" ></TextBlock>
+                <TextBlock  Text="?"   />
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="16" VerticalAlignment="Center">
+                <RadioButton x:Name="radChangeGSTYes"  Margin="0 2 10 0"   GroupName="radChangeGST" TabIndex="14" HorizontalAlignment="Left" IsChecked="{Binding ChangeCustomerGSTTrue, BindingGroupName=Group1, UpdateSourceTrigger=PropertyChanged}">
+                    <StackPanel Orientation="Horizontal">
+                    <TextBlock  Text="  According to P&amp;S "   />
+                    <TextBlock Text="{Binding TaxName}"  Margin="2,0,2,0" ></TextBlock>
+                        <TextBlock  Text="Code and Rates"   />
+                    </StackPanel>
+                </RadioButton>
+                
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Grid.Column="1" Grid.Row="17" Margin="0,0,0,4">               
+                <RadioButton x:Name="radChangeGSTNo"  Margin="0 0 0 0"   GroupName="radChangeGST" TabIndex="15"  HorizontalAlignment="Left"  IsChecked="{Binding ChangeCustomerGSTFalse, BindingGroupName=Group1, UpdateSourceTrigger=PropertyChanged}"></RadioButton>
+                <ComboBox x:Name="cmbTaxandRate"  VerticalAlignment="Top" MaxHeight="23"  TabIndex="16" Margin="5,0,5,4" Width="150"
+                    ItemsSource="{Binding TaxandRateList}" BorderBrush="Black"
+                    DisplayMemberPath="TaxCode" SelectedValuePath="TaxID" 
+                    SelectedValue="{Binding SelectedTaxId }"
+                    SelectedItem="{Binding SelectedTaxModel,UpdateSourceTrigger=PropertyChanged}"
+                    IsEnabled="{Binding ChangeCustomerGSTFalse}"  />
+                <TextBox x:Name="txtTaxRate"   Text="{Binding SelectedTaxModel.StrTaxRate}"  IsEnabled="False"   MaxLength="5" MinWidth="50"></TextBox>
+            </StackPanel>
+            <TextBlock Grid.Column="0" Grid.Row="18" Text="Remarks"  Grid.RowSpan="3"   Margin="0,0,4,4" />
+            <TextBox Width="290" x:Name="txtRemark" Grid.Column="1" Grid.Row="18" Grid.RowSpan="3" TextWrapping="Wrap"  HorizontalAlignment="Left"                 
+                 AcceptsReturn="True"  ToolTip="{Binding Remarks  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  
+                 Text="{Binding Remarks  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  TabIndex="16"  Height="32"  />
+            <TextBlock Grid.Column="3"  Grid.ColumnSpan="2" Grid.Row="18"  Grid.RowSpan="3"  Text="{Binding CustomerErrors,UpdateSourceTrigger=PropertyChanged}" Foreground="red"></TextBlock>
+           
+            <TextBlock  Grid.Column="0" Grid.Row="22" Grid.ColumnSpan="2" TextWrapping="Wrap" Text="Amounts are in" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray">
+                  <TextBlock Text="{Binding CurrencyName}" Margin="5,0,1,0"  MaxWidth="200"></TextBlock>
+            </TextBlock>            
+            <TextBlock  x:Name="txtBAddressLine1" Grid.Column="3"  Grid.ColumnSpan="2" Grid.Row="3"   Text="Line 1"    />
+            <TextBox MaxWidth="290" Grid.Column="5" Grid.Row="3"   Text="{Binding Cus_Bill_to_line1  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="17" MaxLength="100"/>
+            <TextBlock  x:Name="txtBAddressLine2" Grid.Column="3"  Grid.ColumnSpan="2" Grid.Row="4"   Text="Line 2"    />
+            <TextBox MaxWidth="290" Grid.Column="5" Grid.Row="4"   Text="{Binding Cus_Bill_to_line2  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="18" MaxLength="100"/>
+            <TextBlock  x:Name="txtBCity" Grid.Column="3"  Grid.ColumnSpan="2" Grid.Row="5"   Text="City"    />
+            <!--<TextBox Grid.Column="5" Grid.Row="5"  Text="{Binding Cus_Bill_to_city  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="19" MaxLength="50" />-->
+            <StackPanel  Grid.Column="5" Grid.Row="5" MaxWidth="290">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>
+                <ctr:AutoComplete x:Name="txtBillingCity"  Text="{Binding Cus_Bill_to_city  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="19" 
+                    BorderBrush="Black" SelectedValuePath="CityID" DisplayMemberPath="Name" PatternChanged="autoBillingCity_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"      />
+            </StackPanel>
+            <TextBlock   Grid.Column="3"  Grid.ColumnSpan="2" Grid.Row="7"   Text="Country"    />
+            <StackPanel  Grid.Column="5" Grid.Row="7" MaxWidth="290">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>                
+                <ctr:AutoComplete x:Name="txtBillingCountry"  Text="{Binding Cus_Bill_to_country  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="21" 
+                     BorderBrush="Black"  SelectedValuePath="CountryID" DisplayMemberPath="Name" PatternChanged="autoBillingCountry_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"      />               
+            </StackPanel>                     
+              <TextBlock   Grid.Column="3"  Grid.ColumnSpan="2" Grid.Row="6"   Text="State"    />
+            <!--<TextBox x:Name="txtBillintState" Grid.Column="5" Grid.Row="7" Text="{Binding Cus_Bill_to_state  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="21" MaxLength="50" />-->
+            <StackPanel  Grid.Column="5" Grid.Row="6" MaxWidth="290">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>
+                <ctr:AutoComplete x:Name="txtBillingState"  Text="{Binding Cus_Bill_to_state  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="20" 
+                      BorderBrush="Black"  SelectedValuePath="StateID" DisplayMemberPath="Name" PatternChanged="autoBillingState_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"/>
+            </StackPanel>
+
+            <TextBlock  x:Name="txtBPostalCode" Grid.Column="3" Grid.ColumnSpan="2"  Grid.Row="8"   Text="Postal Code"    />
+            <TextBox Grid.Column="5" Grid.Row="8"    Text="{Binding Cus_Bill_to_post_code}" TabIndex="21" MaxLength="10" MaxWidth="290"/>
+            <!--<StackPanel  Grid.Column="5" Grid.Row="8">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>
+                <ctr:AutoComplete x:Name="txtBillingPostalCode"  Text="{Binding Cus_Bill_to_post_code  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="21" 
+                        SelectedValuePath="PostalCodeID" DisplayMemberPath="Name" PatternChanged="autoBillingPostalCode_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"      />
+            </StackPanel>-->
+            <TextBlock  x:Name="txtshipToAddress" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="9"   Text="Ship to Address"    />
+            <TextBlock  x:Name="lblSAddressLine1" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="10"   Text="Line 1"    />
+            <TextBox MaxWidth="290" Grid.Column="5" Grid.Row="10"   Text="{Binding ShipAddressLine1  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="26" MaxLength="100" />
+            <TextBlock  x:Name="lblSAddressLine2" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="11"   Text="Line 2"    />
+            <TextBox MaxWidth="290" Grid.Column="5" Grid.Row="11"   Text="{Binding ShipAddressLine2  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="27" MaxLength="100"/>
+            <TextBlock  x:Name="lblSCity" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="12"   Text="City"     />
+            <!--<TextBox Grid.Column="5" Grid.Row="12"    Text="{Binding ShipCity  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="28" MaxLength="50"/>-->
+            <StackPanel  Grid.Column="5" Grid.Row="12" MaxWidth="290">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>
+                <ctr:AutoComplete x:Name="txtShippingCity"  Text="{Binding ShipCity  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="28" 
+                        SelectedValuePath="CityID" DisplayMemberPath="Name" PatternChanged="autoShippingCity_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"      />
+            </StackPanel>
+            <TextBlock  x:Name="lblSCountry" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="14"   Text="Country"    />
+            
+            <!--<TextBox x:Name="txtSCountry" Grid.Column="5" Grid.Row="13" Text="{Binding ShipCountry  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="29"  MaxLength="50"  />-->
+            <StackPanel  Grid.Column="5" Grid.Row="14" MaxWidth="290">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>
+                <ctr:AutoComplete x:Name="txtSCountry"  Text="{Binding ShipCountry  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="30" 
+                      BorderBrush="Black"  SelectedValuePath="CountryID" DisplayMemberPath="Name" PatternChanged="autoShippingCountry_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"      />
+            </StackPanel>
+            <TextBlock  x:Name="lblSState" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="13"   Text="State"    />
+            <!--<TextBox x:Name="txtSState" Grid.Column="5" Grid.Row="14" Text="{Binding ShipState  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="30"  MaxLength="50" />-->
+            <StackPanel  Grid.Column="5" Grid.Row="13" MaxWidth="290">
+                <StackPanel.Resources>
+                    <ResourceDictionary Source="/SDN.Common;component/Styles/AutoComplete.Styles.xaml" />
+                </StackPanel.Resources>
+                <ctr:AutoComplete x:Name="txtSState"  Text="{Binding ShipState  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="29" 
+                      BorderBrush="Black"  SelectedValuePath="StateID" DisplayMemberPath="Name" PatternChanged="autoShippingState_PatternChanged" Style="{StaticResource AutoCompleteComboBox}"
+                          Delay="500"      />
+            </StackPanel>
+            <TextBlock  x:Name="txtSPostalCode" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="15"   Text="Postal Code"    />
+            <TextBox MaxWidth="290" Grid.Column="5" Grid.Row="15"    Text="{Binding ShipPostalCode  ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" TabIndex="31" MaxLength="10"/>
+            <DockPanel  Grid.Column="5" Grid.Row="16" HorizontalAlignment="Left">
+                <Button x:Name="btnSameAsBill" DockPanel.Dock="Left"  Width="140" Content="Same as Bill to Address" TabIndex="32" Command="{Binding SameAsBillingAddressCommand}"  Margin="4,4,0,4" Style="{DynamicResource ButtonStyle}"/>
+              
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="22" Grid.ColumnSpan="3" HorizontalAlignment="Right"  Margin="10,0,10,0" VerticalAlignment="Bottom">
+                <Button Content="Delete"  Margin="10 0" Style="{DynamicResource ButtonStyle}" Command="{Binding DeleteCustomerClickCommand}" />
+                <Button Content="New"  Margin="10 0" Style="{DynamicResource ButtonStyle}" Command="{Binding NewCustomerClickCommand}"/>
+                <Button  Command="{Binding SaveClickCommand}" Content="Save"  Margin="10 0" Style="{DynamicResource ButtonStyle}">
+                   
+                </Button>
+                <Button Content="Close" Command="{Binding CancelClickCommand}"  Margin="10 0 0 0" Style="{DynamicResource ButtonStyle}"/>
+            </StackPanel>
+        
+        </Grid>
+      
+    </ScrollViewer>
+
+</UserControl>

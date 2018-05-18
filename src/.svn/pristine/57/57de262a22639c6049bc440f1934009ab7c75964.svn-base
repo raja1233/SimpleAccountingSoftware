@@ -1,0 +1,230 @@
+﻿<UserControl x:Class="SASClient.File.Views.ImportDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SASClient.File.Views"
+             xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+             xmlns:my="clr-namespace:SDN.Common;assembly=SDN.Common"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" Width="1024"  
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="items" Source="{Binding Path=.}"/>
+        <helpers:TextInputToVisibilityConverter x:Key="TextInputToVisibilityConverter"/>
+        <helpers:DateTimeConverter x:Key="DateTimeFormatter"></helpers:DateTimeConverter>
+        <helpers:RowToIndexConverter x:Key="RowToIndexConverter"/>
+        <helpers:BooleanOrConverter x:Key="BooleanOrConverter"/>
+        <helpers:MultipleParameterConverter x:Key="MultiParamterConverter"></helpers:MultipleParameterConverter>
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <helpers:SelectedItemConvertor x:Key="SelectedItemToItemsSource"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="120"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+
+
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <!--<Grid Grid.Row="0" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <RadioButton Margin="42 0 0 0 " VerticalAlignment="Center"   GroupName="reject" IsChecked="{Binding Radio1IsCheck, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                        <TextBlock Margin="25 0 0 0" Text="Download Empty Excel Files"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>
+                        <TextBlock>Download Empty Excel Files</TextBlock>
+                    </RadioButton>
+                    <TextBlock Margin="25 0 0 0" Text="Download Empty Excel Files"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>
+                </DockPanel>
+            </Grid>-->
+            <!--<Grid Grid.Row="0" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                --><!--<DockPanel>
+                    <RadioButton Margin="56 0 0 0 " VerticalAlignment="Center"  GroupName="reject" IsChecked="{Binding Radio2IsCheck, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    <TextBlock Margin="25,0,0,12" Text="Import Data From Excel Files"  VerticalAlignment="Bottom" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>
+                    --><!--<TextBlock>Import Data From Excel Files</TextBlock>-->
+                    <!--<TextBlock Margin="25 0 0 0" Text="Import Data From Excel Files"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>--><!--
+                </DockPanel>--><!--
+            </Grid>-->
+
+            <!--<Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <TextBlock Margin="30 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold">Duplicate Records</TextBlock>
+                </DockPanel>
+            </Grid>-->
+            <!--<Grid Grid.Row="1" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <RadioButton Margin="10 0 10 0 " VerticalAlignment="Center"  GroupName="current" IsChecked="{Binding Radio3IsCheck, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    <TextBlock Margin="0 0 10 0" Text="Reject"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>
+                </DockPanel>
+                <DockPanel>
+                    <RadioButton Margin="80 0 10 0 " VerticalAlignment="Center"  GroupName="current" IsChecked="{Binding Radio4IsCheck, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    <TextBlock Margin="0 0 10 0" Text="Update"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>
+                </DockPanel>
+            </Grid>-->
+            <Grid Grid.Row="4" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <TextBlock Text=" Do not rename Excel Files &#x0a; Do not edit Excel column headings &#x0a; Do not rearrange Excel column headings"/>
+                </DockPanel>
+            </Grid>
+            <!--<ScrollViewer Margin="10 0 33 0" VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="1" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel>
+                        <RadioButton VerticalAlignment="Center" GroupName="current" IsChecked="{Binding current, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    </DockPanel>
+                    <GridSplitter Grid.Column="2" Width="1" HorizontalAlignment="Stretch" />
+                    
+
+                </Grid>
+            </ScrollViewer>-->
+            <ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10,0,33,0" Height="200" Grid.RowSpan="3" VerticalScrollBarVisibility="Auto" BorderThickness="1">
+                <Grid >
+                    <DataGrid Width="303" Height="200" Margin="0 0 0 0"  HorizontalAlignment="Left" HeadersVisibility="None"  CanUserDeleteRows="False" Name="datagrid1"  BorderBrush="Black" BorderThickness="1" Background="Transparent" VerticalAlignment="Top"
+             SelectedValue="{Binding ID}"  CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="False" ItemsSource="{Binding  ImportDataList}"  CanUserResizeColumns="False" CanUserResizeRows="False" GridLinesVisibility="None" >
+                        <!--<TextBlock Margin="0,10,0,0" Text="Download Empty Excel Files"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>-->
+                        <DataGrid.Columns>
+                            
+                            <!--<DataGridCheckBoxColumn Width="80" CanUserSort="False" Header="Inactive" Binding="{Binding IsChecked}">
+                            </DataGridCheckBoxColumn>-->
+                            <!--<DataGridTemplateColumn>
+                            <DataGridTemplateColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Margin="0,10,0,0" Text="Download Empty Excel Files"  VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.HeaderTemplate>
+                                </DataGridTemplateColumn>-->
+                            <DataGridTemplateColumn x:Name="TransactionPages" IsReadOnly="True" >
+                              
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Margin="10 10 0 0" BorderThickness="0" Height="22" IsReadOnly="True" Text="{Binding MasterName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" >
+                                        </TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn  Header="ImportCommand">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="20 10 0 0" Content="Download" Width="70" HorizontalAlignment="Center" Name="cmdImportCommand" Style="{DynamicResource ButtonStyle}" Command="{Binding DataContext.ImportCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource MultiParamterConverter}">
+                                                    <Binding Path="ID"/>
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                        <!--<RadioButton HorizontalAlignment="Center" GroupName="current" IsChecked="{Binding current, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />-->
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </ScrollViewer>
+            <ScrollViewer Margin="-0 0 33 0" Width="450" Height="200" VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" BorderThickness="1">
+                <Grid>
+                    <DataGrid Width="450" Height="200"  HorizontalAlignment="Center" HeadersVisibility="None"  ColumnHeaderStyle="{StaticResource HeaderStyle20}"  CanUserDeleteRows="False" Name="datagrid2"  BorderBrush="Black" BorderThickness="1" Background="Transparent" VerticalAlignment="Top"
+             SelectedValue="{Binding ID}"  CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="False" ItemsSource="{Binding  ImportDataListItem}"  CanUserResizeColumns="False" CanUserResizeRows="False" GridLinesVisibility="None" >
+                        <DataGrid.Columns>
+                            <!--<DataGridCheckBoxColumn Width="80" CanUserSort="False" Header="Inactive" Binding="{Binding IsChecked}">
+                                
+                            </DataGridCheckBoxColumn>-->
+                        
+                            <DataGridTextColumn Header="Value" Binding="{Binding Path=Name, Mode=OneTime}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Margin" Value="10 10 0 0" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn Header="Selected">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <RadioButton Margin="10 10 10 0 " VerticalAlignment="Center" GroupName="current" IsChecked="{Binding Radio3IsCheck, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                                <!--<RadioButton.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParamterConverter}">
+                                                        <Binding Path="ID"/>
+                                                    </MultiBinding>
+                                                </RadioButton.CommandParameter>-->
+                                                
+                                            </RadioButton>
+                                            <TextBlock Margin="0 10 10 0" Text="Reject"  VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <RadioButton Margin="15 10 0 0 " VerticalAlignment="Center" GroupName="current" IsChecked="{Binding Radio4IsCheck, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                                <!--<RadioButton.CommandParameter>
+                                                    <MultiBinding Converter="{StaticResource MultiParamterConverter}">
+                                                        <Binding Path="ID"/>
+                                                    </MultiBinding>
+                                                </RadioButton.CommandParameter>-->
+                                            </RadioButton>
+                                            <TextBlock Margin="15 10 0 0" Text="Update"  VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
+                                            
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="100" x:Name="ImportPage" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="20 10 0 0" Content="import" HorizontalAlignment="Center" Name="cmdImportCommand" Style="{DynamicResource ButtonStyle}" Command="{Binding DataContext.ImportOneCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+                                            <Button.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource MultiParamterConverter}">
+                                                    <Binding Path="ID"/>
+                                                </MultiBinding>
+                                            </Button.CommandParameter>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </ScrollViewer>
+
+            <!--end duplicate record-->
+
+            <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Bottom"  Height="{Binding ImportGridHeight}"  Grid.Row="4" HorizontalAlignment="Right"  Margin="10,0,10,0">
+
+                <Button Content="Close" VerticalAlignment="Bottom"  Margin="10 0 0 0" Style="{DynamicResource ButtonStyle}"/>
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+
+</UserControl>

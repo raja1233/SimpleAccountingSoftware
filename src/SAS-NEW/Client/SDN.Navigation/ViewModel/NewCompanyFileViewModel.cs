@@ -1,0 +1,311 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using SDN.Common;
+using SDN.UI.Entities.Login;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Input;
+using System.Text.RegularExpressions;
+using Microsoft.Practices.ServiceLocation;
+using SDN.Navigation.View;
+using System.Configuration;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
+using System.Data.Sql;
+using Microsoft.Win32;
+using System.Collections.ObjectModel;
+
+namespace SDN.Navigation.ViewModel
+{
+    public class NewCompanyFileViewModel : ViewModelBase
+    {
+        #region Private Properties
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+        private string databaseName;
+       
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        public ObservableCollection<string> selectServerName;
+        public string _SelectedItem;
+        #endregion
+        #region Public Properties
+        public string DatabaseName
+        {
+            get
+            {
+                return this.databaseName;
+            }
+            set
+            {
+                this.databaseName = value;
+                this.OnPropertyChanged("DatabaseName");
+            }
+        }
+        public ObservableCollection<string> SelectServerName
+        {
+            get
+            {
+                return this.selectServerName;
+            }
+            set
+            {
+                this.selectServerName = value;
+                this.OnPropertyChanged("SelectServerName");
+            }
+        }
+        public string SelectedItem
+        {
+            get
+            {
+                return this._SelectedItem;
+            }
+            set
+            {
+                this._SelectedItem = value;
+                this.OnPropertyChanged("SelectedItem");
+            }
+        }
+
+        #endregion
+        #region Constructor
+        public NewCompanyFileViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            RefreshLoad();
+            DatabaseCommand = new DelegateCommand(NewDatabase);
+            eventAggregator.GetEvent<HeaderVisibilityChangeEvent>().Publish(false);
+            eventAggregator.GetEvent<FooterVisibilityChangeEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("");
+            eventAggregator.GetEvent<CompanynameChangedEvent>().Publish(" ");
+        }
+        #endregion
+        #region Relay Commands
+        public ICommand DatabaseCommand { get; set; }
+        #endregion
+        #region Button Commands
+
+        public static bool CheckDatabaseExists(string connectionString, string databaseName)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                using (var command = new SqlCommand($"SELECT db_id('{databaseName}')", connection))
+                {
+                    connection.Open();
+                    return (command.ExecuteScalar() != DBNull.Value);
+                }
+            }
+        }
+        public void RefreshLoad()
+        {
+            ObservableCollection<string> Serverlist = new ObservableCollection<string>();
+            SqlDataSourceEnumerator instance = SqlDataSourceEnumerator.Instance;
+            System.Data.DataTable table = instance.GetDataSources();
+            foreach (System.Data.DataRow row in table.Rows)
+            {
+                if (row["ServerName"] != DBNull.Value && Environment.MachineName.Equals(row["ServerName"].ToString()))
+                {
+                    string item = string.Empty;
+                    item = row["ServerName"].ToString();
+                    if (row["InstanceName"] != DBNull.Value || !string.IsNullOrEmpty(Convert.ToString(row["InstanceName"]).Trim()))
+                    {
+                        item += @"\" + Convert.ToString(row["InstanceName"]).Trim();
+                    }
+                    Serverlist.Add(item);
+                }
+            }
+            SelectServerName = Serverlist;
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = "/C sqllocaldb i";
+            process.StartInfo = startInfo;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            var result = process.StandardOutput.ReadLine();
+            string LocalServerName = string.Concat(@"(LocalDb)\", result);
+            SelectServerName.Add(LocalServerName);
+        }
+       
+        public void NewDatabase()
+        {
+           
+            try
+            {
+                var name = databaseName;
+                if (!String.IsNullOrWhiteSpace(name))
+                {
+                    String str;
+                    string ConString = "Server=" + SelectedItem + ";Integrated security=SSPI ;Trusted_Connection=True;database=master";
+                    bool Status = CheckDatabaseExists(ConString, databaseName);
+                    if (Status == false)
+                    {
+                        SqlConnection myConn = new SqlConnection
+                       ("Server=" + SelectedItem + ";Integrated security=SSPI ;Trusted_Connection=True;database=master");
+
+
+                        str = "CREATE DATABASE " + name;
+
+                        SqlCommand myCommand = new SqlCommand(str, myConn);
+                        try
+                        {
+                            myConn.Open();
+                            myCommand.ExecuteNonQuery();
+
+                            bool status= RunScript();
+                           
+                            if (status==true)
+                            {
+                                StringBuilder Con = new StringBuilder("metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=';data source=" + SelectedItem + ";Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework;");
+                                //Con.Append("res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=&quot;server=SDN-450\\SQLEXPRESS;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;");
+                                Con.Append("initial catalog=");
+                                Con.Append(databaseName);
+                                Con.Append("';");
+                                string finalconnectionstring = Con.ToString();
+               
+
+                                SASDAL.Properties.Settings.Default.SASEntitiesEDM = finalconnectionstring;
+                                SASDAL.Properties.Settings.Default.Save();
+
+                                var view = ServiceLocator.Current.GetInstance<LoginUserView>();
+                                IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+                                region1.Add(view);
+                                if (region1 != null)
+                                {
+                                    region1.Activate(view);
+                                }
+                                eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+                                eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                                
+                            }
+                            else
+                            {
+                                str = "DROP DATABASE " + name;
+                                SqlCommand myCommand1 = new SqlCommand(str, myConn);
+                               // myConn.Open();
+                                myCommand1.ExecuteNonQuery();
+                               
+                                System.Windows.Forms.DialogResult result=MessageBox.Show("There is something wrong while creating database", "MyApp",
+
+                                MessageBoxButtons.OK);
+
+                                if(result== System.Windows.Forms.DialogResult.OK)
+                                {
+                                    var view = ServiceLocator.Current.GetInstance<OpenCompanyFileView>();
+                                    IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+                                    region1.Add(view);
+                                    if (region1 != null)
+                                    {
+                                        region1.Activate(view);
+                                    }
+                                    eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+                                    eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return ;
+                        }
+                        finally
+                        {
+                            if (myConn.State == ConnectionState.Open)
+                            {
+                                myConn.Close();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Database is Already Exist\n"+ "@ Simple Accounting Software Pte Ltd");
+                     
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please Enter Database Name\n"+ "@ Simple Accounting Software Pte Ltd");
+                  
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
+
+        }
+      
+        #endregion
+        #region Public Methods
+        public bool RunScript()
+        {
+            try
+            {
+                //string sqlConnectionString = @"Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=" + databaseName + ";Data Source=" + SelectedItem + "";
+                string sqlConnectionString = @"Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=" + databaseName + ";Data Source=" + SelectedItem + "";
+                
+                string exefolder = System.Windows.Forms.Application.StartupPath;
+                string scriptone = System.IO.Path.Combine(exefolder, @"SAS_SchemaAndData.sql");
+                string scripttwo = System.IO.Path.Combine(exefolder, @"SAS_SchemaOnly.sql");
+                string scriptthree = System.IO.Path.Combine(exefolder, @"SAS_SPAndFunction.sql");
+                using (SqlConnection conn = new SqlConnection(sqlConnectionString))
+                {
+                    Server db = new Server(new ServerConnection(conn));
+                 
+                    string script = File.ReadAllText(scriptone); 
+                    string script1 = File.ReadAllText(scripttwo);
+                    string script2 = File.ReadAllText(scriptthree);
+                 
+                    db.ConnectionContext.ExecuteNonQuery(script);
+                    db.ConnectionContext.ExecuteNonQuery(script1);
+                    db.ConnectionContext.ExecuteNonQuery(script2);
+                }
+              
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+           
+        }
+        #endregion
+        #region BAckground methods
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+
+            base.OnPropertyChanged(name);
+        }
+        #endregion
+    }
+}

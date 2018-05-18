@@ -1,0 +1,97 @@
+﻿using SDN.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities.Accounts
+{
+    public class TrailBalanceEntity: ViewModelBase
+    {
+        #region
+        private int _SIGridHeight;
+        private List<TrailBalanceEntity> _dataList;
+        private int _ID;
+        private string _AccountName;
+        private string _CreditBalance;
+        private string _DebitBalance;
+        #endregion
+        public int SIGridHeight
+        {
+            get
+            {
+                return _SIGridHeight;
+            }
+            set
+            {
+                _SIGridHeight = value;
+                OnPropertyChanged("SIGridHeight");
+            }
+        }
+        public List<TrailBalanceEntity> DataList
+        {
+            get
+            {
+                return _dataList;
+
+            }
+            set
+            {
+                _dataList = value;
+                OnPropertyChanged("DataList");
+
+            }
+        }
+        
+        public int ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public string AccountName
+        {
+            get
+            {
+                return _AccountName;
+            }
+            set
+            {
+                _AccountName = value;
+                OnPropertyChanged("AccountName");
+            }
+        }
+      
+        public string CreditBalance
+        {
+            get
+            {
+                return _CreditBalance;
+            }
+            set
+            {
+                _CreditBalance = value;
+                OnPropertyChanged("CreditBalance");
+            }
+        }
+        public string DebitBalance
+        {
+            get
+            {
+                return _DebitBalance;
+            }
+            set
+            {
+                _DebitBalance = value;
+                OnPropertyChanged("DebitBalance");
+            }
+        }
+    }
+}

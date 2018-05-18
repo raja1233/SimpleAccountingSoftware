@@ -1,0 +1,1 @@
+"metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=';data source=(LocalDb)\\MSSQLLocalDB;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework;"

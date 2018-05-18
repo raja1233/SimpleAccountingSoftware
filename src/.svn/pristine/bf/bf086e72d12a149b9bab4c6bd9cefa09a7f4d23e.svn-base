@@ -1,0 +1,513 @@
+﻿<UserControl x:Class="SDN.Navigation.View.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             Height="Auto" Width="Auto">
+    <ScrollViewer  VerticalScrollBarVisibility="Auto" >
+        <DockPanel >
+            <Canvas DockPanel.Dock="Top" >
+
+                <Viewbox Canvas.Left="670" Canvas.Top="10">
+                    <TextBlock Text="Boxes with centre line :" FontStyle="Italic" ></TextBlock>
+                </Viewbox>
+                <Viewbox Canvas.Left="670" Canvas.Top="40">
+                    <StackPanel>
+                        <TextBlock Text="Click in top half for Blank Form" FontStyle="Italic" ></TextBlock>
+                        <TextBlock Text="and bottom half for List" FontStyle="Italic" ></TextBlock>
+                    </StackPanel>
+                </Viewbox>
+                <Viewbox Canvas.Left="670" Canvas.Top="90">
+                    <TextBlock Text="P &amp; S : Products &amp; Services" FontStyle="Italic" ></TextBlock>
+                </Viewbox>
+                <Viewbox Canvas.Left="890" Canvas.Top="10">
+                   
+                          <Button Style="{DynamicResource AuditTrialButton}" Command="{Binding NotificationClickCommand}" >
+                         <TextBlock Text="Notifications" Foreground="Black" ></TextBlock>
+                    </Button>
+                     
+                </Viewbox>
+                <Viewbox Canvas.Left="890" Canvas.Top="40">
+                                      
+                    <Button Style="{DynamicResource AuditTrialButton}" Command="{Binding TodoListClickCommand}" >
+                        <TextBlock Text="To Do List" Foreground="Black"></TextBlock>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="890" Canvas.Top="70">
+                   
+                    <!--<Hyperlink Command="{Binding AuditTrailClickCommand}">
+                        <TextBlock Text="Audit Trail" Foreground="Black"></TextBlock>
+                    </Hyperlink>-->
+                    <Button Style="{DynamicResource AuditTrialButton}" Command="{Binding AuditTrailClickCommand}" >
+                         <TextBlock Text="Audit Trail" Foreground="Black"></TextBlock>
+                    </Button>
+               
+                </Viewbox>
+                <!--First Row start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="6">
+                    <Label Content="File"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="6">
+                    <Button Style="{DynamicResource HomeButtonStyle}" >
+                        <Image Source="/Resources/HomePageImages/Open Company File.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="6">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding ImportDataCommand}">
+                        <Image Source="/Resources/HomePageImages/Import Data.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="6">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding ExportDataCommand}" >
+                        <Image Source="/Resources/HomePageImages/Export Data.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="6">
+                    <Button Style="{DynamicResource HomeButtonStyle}" >
+                        <Image Source="/Resources/HomePageImages/Backup Data.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="6">
+                    <Button Style="{DynamicResource HomeButtonStyle}" >
+                        <Image Source="/Resources/HomePageImages/Restore Data.png"/>
+                    </Button>
+                </Viewbox>
+                <!--First Row End-->
+
+                <!--Second Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="80">
+                    <Label Content="Settings"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="80">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CompanyDetailsCommand}" >
+                        <Image Source="/Resources/HomePageImages/Company Details.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="80" >
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CategoriesCommand}">
+                        <Image Source="/Resources/HomePageImages/Categories.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="80">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding OptionsCommand}">
+                        <Image Source="/Resources/HomePageImages/Options.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="350" Canvas.Top="80">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding TaxCodesRatesCommand}">
+                        <Image Source="/Resources/HomePageImages/GST_VAT Codes Rates.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="80">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding UsersAndSecurityCommand}">
+                        <Image Source="/Resources/HomePageImages/Users and Security.png"/>
+                    </Button>
+                </Viewbox>
+                <!--second Row end
+            
+            Third Row start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="150">
+                    <Label Content="Customers"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="154">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CustomersClickCommand}" CommandParameter="Customers" >
+                        <Image Source="/Resources/HomePageImages/Customers.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="188">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding CustomersDetailsClickCommand}" CommandParameter="CustomersList">
+                        <Image Source="/Resources/HomePageImages/Details copy.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="130" Canvas.Top="154">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding CustomersHistoryClickCommand}" CommandParameter="Customers" >
+                        <Image Source="/Resources/HomePageImages/Customers History.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="154">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CustomersStatementUnPaidInvoicesClickCommand}">
+                        <Image Source="/Resources/HomePageImages/Customers Statement.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="154">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PandSSoldToCustomerClickCommand}" CommandParameter="Customers" >
+                        <Image Source="/Resources/HomePageImages/P and S Sold.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="154">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding TopCustomersClickCommand}" CommandParameter="Top Customers">
+                        <Image Source="/Resources/HomePageImages/Top Customers.png"/>
+                    </Button>
+                </Viewbox>
+                <!--Third Row end
+            
+            Fourth Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="233">
+                    <Label Content="Sales"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="228">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SalesQuotationFormClickCommand}" CommandParameter="New" >
+                        <Image Source="/Resources/HomePageImages/Sales.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="262">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SalesQuotationListClickCommand}">
+                        <Image Source="/Resources/HomePageImages/Quotation.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="228">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SalesOrderFormClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Sales.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="262">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SalesOrderListListClickCommand}" CommandParameter="Sales Order List">
+                        <Image Source="/Resources/HomePageImages/Order.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="228">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SalesInvoiceFormCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Sales.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="262">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SalesInvoiceListCommand}" CommandParameter="Sales Invoice List">
+                        <Image Source="/Resources/HomePageImages/Invoice.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="228">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CreditNoteListCommand}" CommandParameter="Credit Note List">
+                        <Image Source="/Resources/HomePageImages/Credit.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="262">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CreditNoteListCommand}" CommandParameter="Credit Note List">
+                        <Image Source="/Resources/HomePageImages/Note.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="228">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PaymentsFromCustomersFormCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Payment.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="262">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PaymentsFromCustomersListCommand}" CommandParameter="Payment From Customer List">
+                        <Image Source="/Resources/HomePageImages/from Customer.png"/>
+                    </Button>
+                </Viewbox>
+                <!--Fourth Row End
+
+            Fifth Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="302">
+                    <Label Content="Suppliers"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="302">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SuppliersClickCommand}" CommandParameter="Supplier Details From">
+                        <Image Source="/Resources/HomePageImages/Supplier_1.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="336">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SuppliersDetailsListClickCommand}" CommandParameter="Suppliers Details List">
+                        <Image Source="/Resources/HomePageImages/Details.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="302">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SuppliersHistoryClickCommand}" CommandParameter="Supplier Details From" >
+                        <Image Source="/Resources/HomePageImages/Suppliers History.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="302">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding SuppliersStatementUnPaidInvoicesClickCommand}">
+                        <Image Source="/Resources/HomePageImages/Suppliers Statement.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="302">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PurchasedFromSupplierClickCommand}" >
+                        <Image Source="/Resources/HomePageImages/P and S Purchased.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="302">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding TopSuppliersClickCommand}" CommandParameter="Top Suppliers">
+                        <Image Source="/Resources/HomePageImages/Top Suppliers.png"/>
+                    </Button>
+                </Viewbox>
+                <!--Fifth Row End
+            Sixth Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="376">
+                    <Label Content="Purchase"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="376">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PurchaseQuotationFormClickCommand1}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Purchase.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="410">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PurchaseClickCommand1}" CommandParameter="Purchase Quotation List">
+                        <Image Source="/Resources/HomePageImages/Quotation.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="376">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PurchaseOrderFormClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Purchase.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="410">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PurchaseOrderListClickCommand}" CommandParameter="Purchase Order List">
+                        <Image Source="/Resources/HomePageImages/Order.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="376">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding PurchaseInvoiceFormClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Purchase.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="410">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding PurchaseInvoiceListClickCommand}" CommandParameter="Purchase Invoice List">
+                        <Image Source="/Resources/HomePageImages/Invoice.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="350" Canvas.Top="376">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding DebitNoteListClickCommand}" CommandParameter="Debit Note List">
+                        <Image Source="/Resources/HomePageImages/Debit.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="410">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding DebitNoteListClickCommand}" CommandParameter="Debit Note List">
+                        <Image Source="/Resources/HomePageImages/Note.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="376">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PaymentsToSuppliersFormCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Payment.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="410">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PaymentsToSuppliersListClickCommand}" CommandParameter="Debit Note List">
+                        <Image Source="/Resources/HomePageImages/to Suppliers .png"/>
+                    </Button>
+                </Viewbox>
+                <!--Sixth Row End
+            Seventh Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="455">
+                    <Label Content="P&amp;S"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding ProductsClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/P and S.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="484">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PandSDescriptionClickCommand}" CommandParameter="P &amp; S Details - List(Description)" >
+                        <Image Source="/Resources/HomePageImages/Details.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PandSHistoryClickCommand}" CommandParameter="P &amp; S History">
+                        <Image Source="/Resources/HomePageImages/P and S History.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding StockInAndOut}">
+                        <Image Source="/Resources/HomePageImages/Stock in_out Card.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CountandAdjustClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Count and.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="484">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CountandAdjustStockListClickCommand}" CommandParameter="Count And Adjust List">
+                        <Image Source="/Resources/HomePageImages/Adjust Stock.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding PandSSoldClickCommand}">
+                        <Image Source="/Resources/HomePageImages/P and S Sold.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="570" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PandSPurchaseClickCommand}">
+                        <Image Source="/Resources/HomePageImages/P and S Purchased.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="680" Canvas.Top="450">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding TopPandSClickCommand}" CommandParameter="Top P and S">
+                        <Image Source="/Resources/HomePageImages/Top P and S.png"/>
+                    </Button>
+                </Viewbox>
+                <!--seventh Row End
+
+            Eight Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="510">
+                    <Label Content="Cash &amp; Bank"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="526">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding CashAndBankClickCommand}" >
+                        <Image Source="/Resources/HomePageImages/Cash and Bank Statement.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="526">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding RefundToCustomerFormCommand}" CommandParameter="New" >
+                        <Image Source="/Resources/HomePageImages/Refund to.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="560">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding RefundToCustomersListCommand}" CommandParameter="Refund To Customers List">
+                        <Image Source="/Resources/HomePageImages/Customer.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="526">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding RefundFromsupplierFormCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Refund from.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="240" Canvas.Top="560">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding RefundFromsuppliersListCommand}" CommandParameter="Refund From Suppliers List">
+                        <Image Source="/Resources/HomePageImages/Supplier.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="526">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding ReceiveMoneyFormClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Receive.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="560">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding ReceiveMoneyListClickCommand}">
+                        <Image Source="/Resources/HomePageImages/Money.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="526">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PayMoneyCommand}" >
+                        <Image Source="/Resources/HomePageImages/Pay.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="460" Canvas.Top="560">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding PayMoneyListClickCommand}">
+                        <Image Source="/Resources/HomePageImages/Money.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="570" Canvas.Top="526">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding TransferMoneyFormClickCommand}" CommandParameter="New" >
+                        <Image Source="/Resources/HomePageImages/Transfer.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="570" Canvas.Top="560">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding TransferMoneyListClickCommand}" >
+                        <Image Source="/Resources/HomePageImages/Money.png"/>
+                    </Button>
+                </Viewbox>
+                <!--Eight Row End
+
+            Ninth Row Start-->
+                <Viewbox Canvas.Left="0" Canvas.Top="600">
+                    <Label Content="Accounts"  Style="{StaticResource MenuLableStyle}">
+                        <Label.LayoutTransform>
+                            <RotateTransform Angle="270"/>
+                        </Label.LayoutTransform>
+                    </Label>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding AccountFormClickCommand}" CommandParameter="New" >
+                        <Image Source="/Resources/HomePageImages/Accounts.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="20" Canvas.Top="634">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding AccountsDetailsClickCommand}" CommandParameter="AccountsDetailsList">
+                        <Image Source="/Resources/HomePageImages/Details.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="130" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding AccountsHistoryClickCommand}" CommandParameter="AccountsHistoryList">
+                        <Image Source="/Resources/HomePageImages/Accounts History.png"/>
+                    </Button>
+                </Viewbox>
+                <!--<Viewbox Canvas.Left="130" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" >
+                        <Image Source="/Resources/HomePageImages/Accounts History.png"/>
+                    </Button>
+                </Viewbox>-->
+                <Viewbox Canvas.Left="240" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}"  Command="{Binding AccountsTransactionClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Accounts Transactions.png"/>
+                    </Button>
+                </Viewbox>
+
+                <Viewbox Canvas.Left="350" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding JournalFormClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Journal.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="350" Canvas.Top="634">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding JournalListClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Details.png" />
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="460" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding LedgerClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Ledger.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="570" Canvas.Top="600">
+                   
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding AccountTrialBalanceClickCommand}" CommandParameter="New" >
+                        <Image Source="/Resources/HomePageImages/Trial Balance.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="680" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding ProfitAndLossStatementClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Profit andLoss Statement.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox  Canvas.Left="790" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding BalanceSheetClickCommand}" CommandParameter="New">
+                        <Image Source="/Resources/HomePageImages/Balance Sheet.png"/>
+                    </Button>
+                </Viewbox>
+                <Viewbox Canvas.Left="900" Canvas.Top="600">
+                    <Button Style="{DynamicResource HomeButtonStyle}" Command="{Binding GstAndVatClickCommand}">
+                        <Image Source="/Resources/HomePageImages/GST_VAT Reports.png"/>
+                    </Button>
+                </Viewbox>
+                <!--Ninth Row End-->
+
+
+            </Canvas>
+
+
+        </DockPanel>
+    </ScrollViewer>
+</UserControl>

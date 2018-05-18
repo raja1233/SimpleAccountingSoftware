@@ -1,0 +1,238 @@
+﻿using Microsoft.Reporting.WinForms;
+using Newtonsoft.Json;
+using SASClient.Purchasing.Services;
+using SASClient.Purchasing.ViewModel;
+using SDN.Common;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Suppliers;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.EntityClient;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace SASClient.Reports.ReportsPage
+{
+    /// <summary>
+    /// Interaction logic for PurchaseInvoiceDebitPaymentReportViewer.xaml
+    /// </summary>
+    public partial class PurchaseInvoiceDebitPaymentReportViewer : UserControl
+    {
+        private InvoiceDebitPaymentsViewModel _viewModel;
+        string connectionstring = SASDAL.Properties.Settings.Default.SASEntitiesEDM;
+        public PurchaseInvoiceDebitPaymentReportViewer()
+        {
+            InitializeComponent();
+            Type type = typeof(InvoiceDebitPaymentsViewModel);
+
+            //SalesInvoiceViewModel instance = (SalesInvoiceViewModel)Activator.CreateInstance(type);
+            object obj = System.Runtime.Serialization.FormatterServices
+             .GetUninitializedObject(type);
+            _viewModel = (InvoiceDebitPaymentsViewModel)obj;
+
+            this.DataContext = obj;
+            if (connectionstring.ToLower().StartsWith("metadata="))
+            {
+                EntityConnectionStringBuilder efBuilder = new EntityConnectionStringBuilder(connectionstring);
+                connectionstring = efBuilder.ProviderConnectionString;
+            }
+        }
+        public PurchaseInvoiceDebitPaymentReportViewer(InvoiceDebitPaymentsViewModel model) : this()
+        {
+            InitializeComponent();
+            this.DataContext = _viewModel;
+            _viewModel = model;
+
+        }
+    
+
+        private void UserControl_LoadedPurchaseInvoiceDebitPayment(object sender, RoutedEventArgs e)
+        {
+       
+            reportViewer11.LocalReport.DataSources.Clear();
+            string exefolder = System.Windows.Forms.Application.StartupPath;
+            string reportPath = System.IO.Path.Combine(exefolder, @"PurchaseInvoiceDebitPayment.rdlc");
+            reportViewer11.LocalReport.ReportPath = reportPath;
+            reportViewer11.LocalReport.DataSources.Add(new ReportDataSource("CombinedInvoiceDebitPaymentDataSet", Combineddetails()));
+            reportViewer11.LocalReport.DataSources.Add(new ReportDataSource("CompanyDetailsDataSet", Companydetails()));
+            reportViewer11.RefreshReport();
+            // this.reportViewer1.Width = 75;
+        }
+        private void reportViewer_RenderingComplete(object sender, Microsoft.Reporting.WinForms.RenderingCompleteEventArgs e)
+        {
+
+        }
+        public DataTable Combineddetails()
+        {
+            DateTime date = new DateTime();
+            int quarterNumber = (date.Month - 1) / 3 + 1;
+            var validdate = SharedValues.JsonDataValues;
+            var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(validdate);
+            var Year = Convert.ToInt16(objResponse1[0].FieldValue);
+            var Quarter = Convert.ToInt16(objResponse1[1].FieldValue);
+            var Month = Convert.ToInt16(objResponse1[2].FieldValue);
+
+            SqlDataReader rdr = null;    
+            DataSet Set = new DataSet();
+            DataTable table = new DataTable();
+            table.Columns.Add("MyId", typeof(System.Int32));
+            // table.Columns.Add("CustId", typeof(System.Int32));
+            table.Columns.Add(new DataColumn("SupplierName", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierBillToLine1", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierBillToLine2", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierBillToCity", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierBillToState", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierBillToCountary", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierBillToPostCode", typeof(string)));
+            table.Columns.Add(new DataColumn("SupplierTelephone", typeof(string)));
+            table.Columns.Add(new DataColumn("CurrencyCode", typeof(string)));
+            table.Columns.Add(new DataColumn("FromDate", typeof(string)));
+            table.Columns.Add(new DataColumn("ToDate", typeof(string)));
+            foreach (var id in SharedValues.SupplierID)
+            {
+                //var SupId = item.SupplierID;
+
+                using (var con = new SqlConnection(connectionstring))
+                using (var cmd = new SqlCommand("USP_SupplierStatementInvCNPayment", con))
+                using (var da = new SqlDataAdapter(cmd))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    cmd.Parameters.AddWithValue("@year", Convert.ToInt16(objResponse1[0].FieldValue));
+                    cmd.Parameters.AddWithValue("@Quarter", Convert.ToInt16(objResponse1[1].FieldValue));
+                    cmd.Parameters.AddWithValue("@Month", Convert.ToInt16(objResponse1[2].FieldValue));
+                    da.Fill(table);
+                    foreach (DataRow row in table.Rows)
+                    {
+
+                        string FromDate = row["FromDate"].ToString();
+                        string ToDate = row["ToDate"].ToString();
+                        string customerid = row["MyId"].ToString();
+                        //need to set value to NewColumn column
+                        if (customerid == "" && FromDate == "" && ToDate == "")
+                        {
+                            row["MyId"] = id;
+                            if (Month == 0)
+                            {
+                                DateTime firstDayOfQuarter = new DateTime(Year, (Quarter - 1) * 3 + 1, 1);
+                                DateTime lastDayOfQuarter = firstDayOfQuarter.AddMonths(3).AddDays(-1);
+                                var FirstQuarterDay = firstDayOfQuarter.ToString("dd/MM/yyyy");
+                                var LastQuarterDay = lastDayOfQuarter.ToString("dd/MM/yyyy");
+                                row["FromDate"] = FirstQuarterDay;
+                                row["ToDate"] = LastQuarterDay;
+                            }
+                            else
+                            {
+                                var firstDayOfMonth = new DateTime(Year, Month, 1);
+                                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                                var FirstMonthDay = firstDayOfMonth.ToString("dd/MM/yyyy");
+                                var LastMonthDay = lastDayOfMonth.ToString("dd/MM/yyyy");
+                                row["FromDate"] = FirstMonthDay;
+                                row["ToDate"] = LastMonthDay;
+                            }
+
+                        }
+
+                    }
+
+                    using (var cmd1 = new SqlCommand("[USP_GetSuppliers]", con))
+                    using (var da1 = new SqlDataAdapter(cmd1))
+                    {
+                        cmd1.CommandType = CommandType.StoredProcedure;
+                        //cmd1.Parameters.AddWithValue("@CustomerID", id);
+                        //da.Fill(table);
+
+                        foreach (DataRow row in table.Rows)
+                        {
+                            con.Open();
+                            rdr = cmd1.ExecuteReader();
+                            while (rdr.Read())
+                            {
+                                string SupplierName = row["SupplierName"].ToString();
+                                string SupplierBillToLine1 = row["SupplierBillToLine1"].ToString();
+                                string SupplierBillToLine2 = row["SupplierBillToLine2"].ToString();
+                                string SupplierBillToCity = row["SupplierBillToCity"].ToString();
+                                string SupplierBillToState = row["SupplierBillToState"].ToString();
+                                string SupplierBillToCountary = row["SupplierBillToCountary"].ToString();
+                                string SupplierBillToPostCode = row["SupplierBillToPostCode"].ToString();
+                                string SupplierTelephone = row["SupplierTelephone"].ToString();
+
+                                if (SupplierName == "")
+                                {
+                                    row["SupplierName"] = (string)rdr["Sup_Name"].ToString();
+                                    row["SupplierBillToLine1"] = (string)rdr["Sup_Bill_to_line1"].ToString();
+                                    row["SupplierBillToLine2"] = (string)rdr["Sup_Bill_to_line2"].ToString();
+                                    row["SupplierBillToCity"] = (string)rdr["Sup_Bill_to_city"].ToString();
+                                    row["SupplierBillToState"] = (string)rdr["Sup_Bill_to_state"].ToString();
+                                    row["SupplierBillToCountary"] = (string)rdr["Sup_Bill_to_country"].ToString();
+                                    row["SupplierBillToPostCode"] = (string)rdr["Sup_Bill_to_post_code"].ToString();
+                                    row["SupplierTelephone"] = (string)rdr["Sup_Telephone"].ToString();
+
+                                }
+
+                            }
+                            con.Close();
+
+
+                        }
+                    }
+
+                    using (var cmd2 = new SqlCommand("USP_OptionDetails", con))
+                    using (var da2 = new SqlDataAdapter(cmd2))
+                    {
+                        cmd2.CommandType = CommandType.StoredProcedure;
+                        foreach (DataRow row in table.Rows)
+                        {
+                            con.Open();
+                            rdr = cmd2.ExecuteReader();
+                            while (rdr.Read())
+                            {
+                                string CurrencyCode = row["CurrencyCode"].ToString();
+                                if (CurrencyCode == "")
+                                {
+                                    row["CurrencyCode"] = (string)rdr["CurrencyCode"].ToString();
+
+                                }
+
+
+                            }
+                            con.Close();
+
+
+                        }
+                    }
+                }
+            }
+            return table;
+        }
+
+
+        public DataTable Companydetails()
+        {
+            DataTable table = new DataTable();
+            using (var con = new SqlConnection(connectionstring))
+            using (var cmd = new SqlCommand("USP_CompanyDetails", con))
+            using (var da = new SqlDataAdapter(cmd))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                da.Fill(table);
+            }
+            return table;
+        }
+    }
+}

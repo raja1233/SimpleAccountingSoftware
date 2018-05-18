@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Common
+{
+    public static class Utility
+    {
+        public static double CalculatePercentage(double number, double percentage)
+        {
+            return (number * percentage) / 100;
+        }
+        public static decimal? CalculatePercentage(decimal? number, decimal? percentage)
+        {
+            if (number == null || percentage == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return (number * percentage) / 100;
+            }
+        }
+
+        public static decimal? CalculateAverage(decimal? Component, int number)
+        {
+            if (number != 0 && Component!=0)
+            {
+                return Component / number;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+       
+    }
+}

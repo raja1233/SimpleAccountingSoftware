@@ -1,0 +1,667 @@
+﻿namespace SDN.CashBank.ViewModels
+{
+    using Microsoft.Practices.Prism.Events;
+    using UI.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Data;
+    using System.Windows.Input;
+    using System.Windows.Threading;
+    using Common;
+    using Services;
+    using Microsoft.Practices.ServiceLocation;
+    using SASClient.Accounts.Views;
+    using Microsoft.Practices.Prism.Regions;
+
+    using SASClient.CloseRequest;
+    using Microsoft.Practices.Prism.Commands;
+
+    public class AccountDetailViewModel : ViewModelBase
+    {
+        #region Private Properties
+        IAccountDetailsService AccountDetailsRepo = new AccountDetailsService();
+        private readonly IEventAggregator eventAggregator;
+        private readonly IRegionManager regionManager;
+        ObservableCollection<AccountsEntity> _acctype;
+        private AccountDetailEntity _cashbankdetails;
+        private string companyname = "smartData";
+        private string activeAccounts;
+        private string inActiveAccounts;
+        private string _Errors;
+        StackList itemlist = new StackList();
+        private bool _IsEnabled;
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        int compId = -1;
+        private event PropertyChangedEventHandler PropertyChanged;
+        int PrivateSeletedIndex = 0;
+        #endregion
+
+        //public AccountDetailViewModel(IEventAggregator eventAggregator)
+        //{
+        //    this.eventAggregator = eventAggregator;
+        //    eventAggregator.GetEvent<CompanynameChangedEvent>().Publish(companyname);
+        //}
+
+        public ObservableCollection<AccountsEntity> GetAccountTypes
+        {
+            get
+            {
+                return _acctype = new ObservableCollection<AccountsEntity>(AccountDetailsRepo.GetAccountTypes());
+            }
+        }
+        public string ActiveAccounts
+        {
+            get
+            {
+                return activeAccounts;
+            }
+            set
+            {
+                activeAccounts = value;
+                OnPropertyChanged("ActiveAccounts");
+            }
+        }
+
+        public string InActiveAccounts
+        {
+            get
+            {
+                return inActiveAccounts;
+            }
+            set
+            {
+                inActiveAccounts = value;
+                OnPropertyChanged("InActiveAccounts");
+            }
+        }
+
+        public AccountDetailEntity AccountDetails
+        {
+            get
+            {
+                return this._cashbankdetails;
+            }
+            set
+            {
+                this._cashbankdetails = value;
+            }
+        }
+        public string Errors
+        {
+            get
+            {
+                return _Errors;
+            }
+            set
+            {
+                _Errors = value;
+                OnPropertyChanged("Errors");
+            }
+        }
+
+        private string _MySelectedItem;
+        public string MySelectedItem
+        {
+            get
+            {
+                return _MySelectedItem;
+            }
+            set
+            {
+                _MySelectedItem = value;
+                OnPropertyChanged("MySelectedItem");
+                GetSelectedValue();
+            }
+        }
+        //public ObservableCollection<AccountsEntity> AcountList
+        //{
+        //    get
+        //    {
+        //        IAccountDetailsService AccountDetails = new AccountDetailsService();
+        //        var _accountCollection = new ObservableCollection<AccountsEntity>(AccountDetails.GetAccountDetails());
+        //        return _accountCollection;
+        //    }
+        //}
+
+        #region Constructor
+        public AccountDetailViewModel()
+        {
+            this.LoadOptionsBackground();
+            ClickSaveCommand = new RelayCommand(SaveOptions, CanSave);
+            ClickNewCommand = new RelayCommand(NewCommand);
+            ClickDeleteCommand = new RelayCommand(DeleteCommand);
+            UpdateBindingGroup = new System.Windows.Data.BindingGroup { Name = "Group1" };
+            PreviousCommand = new RelayCommand(OnPrev);
+            NextCommand = new RelayCommand(OnNext);
+            //EnterClosingBalance = new RelayCommand(ClosingBalanceForm);
+            //ActiveInactive = new RelayCommand(GetSelectedValue);
+            StartFinancialCommand = new RelayCommand(StartNewFinancial);
+            CloseCommand = new DelegateCommand(Close);
+        }
+        public AccountDetailViewModel(IRegionManager regionManager, IEventAggregator eventAggregator) : this()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+        }
+        #endregion
+        public ICommand CloseCommand { get; set; }
+        public RelayCommand NextCommand { get; set; }
+        public RelayCommand PreviousCommand { get; set; }
+        public RelayCommand ClickSaveCommand { get; set; }
+        public RelayCommand ClickNewCommand { get; set; }
+        public RelayCommand ClickDeleteCommand { get; set; }
+        public RelayCommand ActiveInactive { get; set; }
+        public RelayCommand EnterClosingBalance { get; set; }
+        public RelayCommand StartFinancialCommand { get; set; }
+        public void GetSelectedValue()
+        {
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            var accountinfo = AccountDetails.GetAccountDetails().ToList();
+            foreach (var item in accountinfo)
+            {
+                if (item.AccountName == "" || item.AccountName == "" || item.AccountName == "")
+                {
+
+                }
+            }
+            if (MySelectedItem != null)
+            {
+
+            }
+        }
+        private void Close()
+        {
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                var secondlast = listview.AsEnumerable().Reverse().Skip(1).First();
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest(secondlast);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            catch (Exception)
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest("MainView");
+                listview.RemoveAt(listview.Count - 1);
+            }
+            //List<string> calledlist = stack.x();
+        }
+        public void StartNewFinancial(object param)
+        {
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            string msg = "Simple will backup your Company file.\n"
+                + "Assets, Liabilities and Capital Accounts: Simple will transfer last year current balances to this year opening balances.Simple will put zeros in this year year-to - date and current balances.\n"
+                + "Income, Costs and Expenses Accounts: Simple will put zeros in this year opening balances, year - to - date and current balances.\n"
+                + "Income, Costs and Expenses Accounts do not have opening balances.";
+            //MessageBoxResult res = System.Windows.MessageBox.Show(msg);
+            //if (res == MessageBoxResult.OK)
+            //{
+
+            //}
+
+            System.Windows.Forms.MessageBoxManager.Yes = "FinancialYear";
+
+            System.Windows.Forms.MessageBoxManager.No = "Cancel";
+            System.Windows.Forms.MessageBoxManager.Register();
+            System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show(msg, "", System.Windows.Forms.MessageBoxButtons.YesNo);
+            if (result == System.Windows.Forms.DialogResult.Yes)
+            {
+                System.Windows.Forms.DialogResult StartResult = System.Windows.Forms.MessageBox.Show("Are you sure you want to Start New Financial Year?", "", System.Windows.Forms.MessageBoxButtons.OKCancel);
+                var x = System.Windows.Forms.MessageBox.Show("Are you sure you want to Start New Financial Year?", "", System.Windows.Forms.MessageBoxButtons.OKCancel);
+                if (StartResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    AccountDetails.StartNewFinancialYear(StartResult.ToString());
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+            System.Windows.Forms.MessageBoxManager.Unregister();
+        }
+
+
+        void OnPrev(object param)
+        {
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            var results = SelectedAccount as AccountDetailEntity;
+            var accountinfo = AccountDetails.GetAccountDetails();
+            if (results != null)
+            {
+                results.AccountDetails = accountinfo;
+                var current = results.AccountDetails.FirstOrDefault(x => x.AccountID == results.AccountID);
+
+                int index = results.AccountDetails.ToList().IndexOf(current);
+
+                if (index > 0)
+                {
+                    var selectedIndex = index - 1;
+                    var next = results.AccountDetails.ElementAt(index - 1);
+
+                    results.AccountID = next.AccountID;
+                    var nextvalue = AccountDetails.GetAccInfo(next.AccountID);
+                    if (results != null)
+                    {
+                        var account = SelectedAccount as AccountDetailEntity;
+                        account.DeleteEnabled = true;
+                        account.IsEnabled = true;
+                        account.ReadOnlyAccountName = false;
+                        account.IsCashAccount = false;
+                        account.AccountID = results.AccountID;
+                        account.AccountOpeningBal = results.AccountOpeningBal;
+                        account.AccountName = results.AccountName;
+                        account.IsInActive = results.IsInActive;
+                        account.SeletedIndex = selectedIndex;
+                        PrivateSeletedIndex = selectedIndex;
+                        account.SeletedAccountType = results.SeletedAccountType;
+                        account.AccoutTypeCombo = false;
+                        if (selectedIndex == 0)
+                        {
+                            account.EnablePrevious = false;
+
+                        }
+                        else
+                        {
+                            account.EnablePrevious = true;
+                        }
+                        if (index < results.AccountDetails.ToList().Count)
+                            account.EnableNext = true;
+                        else
+                            account.EnableNext = false;
+
+
+                    }
+
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        void OnNext(object param)
+        {
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            var results = SelectedAccount as AccountDetailEntity;
+            var accountinfo = AccountDetails.GetAccountDetails();
+            if (results != null)
+            {
+                var current = accountinfo.FirstOrDefault(x => x.AccountID == results.AccountID);
+
+                int index = accountinfo.ToList().IndexOf(current);
+
+                if (index < results.AccountDetails.ToList().Count - 1)
+                {
+                    var selectedIndex = index + 1;
+                    var next = results.AccountDetails.ElementAt(index + 1);
+                    results.AccountID = next.AccountID;
+                    var nextvalue = AccountDetails.GetAccInfo(next.AccountID);
+                    if (results != null)
+                    {
+                        var account = SelectedAccount as AccountDetailEntity;
+                        account.DeleteEnabled = true;
+                        account.IsEnabled = true;
+                        account.ReadOnlyAccountName = false;
+                        account.IsCashAccount = false;
+                        account.AccountID = results.AccountID;
+                        account.AccountOpeningBal = results.AccountOpeningBal;
+                        account.AccountName = results.AccountName;
+                        account.IsInActive = results.IsInActive;
+                        account.SeletedIndex = selectedIndex;
+                        PrivateSeletedIndex = selectedIndex;
+                        account.SeletedAccountType = results.SeletedAccountType;
+                        account.AccoutTypeCombo = false;
+                        var count = results.AccountDetails.Count();
+                        if (index < results.AccountDetails.ToList().Count - 2)
+                        {
+                            account.EnableNext = true;
+                        }
+                        else
+                        {
+                            account.EnableNext = false;
+                        }
+                        if (index + 1 > 0)
+                            account.EnablePrevious = true;
+                        else
+                            account.EnablePrevious = false;
+
+                    }
+                }
+            }
+        }
+
+        void SaveOptions(object param)
+        {
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            //UpdateBindingGroup.CommitEdit();
+            int results = 0;
+            var cashbankDetails = SelectedAccount as AccountDetailEntity;
+            if (cashbankDetails.AccountName == "Net GST/VAT")
+            {
+                this.Errors = "End Date should be greater than start date!";
+            }
+            else
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Content", MessageBoxButton.YesNo);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        results = AccountDetails.AddEditAccount(cashbankDetails);
+                        break;
+                    case MessageBoxResult.No:
+                        break;
+                }
+
+                if (results == 1)
+                {
+                    var result1 = AccountDetails.GetAccountDetails();
+                    var cashbankentity = SelectedAccount as AccountDetailEntity;
+                    cashbankentity.AccountDetails = result1;
+                    //cashbankentity.AccountName = string.Empty;
+                    //cashbankentity.AccountOpeningBal = string.Empty;
+                    //cashbankentity.IsInActive = false;
+                    if (result1.Count == 1)
+                        cashbankentity.SeletedIndex = 0;
+                    else if (result1.Count > 0)
+                        cashbankentity.SeletedIndex = PrivateSeletedIndex;
+                    if (cashbankentity.IsCashAccount == true)
+                        cashbankentity.DeleteEnabled = false;
+                    else
+                        cashbankentity.DeleteEnabled = true;
+
+
+                }
+                else if (results == 2)
+                {
+                    System.Windows.MessageBox.Show("Account Name already Exits.Please choose a different account name");
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("There was some problem in updating the entries, kindly try again later!");
+                }
+            }
+
+        }
+        void NewCommand(object param)
+        {
+            var cashbank = SelectedAccount as AccountDetailEntity;
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            var result1 = AccountDetails.GetAccountDetails();
+            cashbank.AccountDetails = result1;
+            if (result1.Count == 0)
+                PrivateSeletedIndex = 0;
+            else
+                PrivateSeletedIndex = result1.Count;
+            cashbank.AccountID = -1;
+            cashbank.AccountName = string.Empty;
+            cashbank.AccountOpeningBal = string.Empty;
+            cashbank.IsInActive = false;
+            cashbank.IsEnabled = true;
+            cashbank.DeleteEnabled = false;
+            cashbank.ReadOnlyAccountName = false;
+            cashbank.AccoutTypeCombo = true;
+
+        }
+        void DeleteCommand(object param)
+        {
+            bool? result1 = false;
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you really want to delete the Cash and Bank Details?", "Confirmation", MessageBoxButton.YesNo);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    var cashbank = SelectedAccount as AccountDetailEntity;
+                    var candeletecashbank = AccountDetails.CanDeleteAccount(cashbank.AccountID);
+                    if (candeletecashbank)
+                    {
+                        result1 = AccountDetails.DeleteAccount(cashbank.AccountID);
+                        var cashbankentity = SelectedAccount as AccountDetailEntity;
+                        var results = AccountDetails.GetAccountDetails();
+
+                        cashbankentity.AccountDetails = results;
+                        //cashbankentity.IsEnabled = true;
+                        //cashbankentity.IsInActive = false;
+
+                        if (result1 == true)
+                        {
+                            if (results.Count - 1 >= PrivateSeletedIndex)
+                                cashbankentity.SeletedIndex = PrivateSeletedIndex;
+                            else if (results.Count - 1 == PrivateSeletedIndex - 1 && results.Count != 0)
+                                cashbankentity.SeletedIndex = PrivateSeletedIndex - 1;
+                            else
+                            {
+                                cashbankentity.AccountName = string.Empty;
+                                cashbankentity.AccountOpeningBal = string.Empty;
+                                cashbankentity.AccountID = -1;
+                                cashbankentity.IsEnabled = true;
+                                cashbankentity.IsInActive = false;
+                                cashbankentity.SeletedIndex = 0;
+                            }
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show("There was some problem in deleting the entries, kindly try again later!");
+                        }
+
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("You can delete this account!");
+                    }
+                    break;
+                case MessageBoxResult.No:
+
+                    break;
+            }
+        }
+
+        object _SelectedAccount;
+        public object SelectedAccount
+        {
+            get
+            {
+
+                return _SelectedAccount;
+            }
+            set
+            {
+                if (_SelectedAccount != value)
+                {
+                    _SelectedAccount = value;
+                    RaisePropertyChanged("SelectedAccount");
+                }
+            }
+        }
+
+        BindingGroup _UpdateBindingGroup;
+        public BindingGroup UpdateBindingGroup
+        {
+            get
+            {
+                return _UpdateBindingGroup;
+            }
+            set
+            {
+                if (_UpdateBindingGroup != value)
+                {
+                    _UpdateBindingGroup = value;
+                    RaisePropertyChanged("UpdateBindingGroup");
+                }
+            }
+        }
+
+        public void LoadOptionsBackground()
+        {
+
+
+
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+            RefreshPage();
+            //int compId = 0;
+            Mouse.OverrideCursor = null;
+        }
+
+        public void RefreshPage()
+        {
+            SelectedAccount = null; // Unselects last selection. Essential, as assignment below won't clear other control's SelectedItems
+            var Account = new AccountDetailEntity();
+
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            var results = AccountDetails.GetDefaultAccount();
+            var accountinfo = AccountDetails.GetAccountDetails();
+            if (results != null)
+            {
+                if (SharedValues.NewClick == "New")
+                {
+                    results.AccountDetails = accountinfo;
+                    results.SeletedIndex = 0;
+                    results.EnablePrevious = false;
+
+
+                    int minHeight = 300;
+                    int headerRows = 380;//180+40+30+10;
+                    var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 70;
+                    bool validHeight = int.TryParse(height.ToString(), out minHeight);
+                    results.AccountGridHeight = minHeight;
+
+
+                    SelectedAccount = results;
+
+                    ActiveAccounts = Convert.ToString(accountinfo.Where(e => e.IsInactive == "N").Count());
+                    InActiveAccounts = Convert.ToString(accountinfo.Where(e => e.IsInactive == "Y").Count());
+                }
+                else
+                {
+                    results.AccountDetails = accountinfo;
+                    int LinkedaccountID = Convert.ToInt32(SharedValues.NewClick);
+                    results.SeletedIndex = accountinfo.FindIndex(x => x.AccountID == LinkedaccountID);
+                    int minHeight = 300;
+                    int headerRows = 380;//180+40+30+10;
+                    var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 70;
+                    bool validHeight = int.TryParse(height.ToString(), out minHeight);
+                    results.AccountGridHeight = minHeight;
+                    SelectedAccount = results;
+                    ActiveAccounts = Convert.ToString(accountinfo.Where(e => e.IsInactive == "N").Count());
+                    InActiveAccounts = Convert.ToString(accountinfo.Where(e => e.IsInactive == "Y").Count());
+                }
+
+
+            }
+
+            //this.AccountDetails = customerRepository.GetAllCustomers().ToList();
+            //if (SearchCustomer.Count > 0)
+            //{
+            //    this.SelectedSearchCustmer = SearchCustomer[0].ID;
+            //    custId = SearchCustomer[0].ID;
+            //}
+            //else
+            //{
+            //    this.SelectedSearchCustmer = custId;
+            //}
+            //this.GetData(this.SelectedSearchCustmer);
+        }
+
+        public void LoadAccInfo(int AccountId, int selectedIndex)
+        {
+            IAccountDetailsService AccountDetails = new AccountDetailsService();
+            var results = AccountDetails.GetAccInfo(AccountId);
+            if (results != null)
+            {
+                if (results.IsLinkedAccount == true)
+                {
+                    var accountinfo = SelectedAccount as AccountDetailEntity;
+                    accountinfo.DeleteEnabled = false;
+                    accountinfo.IsEnabled = false;
+                    accountinfo.ReadOnlyAccountName = true;
+                    accountinfo.IsCashAccount = false;
+                    accountinfo.AccountID = results.AccountID;
+                    accountinfo.AccountOpeningBal = results.AccountOpeningBal;
+                    accountinfo.AccountName = results.AccountName;
+                    accountinfo.IsInActive = results.IsInActive;
+                    accountinfo.HashSymbol = (results.IsLinkedAccount == true ? "#" : "");
+                    accountinfo.SeletedIndex = selectedIndex;
+                    PrivateSeletedIndex = selectedIndex;
+                    accountinfo.SeletedAccountType = results.SeletedAccountType;
+                    accountinfo.AccoutTypeCombo = false;
+                }
+                else
+                {
+                    var accountinfo = SelectedAccount as AccountDetailEntity;
+                    accountinfo.DeleteEnabled = true;
+                    accountinfo.IsEnabled = true;
+                    accountinfo.ReadOnlyAccountName = false;
+                    accountinfo.IsCashAccount = false;
+                    accountinfo.AccountID = results.AccountID;
+                    accountinfo.AccountOpeningBal = results.AccountOpeningBal;
+                    accountinfo.AccountName = results.AccountName;
+                    accountinfo.IsInActive = results.IsInActive;
+                    accountinfo.HashSymbol = (results.IsLinkedAccount == true ? "#" : "");
+                    accountinfo.SeletedIndex = selectedIndex;
+                    PrivateSeletedIndex = selectedIndex;
+                    accountinfo.SeletedAccountType = results.SeletedAccountType;
+                    accountinfo.AccoutTypeCombo = false;
+                }
+
+            }
+
+            //OnPropertyChanged("Account");
+        }
+
+        public void CheckOpeningBal(object AccountCode)
+        {
+            if (AccountCode != null)
+            {
+
+
+                var selectedOption = SelectedAccount as AccountDetailEntity;
+
+                if (AccountCode.ToString() == "7" || AccountCode.ToString() == "8" || AccountCode.ToString() == "9")
+                {
+                    selectedOption.EnableOpeningBalance = true;
+                    selectedOption.AccountOpeningBal = "0";
+                }
+
+                else
+                {
+                    selectedOption.EnableOpeningBalance = false;
+                    selectedOption.AccountOpeningBal = "0";
+                }
+            }
+
+            //OnPropertyChanged("Account");
+        }
+
+        public bool CanSave(object param)
+        {
+
+            if (SelectedAccount != null)
+            {
+                var selectedOption = SelectedAccount as AccountDetailEntity;
+                if (selectedOption.AccountName == null || selectedOption.AccountName == "" || selectedOption.AccountName == " ")
+                    return false;
+                else
+                    return true;
+
+            }
+            else
+                return false;
+        }
+
+    }
+}

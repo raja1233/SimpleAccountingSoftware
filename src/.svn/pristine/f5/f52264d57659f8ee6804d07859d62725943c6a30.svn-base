@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" />
+          <Property Name="Content-Type" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CategoriesContent">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cat-Id" Type="int" />
+          <Property Name="Content-Limit" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Cat-Contents" Type="nvarchar" MaxLength="200" />
+          <Property Name="Set-Default" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="CustomerDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Cus-Id" Type="int" Nullable="false" />
+          <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Inactive" Type="char" MaxLength="1" />
+          <Property Name="Cus-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Type" Type="nvarchar" MaxLength="10" />
+          <Property Name="Cus-Salesman" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Credit-Limit-Days" Type="int" />
+          <Property Name="Cus-Credit-Limit-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Cus-Discount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Cus-Telephone" Type="nvarchar" MaxLength="30" />
+          <Property Name="Cus-Fax" Type="nvarchar" MaxLength="30" />
+          <Property Name="Cus-Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Contact-Person" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Charge-GST" Type="bit" />
+          <Property Name="Cus-Remarks" Type="nvarchar(max)" />
+          <Property Name="Cus-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Bill-to-city" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Bill-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Bill-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="100" />
+          <Property Name="LastUpdateDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Inactive" Type="char" MaxLength="1" />
+          <Property Name="Cus-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Type" Type="nvarchar" MaxLength="10" />
+          <Property Name="Cus-Salesman" Type="int" />
+          <Property Name="Cus-Credit-Limit-Days" Type="int" />
+          <Property Name="Cus-Credit-Limit-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Cus-Discount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Cus-Telephone" Type="nvarchar" MaxLength="30" />
+          <Property Name="Cus-Fax" Type="nvarchar" MaxLength="30" />
+          <Property Name="Cus-Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Contact-Person" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Charge-GST" Type="bit" />
+          <Property Name="Cus-Remarks" Type="nvarchar(max)" />
+          <Property Name="Cus-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Bill-to-city" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Bill-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Bill-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Cus-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="CustomersBusinessCard">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cus-Id" Type="int" />
+          <Property Name="Cus-Bus-Card-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Cus-Bus-Card-Photos" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="ShippingAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntityId" Type="int" Nullable="false" />
+          <Property Name="EntityType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Ship-to-line1" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Ship-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Ship-to-city" Type="nvarchar" MaxLength="50" />
+          <Property Name="Ship-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Ship-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <Association Name="FK_CategoriesContent_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="CategoriesContent" Type="Self.CategoriesContent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CategoriesContent">
+              <PropertyRef Name="Cat-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomersBusinessCard_Customers">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+          <End Role="CustomersBusinessCard" Type="Self.CustomersBusinessCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CustomersBusinessCard">
+              <PropertyRef Name="Cus-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="simpleaccountingModelStoreContainer">
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoriesContent" EntityType="Self.CategoriesContent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomersBusinessCard" EntityType="Self.CustomersBusinessCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShippingAddress" EntityType="Self.ShippingAddress" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CategoriesContent_Categories" Association="Self.FK_CategoriesContent_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="CategoriesContent" EntitySet="CategoriesContent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomersBusinessCard_Customers" Association="Self.FK_CustomersBusinessCard_Customers">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="CustomersBusinessCard" EntitySet="CustomersBusinessCard" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CustomerDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Cus_Id" Type="Int32" Nullable="false" />
+          <Property Name="Cus_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Cus_Company_Reg_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Type" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Salesman" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Credit_Limit_Days" Type="Int32" />
+          <Property Name="Cus_Credit_Limit_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Cus_Discount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Cus_Telephone" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Fax" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Contact_Person" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_GST_Reg_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Charge_GST" Type="Boolean" />
+          <Property Name="Cus_Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Cus_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Cus_Company_Reg_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Type" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Salesman" Type="Int32" />
+          <Property Name="Cus_Credit_Limit_Days" Type="Int32" />
+          <Property Name="Cus_Credit_Limit_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Cus_Discount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Cus_Telephone" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Fax" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Contact_Person" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_GST_Reg_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Charge_GST" Type="Boolean" />
+          <Property Name="Cus_Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bill_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="CustomersBusinessCards" Relationship="Self.FK_CustomersBusinessCard_Customers" FromRole="Customers" ToRole="CustomersBusinessCard" />
+        </EntityType>
+        <EntityType Name="CustomersBusinessCard">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cus_Id" Type="Int32" />
+          <Property Name="Cus_Bus_Card_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cus_Bus_Card_Photos" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_CustomersBusinessCard_Customers" FromRole="CustomersBusinessCard" ToRole="Customers" />
+        </EntityType>
+        <EntityType Name="ShippingAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntityId" Type="Int32" Nullable="false" />
+          <Property Name="EntityType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ship_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ship_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Ship_to_city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Ship_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Ship_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Ship_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK_CustomersBusinessCard_Customers">
+          <End Role="Customers" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="CustomersBusinessCard" Type="Self.CustomersBusinessCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CustomersBusinessCard">
+              <PropertyRef Name="Cus_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SDNSalesDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetail" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="CustomersBusinessCards" EntityType="Self.CustomersBusinessCard" />
+          <EntitySet Name="ShippingAddresses" EntityType="Self.ShippingAddress" />
+          <AssociationSet Name="FK_CustomersBusinessCard_Customers" Association="Self.FK_CustomersBusinessCard_Customers">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="CustomersBusinessCard" EntitySet="CustomersBusinessCards" />
+          </AssociationSet>
+          <EntitySet Name="CategoriesContents" EntityType="simpleaccountingModel.CategoriesContent" />
+          <EntitySet Name="Categories" EntityType="simpleaccountingModel.Category" />
+          <AssociationSet Name="FK_CategoriesContent_Categories" Association="simpleaccountingModel.FK_CategoriesContent_Categories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="CategoriesContent" EntitySet="CategoriesContents" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="CategoriesContent">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Id" Type="Int32" />
+          <Property Name="Content_Limit" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Cat_Contents" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Set_Default" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="Category" Relationship="simpleaccountingModel.FK_CategoriesContent_Categories" FromRole="CategoriesContent" ToRole="Category" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cat_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Cat_Code" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Content_Type" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CategoriesContents" Relationship="simpleaccountingModel.FK_CategoriesContent_Categories" FromRole="Category" ToRole="CategoriesContent" />
+        </EntityType>
+        <Association Name="FK_CategoriesContent_Categories">
+          <End Type="simpleaccountingModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="simpleaccountingModel.CategoriesContent" Role="CategoriesContent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CategoriesContent">
+              <PropertyRef Name="Cat_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="simpleaccountingModelStoreContainer" CdmEntityContainer="SDNSalesDBEntities">
+          <EntitySetMapping Name="CustomerDetails">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CustomerDetail">
+              <MappingFragment StoreEntitySet="CustomerDetails">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cus_Id" ColumnName="Cus-Id" />
+                <ScalarProperty Name="Cus_Name" ColumnName="Cus-Name" />
+                <ScalarProperty Name="Cus_Inactive" ColumnName="Cus-Inactive" />
+                <ScalarProperty Name="Cus_Company_Reg_no" ColumnName="Cus-Company-Reg-no" />
+                <ScalarProperty Name="Cus_Type" ColumnName="Cus-Type" />
+                <ScalarProperty Name="Cus_Salesman" ColumnName="Cus-Salesman" />
+                <ScalarProperty Name="Cus_Credit_Limit_Days" ColumnName="Cus-Credit-Limit-Days" />
+                <ScalarProperty Name="Cus_Credit_Limit_Amount" ColumnName="Cus-Credit-Limit-Amount" />
+                <ScalarProperty Name="Cus_Discount" ColumnName="Cus-Discount" />
+                <ScalarProperty Name="Cus_Telephone" ColumnName="Cus-Telephone" />
+                <ScalarProperty Name="Cus_Fax" ColumnName="Cus-Fax" />
+                <ScalarProperty Name="Cus_Email" ColumnName="Cus-Email" />
+                <ScalarProperty Name="Cus_Contact_Person" ColumnName="Cus-Contact-Person" />
+                <ScalarProperty Name="Cus_GST_Reg_No" ColumnName="Cus-GST-Reg-No" />
+                <ScalarProperty Name="Cus_Charge_GST" ColumnName="Cus-Charge-GST" />
+                <ScalarProperty Name="Cus_Remarks" ColumnName="Cus-Remarks" />
+                <ScalarProperty Name="Cus_Bill_to_line1" ColumnName="Cus-Bill-to-line1" />
+                <ScalarProperty Name="Cus_Bill_to_line2" ColumnName="Cus-Bill-to-line2" />
+                <ScalarProperty Name="Cus_Bill_to_city" ColumnName="Cus-Bill-to-city" />
+                <ScalarProperty Name="Cus_Bill_to_state" ColumnName="Cus-Bill-to-state" />
+                <ScalarProperty Name="Cus_Bill_to_country" ColumnName="Cus-Bill-to-country" />
+                <ScalarProperty Name="Cus_Bill_to_post_code" ColumnName="Cus-Bill-to-post-code" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Customer">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cus_Name" ColumnName="Cus-Name" />
+                <ScalarProperty Name="Cus_Inactive" ColumnName="Cus-Inactive" />
+                <ScalarProperty Name="Cus_Company_Reg_no" ColumnName="Cus-Company-Reg-no" />
+                <ScalarProperty Name="Cus_Type" ColumnName="Cus-Type" />
+                <ScalarProperty Name="Cus_Salesman" ColumnName="Cus-Salesman" />
+                <ScalarProperty Name="Cus_Credit_Limit_Days" ColumnName="Cus-Credit-Limit-Days" />
+                <ScalarProperty Name="Cus_Credit_Limit_Amount" ColumnName="Cus-Credit-Limit-Amount" />
+                <ScalarProperty Name="Cus_Discount" ColumnName="Cus-Discount" />
+                <ScalarProperty Name="Cus_Telephone" ColumnName="Cus-Telephone" />
+                <ScalarProperty Name="Cus_Fax" ColumnName="Cus-Fax" />
+                <ScalarProperty Name="Cus_Email" ColumnName="Cus-Email" />
+                <ScalarProperty Name="Cus_Contact_Person" ColumnName="Cus-Contact-Person" />
+                <ScalarProperty Name="Cus_GST_Reg_No" ColumnName="Cus-GST-Reg-No" />
+                <ScalarProperty Name="Cus_Charge_GST" ColumnName="Cus-Charge-GST" />
+                <ScalarProperty Name="Cus_Remarks" ColumnName="Cus-Remarks" />
+                <ScalarProperty Name="Cus_Bill_to_line1" ColumnName="Cus-Bill-to-line1" />
+                <ScalarProperty Name="Cus_Bill_to_line2" ColumnName="Cus-Bill-to-line2" />
+                <ScalarProperty Name="Cus_Bill_to_city" ColumnName="Cus-Bill-to-city" />
+                <ScalarProperty Name="Cus_Bill_to_state" ColumnName="Cus-Bill-to-state" />
+                <ScalarProperty Name="Cus_Bill_to_country" ColumnName="Cus-Bill-to-country" />
+                <ScalarProperty Name="Cus_Bill_to_post_code" ColumnName="Cus-Bill-to-post-code" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomersBusinessCards">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CustomersBusinessCard">
+              <MappingFragment StoreEntitySet="CustomersBusinessCard">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cus_Id" ColumnName="Cus-Id" />
+                <ScalarProperty Name="Cus_Bus_Card_Name" ColumnName="Cus-Bus-Card-Name" />
+                <ScalarProperty Name="Cus_Bus_Card_Photos" ColumnName="Cus-Bus-Card-Photos" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShippingAddresses">
+            <EntityTypeMapping TypeName="simpleaccountingModel.ShippingAddress">
+              <MappingFragment StoreEntitySet="ShippingAddress">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EntityId" ColumnName="EntityId" />
+                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
+                <ScalarProperty Name="Ship_to_line1" ColumnName="Ship-to-line1" />
+                <ScalarProperty Name="Ship_to_line2" ColumnName="Ship-to-line2" />
+                <ScalarProperty Name="Ship_to_city" ColumnName="Ship-to-city" />
+                <ScalarProperty Name="Ship_to_state" ColumnName="Ship-to-state" />
+                <ScalarProperty Name="Ship_to_country" ColumnName="Ship-to-country" />
+                <ScalarProperty Name="Ship_to_post_code" ColumnName="Ship-to-post-code" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CategoriesContents">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CategoriesContent">
+              <MappingFragment StoreEntitySet="CategoriesContent">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Set_Default" ColumnName="Set-Default" />
+                <ScalarProperty Name="Cat_Contents" ColumnName="Cat-Contents" />
+                <ScalarProperty Name="Content_Limit" ColumnName="Content-Limit" />
+                <ScalarProperty Name="Cat_Id" ColumnName="Cat-Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="Content_Type" ColumnName="Content-Type" />
+                <ScalarProperty Name="Cat_Code" ColumnName="Cat-Code" />
+                <ScalarProperty Name="Cat_Name" ColumnName="Cat-Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

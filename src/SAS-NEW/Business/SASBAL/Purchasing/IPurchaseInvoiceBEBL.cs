@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Purchasings.BL
+{
+    using UI.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using UI.Entities.Purchase;
+    public interface IPurchaseInvoiceBEBL
+    {
+        int AddUpdateInvoice(PurchaseInvoiceForm quotationData);
+        int DeleteInvoice(string purchaseQuotID);
+
+        int UpdationInvoice(PurchaseInvoiceForm quotationData);
+        int GetLatestInvoiceNo();
+        string GetNewLatestInvoiceNo();
+        string GetCategoryContent(string catType);
+        PurchaseInvoiceForm GetPurchaseInvoice(string pqNo);
+        List<PurchaseInvoiceEntity> GetAllPurchaseInvoices();
+    }
+}

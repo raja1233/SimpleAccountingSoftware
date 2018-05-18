@@ -1,0 +1,31 @@
+﻿using SASDAL.Accounts;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASBAL.Accounts
+{
+    public class UnpaidPurchaseInvoiceBL : IUnpaidPurchaseInvoiceBL
+    {
+        public List<UnpaidPurchaseInvoiceEntity> getSupplierList()
+        {
+            IUnpaidPurchaseInvoiceDAL obj = new UnpaidPurchaseInvoiceDAL();
+            return obj.getSupplierList();
+        }
+
+        public List<string> IsChequeNoPresent()
+        {
+            IUnpaidPurchaseInvoiceDAL obj = new UnpaidPurchaseInvoiceDAL();
+            return obj.IsChequeNoPresent();
+        }
+
+        public int SaveUnpaidPurchaseInvoiceData(UnpaidPurchaseInvoiceModel JForm)
+        {
+            IUnpaidPurchaseInvoiceDAL obj = new UnpaidPurchaseInvoiceDAL();
+            return obj.SaveUnpaidPurchaseInvoiceData(JForm);
+        }
+    }
+}

@@ -1,0 +1,72 @@
+﻿using Newtonsoft.Json;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.Accounts
+{
+    public class AccountsTransactionsDAL : IAccountsTransactionsDAL
+    {
+        SASEntitiesEDM entities = new SASEntitiesEDM();
+        //get all account and their type
+        public List<AccountsTransactionsEntity> GetAccountsTransactionNameAndType()
+        {
+            List<AccountsTransactionsEntity> AccountsList = new List<AccountsTransactionsEntity>();
+            try
+            {
+                
+                AccountsList = entities.Database.SqlQuery<AccountsTransactionsEntity>("USP_GetAccountsTransactionNemeAndType").ToList();
+               
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+            return AccountsList;
+
+        }
+        public List<AccountsTransactionsEntity> GetAccountsTransactionDetails(int ID,string JsonData)
+        {
+            List<AccountsTransactionsEntity> AccountsDetailList = new List<AccountsTransactionsEntity>();
+            try
+            {
+                if(ID!=0 && JsonData==null)
+                {
+                  AccountsDetailList = entities.Database.SqlQuery<AccountsTransactionsEntity>("USP_GetAccountsTransactionDetails @ID,@year,@Quarter,@Month,@ShowAll,@SDate,@EDate",
+                  new SqlParameter("ID", ID),
+                  new SqlParameter("year", Convert.ToInt32(0)),
+                  new SqlParameter("Quarter", Convert.ToInt32(0)),
+                  new SqlParameter("Month", Convert.ToInt32(0)),
+                  new SqlParameter("ShowAll", Convert.ToBoolean(1)),
+                  new SqlParameter("SDate","0"),
+                  new SqlParameter("EDate", "0")).ToList();
+                }
+                else if(ID!=0 && JsonData!=null)
+                {
+                  var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(JsonData);
+                  AccountsDetailList = entities.Database.SqlQuery<AccountsTransactionsEntity>("USP_GetAccountsTransactionDetails @ID,@year,@Quarter,@Month,@ShowAll,@SDate,@EDate",
+                  new SqlParameter("ID", ID),
+                  new SqlParameter("Year", Convert.ToInt32(objResponse1[0].FieldValue)),
+                  new SqlParameter("Quarter", Convert.ToInt32(objResponse1[1].FieldValue)),
+                  new SqlParameter("Month", Convert.ToInt32(objResponse1[2].FieldValue)),
+                  new SqlParameter("ShowAll", Convert.ToBoolean(objResponse1[5].FieldValue)),
+                  new SqlParameter("SDate", objResponse1[3].FieldValue),
+                  new SqlParameter("EDate", objResponse1[4].FieldValue)).ToList();
+                }
+              
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            return AccountsDetailList;
+        }
+    }
+}

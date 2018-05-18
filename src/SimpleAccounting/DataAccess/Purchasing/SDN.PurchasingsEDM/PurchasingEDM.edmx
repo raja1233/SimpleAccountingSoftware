@@ -1,0 +1,885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CashAndBankTransactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cus-Sup-Id" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Type" Type="nchar" MaxLength="1" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Is-Cheque" Type="bit" />
+          <Property Name="Cash-Cheque-No" Type="nvarchar" MaxLength="20" />
+          <Property Name="Cash-Cheque-Date" Type="date" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="200" />
+          <Property Name="Cheque-Photo" Type="varchar(max)" />
+          <Property Name="SO-CN-PO-DN-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="SO-CN-PO-DN-Date" Type="datetime" />
+          <Property Name="SO-CN-PO-DN-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Due" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Refunded" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="DebitNotes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DN-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DN-Date" Type="datetime" />
+          <Property Name="Sup-CN-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-CN-Date" Type="datetime" />
+          <Property Name="Sup-CN-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Sup-Id" Type="int" Nullable="false" />
+          <Property Name="PI-Id" Type="int" Nullable="false" />
+          <Property Name="DN-Reason" Type="nvarchar" MaxLength="200" />
+          <Property Name="DN-Status" Type="tinyint" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="LastSelectionHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Screen-Id" Type="int" Nullable="false" />
+          <Property Name="Screen-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Last-Selection" Type="nvarchar(max)" />
+          <Property Name="Last-Updated" Type="datetime" />
+          <Property Name="Last-UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="Options">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Date-Format" Type="nvarchar" MaxLength="30" />
+          <Property Name="Number-Format" Type="nvarchar" MaxLength="30" />
+          <Property Name="Decimal-Places" Type="tinyint" />
+          <Property Name="Currency-Code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Starting-Sales-Inv-No" Type="nvarchar" MaxLength="10" />
+          <Property Name="Name-to-Print-Sales-Invoice" Type="nvarchar" MaxLength="100" />
+          <Property Name="Def-Cash-Bank-Acc" Type="nvarchar" MaxLength="50" />
+          <Property Name="Show-Amount-Inc-GST" Type="bit" />
+          <Property Name="Show-Account-Balance" Type="bit" />
+          <Property Name="Cus-Detail-Allow-Chg-Limit" Type="bit" />
+          <Property Name="PS-Detail-Allow-Chg-Act" Type="bit" />
+          <Property Name="Allow-to-Create-Sales-Inv" Type="bit" />
+          <Property Name="Show-PS-Name" Type="bit" />
+          <Property Name="Show-PS-Name-Desc" Type="bit" />
+          <Property Name="Allow-Edit-PS-Name-Desc" Type="bit" />
+          <Property Name="Allow-Edit-PS-Price" Type="bit" />
+          <Property Name="Allow-Edit-Discount" Type="bit" />
+          <Property Name="Hide-Discount-Column" Type="bit" />
+          <Property Name="PS-Qty-Jump-Next-Line" Type="bit" />
+          <Property Name="Print-PS-Name" Type="bit" />
+          <Property Name="Print-PS-Name-Desc" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="Print-Del-Sales-Inv" Type="bit" />
+        </EntityType>
+        <EntityType Name="PurchaseInvoice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PI-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PI-Date" Type="datetime" Nullable="false" />
+          <Property Name="PI-Pmt-Due-Date" Type="datetime" />
+          <Property Name="Our-PO-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Exc-Inc-GST" Type="bit" />
+          <Property Name="Sup-Id" Type="int" Nullable="false" />
+          <Property Name="Ship-to-address" Type="int" />
+          <Property Name="PI-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PI-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PI-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PI-TandC" Type="nvarchar" MaxLength="200" />
+          <Property Name="BusinessExpenses" Type="bit" />
+          <Property Name="PI-Status" Type="tinyint" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="PurchaseOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PO-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PO-Date" Type="datetime" Nullable="false" />
+          <Property Name="PO-Del-Date" Type="datetime" Nullable="false" />
+          <Property Name="Exc-Inc-GST" Type="bit" />
+          <Property Name="Sup-Id" Type="int" Nullable="false" />
+          <Property Name="Ship-to-address" Type="int" />
+          <Property Name="PO-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PO-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PO-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PO-TandC" Type="nvarchar" MaxLength="200" />
+          <Property Name="PO-Conv-to-PI" Type="bit" />
+          <Property Name="PO-Status" Type="tinyint" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="PurchaseQuotation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PQ-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PQ-Date" Type="datetime" Nullable="false" />
+          <Property Name="PQ-Valid-for" Type="int" />
+          <Property Name="Exc-Inc-GST" Type="bit" />
+          <Property Name="Sup-Id" Type="int" Nullable="false" />
+          <Property Name="Ship-to-address" Type="int" />
+          <Property Name="PQ-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PQ-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PQ-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PQ-TandC" Type="nvarchar" MaxLength="200" />
+          <Property Name="PQ-Conv-to-PO" Type="bit" />
+          <Property Name="PQ-Conv-to-PI" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="PurchaseQuotationDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PQ-ID" Type="int" Nullable="false" />
+          <Property Name="PQ-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="PandS-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="PQ-Qty" Type="int" />
+          <Property Name="PQ-Price" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PQ-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PQ-Discount" Type="decimal" Precision="12" Scale="4" />
+          <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+          <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+        </EntityType>
+        <EntityType Name="Suppliers">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-Inactive" Type="char" MaxLength="1" />
+          <Property Name="Sup-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Credit-Limit-Days" Type="int" />
+          <Property Name="Sup-Credit-Limit-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Sup-Telephone" Type="nvarchar" MaxLength="30" />
+          <Property Name="Sup-Fax" Type="nvarchar" MaxLength="30" />
+          <Property Name="Sup-Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-Contact-Person" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Charge-GST" Type="bit" />
+          <Property Name="Sup-Remarks" Type="nvarchar(max)" />
+          <Property Name="Sup-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-Bill-to-city" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Bill-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Bill-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Sup-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+          <Property Name="Sup-Ship-to-city" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Ship-to-state" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Ship-to-country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sup-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="IsRefreshed" Type="bit" />
+          <Property Name="RefreshedDate" Type="datetime" />
+          <Property Name="TaxId" Type="int" />
+        </EntityType>
+        <Association Name="FK_DebitNotes_PurchaseInvoice">
+          <End Role="PurchaseInvoice" Type="Self.PurchaseInvoice" Multiplicity="1" />
+          <End Role="DebitNotes" Type="Self.DebitNotes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseInvoice">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DebitNotes">
+              <PropertyRef Name="PI-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DebitNotes_Suppliers">
+          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
+          <End Role="DebitNotes" Type="Self.DebitNotes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DebitNotes">
+              <PropertyRef Name="Sup-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseOrder_Suppliers">
+          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
+          <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PurchaseOrder">
+              <PropertyRef Name="Sup-Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PurchaseQuotationDetails_PurchaseQuotation">
+          <End Role="PurchaseQuotation" Type="Self.PurchaseQuotation" Multiplicity="1" />
+          <End Role="PurchaseQuotationDetails" Type="Self.PurchaseQuotationDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseQuotation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PurchaseQuotationDetails">
+              <PropertyRef Name="PQ-ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="SP_PurchaseInvoiceList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="simpleaccountingModelStoreContainer">
+          <EntitySet Name="CashAndBankTransactions" EntityType="Self.CashAndBankTransactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DebitNotes" EntityType="Self.DebitNotes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LastSelectionHistory" EntityType="Self.LastSelectionHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Options" EntityType="Self.Options" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseInvoice" EntityType="Self.PurchaseInvoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseQuotation" EntityType="Self.PurchaseQuotation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PurchaseQuotationDetails" EntityType="Self.PurchaseQuotationDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_DebitNotes_PurchaseInvoice" Association="Self.FK_DebitNotes_PurchaseInvoice">
+            <End Role="PurchaseInvoice" EntitySet="PurchaseInvoice" />
+            <End Role="DebitNotes" EntitySet="DebitNotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DebitNotes_Suppliers" Association="Self.FK_DebitNotes_Suppliers">
+            <End Role="Suppliers" EntitySet="Suppliers" />
+            <End Role="DebitNotes" EntitySet="DebitNotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseOrder_Suppliers" Association="Self.FK_PurchaseOrder_Suppliers">
+            <End Role="Suppliers" EntitySet="Suppliers" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PurchaseQuotationDetails_PurchaseQuotation" Association="Self.FK_PurchaseQuotationDetails_PurchaseQuotation">
+            <End Role="PurchaseQuotation" EntitySet="PurchaseQuotation" />
+            <End Role="PurchaseQuotationDetails" EntitySet="PurchaseQuotationDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Option">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Date_Format" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Number_Format" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Decimal_Places" Type="Byte" />
+          <Property Name="Currency_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Starting_Sales_Inv_No" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Name_to_Print_Sales_Invoice" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Def_Cash_Bank_Acc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Show_Amount_Inc_GST" Type="Boolean" />
+          <Property Name="Show_Account_Balance" Type="Boolean" />
+          <Property Name="Cus_Detail_Allow_Chg_Limit" Type="Boolean" />
+          <Property Name="PS_Detail_Allow_Chg_Act" Type="Boolean" />
+          <Property Name="Allow_to_Create_Sales_Inv" Type="Boolean" />
+          <Property Name="Show_PS_Name" Type="Boolean" />
+          <Property Name="Show_PS_Name_Desc" Type="Boolean" />
+          <Property Name="Allow_Edit_PS_Name_Desc" Type="Boolean" />
+          <Property Name="Allow_Edit_PS_Price" Type="Boolean" />
+          <Property Name="Allow_Edit_Discount" Type="Boolean" />
+          <Property Name="Hide_Discount_Column" Type="Boolean" />
+          <Property Name="PS_Qty_Jump_Next_Line" Type="Boolean" />
+          <Property Name="Print_PS_Name" Type="Boolean" />
+          <Property Name="Print_PS_Name_Desc" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Print_Del_Sales_Inv" Type="Boolean" />
+        </EntityType>
+        <EntityContainer Name="SDNPurchasingDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Options" EntityType="Self.Option" />
+          <EntitySet Name="PurchaseInvoices" EntityType="simpleaccountingModel.PurchaseInvoice" />
+          <EntitySet Name="PurchaseOrders" EntityType="simpleaccountingModel.PurchaseOrder" />
+          <EntitySet Name="PurchaseQuotations" EntityType="simpleaccountingModel.PurchaseQuotation" />
+          <EntitySet Name="Suppliers" EntityType="simpleaccountingModel.Supplier" />
+          <AssociationSet Name="FK_PurchaseOrder_Suppliers" Association="simpleaccountingModel.FK_PurchaseOrder_Suppliers">
+            <End Role="Supplier" EntitySet="Suppliers" />
+            <End Role="PurchaseOrder" EntitySet="PurchaseOrders" />
+          </AssociationSet>
+          <EntitySet Name="PurchaseQuotationDetails" EntityType="simpleaccountingModel.PurchaseQuotationDetail" />
+          <AssociationSet Name="FK_PurchaseQuotationDetails_PurchaseQuotation" Association="simpleaccountingModel.FK_PurchaseQuotationDetails_PurchaseQuotation">
+            <End Role="PurchaseQuotation" EntitySet="PurchaseQuotations" />
+            <End Role="PurchaseQuotationDetail" EntitySet="PurchaseQuotationDetails" />
+          </AssociationSet>
+          <EntitySet Name="LastSelectionHistories" EntityType="simpleaccountingModel.LastSelectionHistory" />
+          <EntitySet Name="DebitNotes" EntityType="simpleaccountingModel.DebitNote" />
+          <AssociationSet Name="FK_DebitNotes_PurchaseInvoice" Association="simpleaccountingModel.FK_DebitNotes_PurchaseInvoice">
+            <End Role="PurchaseInvoice" EntitySet="PurchaseInvoices" />
+            <End Role="DebitNote" EntitySet="DebitNotes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DebitNotes_Suppliers" Association="simpleaccountingModel.FK_DebitNotes_Suppliers">
+            <End Role="Supplier" EntitySet="Suppliers" />
+            <End Role="DebitNote" EntitySet="DebitNotes" />
+          </AssociationSet>
+          <EntitySet Name="CashAndBankTransactions" EntityType="simpleaccountingModel.CashAndBankTransaction" />
+          <FunctionImport Name="SP_PurchaseInvoiceList" ReturnType="Collection(simpleaccountingModel.SP_PurchaseInvoiceList_Result)" />
+        </EntityContainer>
+        <EntityType Name="PurchaseInvoice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PI_No" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PI_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PI_Pmt_Due_Date" Type="DateTime" Precision="3" />
+          <Property Name="Our_PO_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Exc_Inc_GST" Type="Boolean" />
+          <Property Name="Sup_Id" Type="Int32" Nullable="false" />
+          <Property Name="Ship_to_address" Type="Int32" />
+          <Property Name="PI_Tot_bef_Tax" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PI_GST_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PI_Tot_aft_Tax" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PI_TandC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="BusinessExpenses" Type="Boolean" />
+          <Property Name="PI_Status" Type="Byte" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="DebitNotes" Relationship="simpleaccountingModel.FK_DebitNotes_PurchaseInvoice" FromRole="PurchaseInvoice" ToRole="DebitNote" />
+        </EntityType>
+        <EntityType Name="PurchaseOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PO_No" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PO_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PO_Del_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Exc_Inc_GST" Type="Boolean" />
+          <Property Name="Sup_Id" Type="Int32" Nullable="false" />
+          <Property Name="Ship_to_address" Type="Int32" />
+          <Property Name="PO_Tot_bef_Tax" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PO_GST_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PO_Tot_aft_Tax" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PO_TandC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PO_Conv_to_PI" Type="Boolean" />
+          <Property Name="PO_Status" Type="Byte" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="Supplier" Relationship="simpleaccountingModel.FK_PurchaseOrder_Suppliers" FromRole="PurchaseOrder" ToRole="Supplier" />
+        </EntityType>
+        <EntityType Name="PurchaseQuotation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PQ_No" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PQ_Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PQ_Valid_for" Type="Int32" />
+          <Property Name="Exc_Inc_GST" Type="Boolean" />
+          <Property Name="Sup_Id" Type="Int32" Nullable="false" />
+          <Property Name="Ship_to_address" Type="Int32" />
+          <Property Name="PQ_Tot_bef_Tax" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PQ_GST_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PQ_Tot_aft_Tax" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PQ_TandC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PQ_Conv_to_PO" Type="Boolean" />
+          <Property Name="PQ_Conv_to_PI" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="PurchaseQuotationDetails" Relationship="simpleaccountingModel.FK_PurchaseQuotationDetails_PurchaseQuotation" FromRole="PurchaseQuotation" ToRole="PurchaseQuotationDetail" />
+        </EntityType>
+        <EntityType Name="Supplier">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sup_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Sup_Company_Reg_no" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Credit_Limit_Days" Type="Int32" />
+          <Property Name="Sup_Credit_Limit_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Sup_Telephone" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Fax" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Contact_Person" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_GST_Reg_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Charge_GST" Type="Boolean" />
+          <Property Name="Sup_Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Bill_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Bill_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Bill_to_city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Bill_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Bill_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Bill_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Ship_to_line1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Ship_to_line2" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Ship_to_city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Ship_to_state" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Ship_to_country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_Ship_to_post_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="PurchaseOrders" Relationship="simpleaccountingModel.FK_PurchaseOrder_Suppliers" FromRole="Supplier" ToRole="PurchaseOrder" />
+          <Property Name="IsRefreshed" Type="Boolean" />
+          <Property Name="RefreshedDate" Type="DateTime" Precision="3" />
+          <Property Name="TaxId" Type="Int32" />
+          <NavigationProperty Name="DebitNotes" Relationship="simpleaccountingModel.FK_DebitNotes_Suppliers" FromRole="Supplier" ToRole="DebitNote" />
+        </EntityType>
+        <Association Name="FK_PurchaseOrder_Suppliers">
+          <End Type="simpleaccountingModel.Supplier" Role="Supplier" Multiplicity="1" />
+          <End Type="simpleaccountingModel.PurchaseOrder" Role="PurchaseOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Supplier">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PurchaseOrder">
+              <PropertyRef Name="Sup_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PurchaseQuotationDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PQ_ID" Type="Int32" Nullable="false" />
+          <Property Name="PQ_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PandS_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PandS_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PQ_Qty" Type="Int32" />
+          <Property Name="PQ_Price" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PQ_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PQ_Discount" Type="Decimal" Precision="12" Scale="4" />
+          <Property Name="GST_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="GST_Rate" Type="Decimal" Precision="18" Scale="4" />
+          <NavigationProperty Name="PurchaseQuotation" Relationship="simpleaccountingModel.FK_PurchaseQuotationDetails_PurchaseQuotation" FromRole="PurchaseQuotationDetail" ToRole="PurchaseQuotation" />
+        </EntityType>
+        <Association Name="FK_PurchaseQuotationDetails_PurchaseQuotation">
+          <End Type="simpleaccountingModel.PurchaseQuotation" Role="PurchaseQuotation" Multiplicity="1" />
+          <End Type="simpleaccountingModel.PurchaseQuotationDetail" Role="PurchaseQuotationDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseQuotation">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PurchaseQuotationDetail">
+              <PropertyRef Name="PQ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="LastSelectionHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Screen_Id" Type="Int32" Nullable="false" />
+          <Property Name="Screen_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Last_Selection" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Last_Updated" Type="DateTime" Precision="3" />
+          <Property Name="Last_UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DebitNote">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DN_No" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DN_Date" Type="DateTime" Precision="3" />
+          <Property Name="Sup_CN_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sup_CN_Date" Type="DateTime" Precision="3" />
+          <Property Name="Sup_CN_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Sup_Id" Type="Int32" Nullable="false" />
+          <Property Name="PI_Id" Type="Int32" Nullable="false" />
+          <Property Name="DN_Reason" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DN_Status" Type="Byte" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="PurchaseInvoice" Relationship="simpleaccountingModel.FK_DebitNotes_PurchaseInvoice" FromRole="DebitNote" ToRole="PurchaseInvoice" />
+          <NavigationProperty Name="Supplier" Relationship="simpleaccountingModel.FK_DebitNotes_Suppliers" FromRole="DebitNote" ToRole="Supplier" />
+        </EntityType>
+        <Association Name="FK_DebitNotes_PurchaseInvoice">
+          <End Type="simpleaccountingModel.PurchaseInvoice" Role="PurchaseInvoice" Multiplicity="1" />
+          <End Type="simpleaccountingModel.DebitNote" Role="DebitNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseInvoice">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DebitNote">
+              <PropertyRef Name="PI_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DebitNotes_Suppliers">
+          <End Type="simpleaccountingModel.Supplier" Role="Supplier" Multiplicity="1" />
+          <End Type="simpleaccountingModel.DebitNote" Role="DebitNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Supplier">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DebitNote">
+              <PropertyRef Name="Sup_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CashAndBankTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cus_Sup_Id" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Is_Cheque" Type="Boolean" />
+          <Property Name="Cash_Cheque_No" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Cash_Cheque_Date" Type="DateTime" Precision="0" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Cheque_Photo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SO_CN_PO_DN_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SO_CN_PO_DN_Date" Type="DateTime" Precision="3" />
+          <Property Name="SO_CN_PO_DN_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Due" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Discount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Refunded" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <ComplexType Name="SP_PurchaseInvoiceList_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Sup_Name" Nullable="true" MaxLength="100" />
+          <Property Type="Decimal" Name="CashChequeAmount" Nullable="true" Precision="18" Scale="4" />
+          <Property Type="DateTime" Name="CashChequeDate" Nullable="true" />
+          <Property Type="String" Name="CashChequeNo" Nullable="true" MaxLength="20" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="DebitNoteDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="DebitNoteNo" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="ExcIncGST" Nullable="true" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="true" />
+          <Property Type="DateTime" Name="InvoiceDateDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="InvoiceNo" Nullable="true" MaxLength="50" />
+          <Property Type="Byte" Name="Status" Nullable="true" />
+          <Property Type="Decimal" Name="InvoiceAmount" Nullable="true" Precision="18" Scale="4" />
+          <Property Type="Int32" Name="Sup_ID" Nullable="true" />
+          <Property Type="Decimal" Name="DebitNoteAmount" Nullable="true" Precision="18" Scale="4" />
+          <Property Type="String" Name="t" Nullable="true" MaxLength="2" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="simpleaccountingModelStoreContainer" CdmEntityContainer="SDNPurchasingDBEntities">
+          <EntitySetMapping Name="Options">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Option">
+              <MappingFragment StoreEntitySet="Options">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Date_Format" ColumnName="Date-Format" />
+                <ScalarProperty Name="Number_Format" ColumnName="Number-Format" />
+                <ScalarProperty Name="Decimal_Places" ColumnName="Decimal-Places" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency-Code" />
+                <ScalarProperty Name="Starting_Sales_Inv_No" ColumnName="Starting-Sales-Inv-No" />
+                <ScalarProperty Name="Name_to_Print_Sales_Invoice" ColumnName="Name-to-Print-Sales-Invoice" />
+                <ScalarProperty Name="Def_Cash_Bank_Acc" ColumnName="Def-Cash-Bank-Acc" />
+                <ScalarProperty Name="Show_Amount_Inc_GST" ColumnName="Show-Amount-Inc-GST" />
+                <ScalarProperty Name="Show_Account_Balance" ColumnName="Show-Account-Balance" />
+                <ScalarProperty Name="Cus_Detail_Allow_Chg_Limit" ColumnName="Cus-Detail-Allow-Chg-Limit" />
+                <ScalarProperty Name="PS_Detail_Allow_Chg_Act" ColumnName="PS-Detail-Allow-Chg-Act" />
+                <ScalarProperty Name="Allow_to_Create_Sales_Inv" ColumnName="Allow-to-Create-Sales-Inv" />
+                <ScalarProperty Name="Show_PS_Name" ColumnName="Show-PS-Name" />
+                <ScalarProperty Name="Show_PS_Name_Desc" ColumnName="Show-PS-Name-Desc" />
+                <ScalarProperty Name="Allow_Edit_PS_Name_Desc" ColumnName="Allow-Edit-PS-Name-Desc" />
+                <ScalarProperty Name="Allow_Edit_PS_Price" ColumnName="Allow-Edit-PS-Price" />
+                <ScalarProperty Name="Allow_Edit_Discount" ColumnName="Allow-Edit-Discount" />
+                <ScalarProperty Name="Hide_Discount_Column" ColumnName="Hide-Discount-Column" />
+                <ScalarProperty Name="PS_Qty_Jump_Next_Line" ColumnName="PS-Qty-Jump-Next-Line" />
+                <ScalarProperty Name="Print_PS_Name" ColumnName="Print-PS-Name" />
+                <ScalarProperty Name="Print_PS_Name_Desc" ColumnName="Print-PS-Name-Desc" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Print_Del_Sales_Inv" ColumnName="Print-Del-Sales-Inv" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseInvoices">
+            <EntityTypeMapping TypeName="simpleaccountingModel.PurchaseInvoice">
+              <MappingFragment StoreEntitySet="PurchaseInvoice">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="PI_Status" ColumnName="PI-Status" />
+                <ScalarProperty Name="BusinessExpenses" ColumnName="BusinessExpenses" />
+                <ScalarProperty Name="PI_TandC" ColumnName="PI-TandC" />
+                <ScalarProperty Name="PI_Tot_aft_Tax" ColumnName="PI-Tot-aft-Tax" />
+                <ScalarProperty Name="PI_GST_Amt" ColumnName="PI-GST-Amt" />
+                <ScalarProperty Name="PI_Tot_bef_Tax" ColumnName="PI-Tot-bef-Tax" />
+                <ScalarProperty Name="Ship_to_address" ColumnName="Ship-to-address" />
+                <ScalarProperty Name="Sup_Id" ColumnName="Sup-Id" />
+                <ScalarProperty Name="Exc_Inc_GST" ColumnName="Exc-Inc-GST" />
+                <ScalarProperty Name="Our_PO_No" ColumnName="Our-PO-No" />
+                <ScalarProperty Name="PI_Pmt_Due_Date" ColumnName="PI-Pmt-Due-Date" />
+                <ScalarProperty Name="PI_Date" ColumnName="PI-Date" />
+                <ScalarProperty Name="PI_No" ColumnName="PI-No" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseOrders">
+            <EntityTypeMapping TypeName="simpleaccountingModel.PurchaseOrder">
+              <MappingFragment StoreEntitySet="PurchaseOrder">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="PO_Status" ColumnName="PO-Status" />
+                <ScalarProperty Name="PO_Conv_to_PI" ColumnName="PO-Conv-to-PI" />
+                <ScalarProperty Name="PO_TandC" ColumnName="PO-TandC" />
+                <ScalarProperty Name="PO_Tot_aft_Tax" ColumnName="PO-Tot-aft-Tax" />
+                <ScalarProperty Name="PO_GST_Amt" ColumnName="PO-GST-Amt" />
+                <ScalarProperty Name="PO_Tot_bef_Tax" ColumnName="PO-Tot-bef-Tax" />
+                <ScalarProperty Name="Ship_to_address" ColumnName="Ship-to-address" />
+                <ScalarProperty Name="Sup_Id" ColumnName="Sup-Id" />
+                <ScalarProperty Name="Exc_Inc_GST" ColumnName="Exc-Inc-GST" />
+                <ScalarProperty Name="PO_Del_Date" ColumnName="PO-Del-Date" />
+                <ScalarProperty Name="PO_Date" ColumnName="PO-Date" />
+                <ScalarProperty Name="PO_No" ColumnName="PO-No" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseQuotations">
+            <EntityTypeMapping TypeName="simpleaccountingModel.PurchaseQuotation">
+              <MappingFragment StoreEntitySet="PurchaseQuotation">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="PQ_Conv_to_PI" ColumnName="PQ-Conv-to-PI" />
+                <ScalarProperty Name="PQ_Conv_to_PO" ColumnName="PQ-Conv-to-PO" />
+                <ScalarProperty Name="PQ_TandC" ColumnName="PQ-TandC" />
+                <ScalarProperty Name="PQ_Tot_aft_Tax" ColumnName="PQ-Tot-aft-Tax" />
+                <ScalarProperty Name="PQ_GST_Amt" ColumnName="PQ-GST-Amt" />
+                <ScalarProperty Name="PQ_Tot_bef_Tax" ColumnName="PQ-Tot-bef-Tax" />
+                <ScalarProperty Name="Ship_to_address" ColumnName="Ship-to-address" />
+                <ScalarProperty Name="Sup_Id" ColumnName="Sup-Id" />
+                <ScalarProperty Name="Exc_Inc_GST" ColumnName="Exc-Inc-GST" />
+                <ScalarProperty Name="PQ_Valid_for" ColumnName="PQ-Valid-for" />
+                <ScalarProperty Name="PQ_Date" ColumnName="PQ-Date" />
+                <ScalarProperty Name="PQ_No" ColumnName="PQ-No" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Suppliers">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Supplier">
+              <MappingFragment StoreEntitySet="Suppliers">
+                <ScalarProperty Name="TaxId" ColumnName="TaxId" />
+                <ScalarProperty Name="RefreshedDate" ColumnName="RefreshedDate" />
+                <ScalarProperty Name="IsRefreshed" ColumnName="IsRefreshed" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Sup_Ship_to_post_code" ColumnName="Sup-Ship-to-post-code" />
+                <ScalarProperty Name="Sup_Ship_to_country" ColumnName="Sup-Ship-to-country" />
+                <ScalarProperty Name="Sup_Ship_to_state" ColumnName="Sup-Ship-to-state" />
+                <ScalarProperty Name="Sup_Ship_to_city" ColumnName="Sup-Ship-to-city" />
+                <ScalarProperty Name="Sup_Ship_to_line2" ColumnName="Sup-Ship-to-line2" />
+                <ScalarProperty Name="Sup_Ship_to_line1" ColumnName="Sup-Ship-to-line1" />
+                <ScalarProperty Name="Sup_Bill_to_post_code" ColumnName="Sup-Bill-to-post-code" />
+                <ScalarProperty Name="Sup_Bill_to_country" ColumnName="Sup-Bill-to-country" />
+                <ScalarProperty Name="Sup_Bill_to_state" ColumnName="Sup-Bill-to-state" />
+                <ScalarProperty Name="Sup_Bill_to_city" ColumnName="Sup-Bill-to-city" />
+                <ScalarProperty Name="Sup_Bill_to_line2" ColumnName="Sup-Bill-to-line2" />
+                <ScalarProperty Name="Sup_Bill_to_line1" ColumnName="Sup-Bill-to-line1" />
+                <ScalarProperty Name="Sup_Remarks" ColumnName="Sup-Remarks" />
+                <ScalarProperty Name="Sup_Charge_GST" ColumnName="Sup-Charge-GST" />
+                <ScalarProperty Name="Sup_GST_Reg_No" ColumnName="Sup-GST-Reg-No" />
+                <ScalarProperty Name="Sup_Contact_Person" ColumnName="Sup-Contact-Person" />
+                <ScalarProperty Name="Sup_Email" ColumnName="Sup-Email" />
+                <ScalarProperty Name="Sup_Fax" ColumnName="Sup-Fax" />
+                <ScalarProperty Name="Sup_Telephone" ColumnName="Sup-Telephone" />
+                <ScalarProperty Name="Sup_Credit_Limit_Amount" ColumnName="Sup-Credit-Limit-Amount" />
+                <ScalarProperty Name="Sup_Credit_Limit_Days" ColumnName="Sup-Credit-Limit-Days" />
+                <ScalarProperty Name="Sup_Company_Reg_no" ColumnName="Sup-Company-Reg-no" />
+                <ScalarProperty Name="Sup_Inactive" ColumnName="Sup-Inactive" />
+                <ScalarProperty Name="Sup_Name" ColumnName="Sup-Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PurchaseQuotationDetails">
+            <EntityTypeMapping TypeName="simpleaccountingModel.PurchaseQuotationDetail">
+              <MappingFragment StoreEntitySet="PurchaseQuotationDetails">
+                <ScalarProperty Name="GST_Rate" ColumnName="GST-Rate" />
+                <ScalarProperty Name="GST_Code" ColumnName="GST-Code" />
+                <ScalarProperty Name="PQ_Discount" ColumnName="PQ-Discount" />
+                <ScalarProperty Name="PQ_Amount" ColumnName="PQ-Amount" />
+                <ScalarProperty Name="PQ_Price" ColumnName="PQ-Price" />
+                <ScalarProperty Name="PQ_Qty" ColumnName="PQ-Qty" />
+                <ScalarProperty Name="PandS_Name" ColumnName="PandS-Name" />
+                <ScalarProperty Name="PandS_Code" ColumnName="PandS-Code" />
+                <ScalarProperty Name="PQ_No" ColumnName="PQ-No" />
+                <ScalarProperty Name="PQ_ID" ColumnName="PQ-ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LastSelectionHistories">
+            <EntityTypeMapping TypeName="simpleaccountingModel.LastSelectionHistory">
+              <MappingFragment StoreEntitySet="LastSelectionHistory">
+                <ScalarProperty Name="Last_UpdatedBy" ColumnName="Last-UpdatedBy" />
+                <ScalarProperty Name="Last_Updated" ColumnName="Last-Updated" />
+                <ScalarProperty Name="Last_Selection" ColumnName="Last-Selection" />
+                <ScalarProperty Name="Screen_Name" ColumnName="Screen-Name" />
+                <ScalarProperty Name="Screen_Id" ColumnName="Screen-Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DebitNotes">
+            <EntityTypeMapping TypeName="simpleaccountingModel.DebitNote">
+              <MappingFragment StoreEntitySet="DebitNotes">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="DN_Status" ColumnName="DN-Status" />
+                <ScalarProperty Name="DN_Reason" ColumnName="DN-Reason" />
+                <ScalarProperty Name="PI_Id" ColumnName="PI-Id" />
+                <ScalarProperty Name="Sup_Id" ColumnName="Sup-Id" />
+                <ScalarProperty Name="Sup_CN_Amount" ColumnName="Sup-CN-Amount" />
+                <ScalarProperty Name="Sup_CN_Date" ColumnName="Sup-CN-Date" />
+                <ScalarProperty Name="Sup_CN_No" ColumnName="Sup-CN-No" />
+                <ScalarProperty Name="DN_Date" ColumnName="DN-Date" />
+                <ScalarProperty Name="DN_No" ColumnName="DN-No" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashAndBankTransactions">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashAndBankTransaction">
+              <MappingFragment StoreEntitySet="CashAndBankTransactions">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="Amt_Refunded" ColumnName="Amt-Refunded" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Amt_Due" ColumnName="Amt-Due" />
+                <ScalarProperty Name="SO_CN_PO_DN_Amt" ColumnName="SO-CN-PO-DN-Amt" />
+                <ScalarProperty Name="SO_CN_PO_DN_Date" ColumnName="SO-CN-PO-DN-Date" />
+                <ScalarProperty Name="SO_CN_PO_DN_No" ColumnName="SO-CN-PO-DN-No" />
+                <ScalarProperty Name="Cheque_Photo" ColumnName="Cheque-Photo" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Cash_Cheque_Date" ColumnName="Cash-Cheque-Date" />
+                <ScalarProperty Name="Cash_Cheque_No" ColumnName="Cash-Cheque-No" />
+                <ScalarProperty Name="Is_Cheque" ColumnName="Is-Cheque" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Cus_Sup_Id" ColumnName="Cus-Sup-Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="SP_PurchaseInvoiceList" FunctionName="simpleaccountingModel.Store.SP_PurchaseInvoiceList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="simpleaccountingModel.SP_PurchaseInvoiceList_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Sup_Name" ColumnName="Sup-Name" />
+                <ScalarProperty Name="CashChequeAmount" ColumnName="CashChequeAmount" />
+                <ScalarProperty Name="CashChequeDate" ColumnName="CashChequeDate" />
+                <ScalarProperty Name="CashChequeNo" ColumnName="CashChequeNo" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="DebitNoteDate" ColumnName="DebitNoteDate" />
+                <ScalarProperty Name="DebitNoteNo" ColumnName="DebitNoteNo" />
+                <ScalarProperty Name="ExcIncGST" ColumnName="ExcIncGST" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="InvoiceDateDateTime" ColumnName="InvoiceDateDateTime" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="InvoiceAmount" ColumnName="InvoiceAmount" />
+                <ScalarProperty Name="Sup_ID" ColumnName="Sup_ID" />
+                <ScalarProperty Name="DebitNoteAmount" ColumnName="DebitNoteAmount" />
+                <ScalarProperty Name="t" ColumnName="t" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

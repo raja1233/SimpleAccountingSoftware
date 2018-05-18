@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Acc_Type" Type="Int32" />
+    <Property Name="Acc_Open_Bal" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="Acc_Cur_Bal" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="Acc_Year_to_date" Type="DateTime" Precision="3" />
+    <Property Name="Acc_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsDeleted" Type="Boolean" />
+    <NavigationProperty Name="AccountType" Relationship="simpleaccountingModel.FK_Accounts_AccountType" FromRole="Account" ToRole="AccountType" />
+  </EntityType>
+  <EntityContainer Name="simpleaccountingEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Accounts" EntityType="Self.Account" />
+    <EntitySet Name="AccountTypes" EntityType="simpleaccountingModel.AccountType" />
+    <AssociationSet Name="FK_Accounts_AccountType" Association="simpleaccountingModel.FK_Accounts_AccountType">
+      <End Role="AccountType" EntitySet="AccountTypes" />
+      <End Role="Account" EntitySet="Accounts" />
+    </AssociationSet>
+    <EntitySet Name="AccountsTransactions" EntityType="simpleaccountingModel.AccountsTransaction" />
+  </EntityContainer>
+  <EntityType Name="AccountType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Acc_Type_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Acc_Type_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Accounts" Relationship="simpleaccountingModel.FK_Accounts_AccountType" FromRole="AccountType" ToRole="Account" />
+  </EntityType>
+  <Association Name="FK_Accounts_AccountType">
+    <End Type="simpleaccountingModel.AccountType" Role="AccountType" Multiplicity="0..1" />
+    <End Type="simpleaccountingModel.Account" Role="Account" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AccountType">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Account">
+        <PropertyRef Name="Acc_Type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="AccountsTransaction">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Acc_Id" Type="Int32" />
+    <Property Name="Trans_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Trans_Date" Type="DateTime" Precision="3" />
+    <Property Name="Trans_Amount" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="Year_to_Date" Type="DateTime" Precision="3" />
+    <Property Name="Opening_Balance" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="Closing_Balance" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="In_Active" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Invoice_Type" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="Int32" />
+  </EntityType>
+</Schema>

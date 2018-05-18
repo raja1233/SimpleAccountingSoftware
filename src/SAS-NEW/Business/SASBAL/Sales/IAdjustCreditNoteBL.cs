@@ -1,0 +1,26 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Saless.BLInterface
+{
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Sales;
+    public interface IAdjustCreditNoteBL
+    {
+        List<AdjustCreditNoteEntity> GetCreditNotes(string CustomerId);
+        IEnumerable<CustomerEntity> GetAllCustomer();
+        string GetCountOfSOCustomers();
+        string GetCountOfSICustomers();
+        AdjustCreditNoteForm GetNewPS(int? CustomerID);
+        bool IsChequeNoPresent(string cashChequeNo);
+        int SaveAdjustCreditNote(AdjustCreditNoteForm psForm, int Type);
+        int UpdateAdjustCreditNote(AdjustCreditNoteForm psForm, int Type);
+        AdjustCreditNoteForm GetAdjustCreditNoteDetails(string cashChequeNo);
+        AdjustCreditNoteForm AdjustCreditNoteDetails(string cashChequeNo);
+        string  GetLatestInvoiceNo();
+    }
+}

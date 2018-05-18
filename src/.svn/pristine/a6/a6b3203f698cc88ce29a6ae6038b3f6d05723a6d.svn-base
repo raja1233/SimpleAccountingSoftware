@@ -1,0 +1,439 @@
+﻿namespace SDN.SimpleAccounting
+{
+    using SDN.Common;
+    using Microsoft.Practices.Prism.Events;
+    using Microsoft.Practices.ServiceLocation;
+    using Microsoft.Practices.Prism.Regions;
+    using Microsoft.Practices.Prism.Commands;
+    using Navigation.View;
+    using SASClient.CashBank.Views;
+    using System.Windows;
+    using System.Windows.Input;
+    using System.ComponentModel;
+    using SASClient.File.Views;
+    using System.Collections.Generic;
+    using System.Linq;
+    using SASClient.CloseRequest;
+    using System.Collections.ObjectModel;
+    using System;
+    using System.Text;
+    using System.Xml;
+    using System.Data.SqlClient;
+    using System.Configuration;
+
+    /// <summary>
+    /// SimpleAccountingViewModel class
+    /// </summary>
+    public class SimpleAccountingViewModel : StackEntity
+    {
+        #region Private Properties
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly IRegionManager regionManager;
+        private readonly DelegateCommand importDataCommand = null;
+        StackList itemlist = new StackList();
+        private readonly DelegateCommand stackCommand = null;
+        private readonly DelegateCommand homeClickCommand = null;
+        Configuration config;
+
+        //private List<string> _items;
+        //public List<string> Items
+        //{
+        //    get
+        //     {
+        //        return _items;
+        //    }
+        //    set
+        //    {
+        //         _items = value;
+        //        OnPropertyChanged("Items");
+        //    }
+        //}
+        //public IList<string> Items { get; set; }
+        public DelegateCommand ImportDataCommand
+        {
+            get
+            {
+                return (this.importDataCommand ?? new DelegateCommand(this.ImportDataView));
+            }
+        }
+
+        private string title;
+
+        /// <summary>
+        /// The is menu region visible
+        /// </summary>
+        private bool isMenuRegionVisible;
+        private bool isHeaderRegionVisible;
+        private bool isFooterRegionVisible;
+        public List<string> stacklist { get; set; }
+        private string _screenName;
+        public string ScreenName
+        {
+            get
+             {
+                return _screenName;
+            }
+            set
+            {
+                _screenName = value;
+                OnPropertyChanged("ScreenName");
+            }
+        }
+
+        private string _History;
+        private bool isSubMenuRegionVisible;
+        #endregion
+
+        #region Public Properties
+
+        public DelegateCommand HomeClickCommand
+        {
+            get
+            {
+                return (this.homeClickCommand ?? new DelegateCommand(this.ShowMainView));
+            }
+        }
+        //public DelegateCommand StackClickCommand
+        //{
+        //    get
+        //    {
+        //        return (this.stackCommand ?? new DelegateCommand(this.MaintainHistoryList));
+        //    }
+        //}
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is menu region visible.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is menu region visible; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsMenuRegionVisible
+        {
+            get
+            {
+                return this.isMenuRegionVisible;
+            }
+            set
+            {
+                this.isMenuRegionVisible = value;
+                this.OnPropertyChanged("IsMenuRegionVisible");
+            }
+        }
+        public bool IsHeaderRegionVisible
+        {
+            get
+            {
+                return this.isHeaderRegionVisible;
+            }
+            set
+            {
+                this.isHeaderRegionVisible = value;
+                this.OnPropertyChanged("IsHeaderRegionVisible");
+            }
+        }
+        public bool IsFooterRegionVisible
+        {
+            get
+            {
+                return this.isFooterRegionVisible;
+            }
+            set
+            {
+                this.isFooterRegionVisible = value;
+                this.OnPropertyChanged("IsFooterRegionVisible");
+            }
+        }
+        
+
+        public string History
+        {
+            get
+            {
+                return _History;
+            }
+            set
+            {
+                _History = value;
+                OnPropertyChanged("History");
+            }
+        }
+        public bool IsSubMenuRegionVisible
+        {
+            get
+            {
+                return this.isSubMenuRegionVisible;
+            }
+            set
+            {
+                this.isSubMenuRegionVisible = value;
+                this.OnPropertyChanged("IsSubMenuRegionVisible");
+            }
+        }
+        public string Title
+        {
+            get
+            {
+                return this.title;
+            }
+            set
+            {
+                this.title = value;
+                this.OnPropertyChanged("Title");
+            }
+        }
+ 
+        
+        #endregion
+
+        #region Constructor
+        //public SimpleAccountingViewModel() :base()
+
+        //{
+        //    loadHistoryItem();
+        //}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimpleAccountingViewModel"/> class.
+        /// </summary>
+        /// <param name="eventAggregator">The event aggregator.</param>
+        public SimpleAccountingViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.IsMenuRegionVisible = false;
+            this.IsSubMenuRegionVisible = false;
+            this.IsHeaderRegionVisible = true;
+            this.IsFooterRegionVisible = true;
+            Headervisible = false;
+            RuntimeConnectionString();
+            this.Title = "Simple Accounting Software";
+            this.eventAggregator = eventAggregator; 
+            eventAggregator.GetEvent<TabVisibilityEvent>().Subscribe(MenuRegionVisible);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Subscribe(SubMenuRegionVisible);
+            eventAggregator.GetEvent<HeaderVisibilityChangeEvent>().Subscribe(HeaderRegionVisible);
+            eventAggregator.GetEvent<TitleChangedEvent>().Subscribe(TitleChanged);
+            eventAggregator.GetEvent<FooterVisibilityChangeEvent>().Subscribe(FooterRegionVisible);
+
+        }
+        #endregion
+       
+        #region Click Command
+        private readonly DelegateCommand accountsDetailsClickCommand = null;
+        #endregion
+        #region Accounts Click command
+        public DelegateCommand AccountsDetailsClickCommand
+        {
+            get
+            {
+                return (this.accountsDetailsClickCommand ?? new DelegateCommand(this.AccountsDetailsView));
+            }
+        }
+       
+        #endregion
+        #region Private Methods
+        private void MenuRegionVisible(bool isVisible)
+        {
+            this.IsMenuRegionVisible = isVisible;
+            this.OnPropertyChanged("IsMenuRegionVisible");
+        }
+        private void HeaderRegionVisible(bool isVisible)
+        {
+            this.IsHeaderRegionVisible = isVisible;
+            this.OnPropertyChanged("IsHeaderRegionVisible");
+        }
+        private void FooterRegionVisible(bool isVisible)
+        {
+            this.IsFooterRegionVisible = isVisible;
+            this.OnPropertyChanged("IsFooterRegionVisible");
+        }
+        public void updateConfigFile(string con)
+        {
+            //updating config file
+            XmlDocument XmlDoc = new XmlDocument();
+            //Loading the Config file
+            XmlDoc.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+            foreach (XmlElement xElement in XmlDoc.DocumentElement)
+            {
+                if (xElement.Name == "connectionStrings")
+                {
+                    //setting the coonection string
+                    xElement.FirstChild.Attributes[2].Value = con;
+                }
+            }
+            //writing the connection string in config file
+            XmlDoc.Save(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+        }
+
+
+        private void RuntimeConnectionString()
+        {
+            StringBuilder Con = new StringBuilder("metadata=res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=';data source=(LocalDb)\\MSSQLLocalDB;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework;");
+            //Con.Append("res://*/SASEntitiesEDM.csdl|res://*/SASEntitiesEDM.ssdl|res://*/SASEntitiesEDM.msl;provider=System.Data.SqlClient;provider connection string=&quot;server=SDN-450\\SQLEXPRESS;Trusted_Connection=True;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;");
+            Con.Append("initial catalog=simpleaccounting");
+            Con.Append("';");
+            string finalconnectionstring = Con.ToString();
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var connectionString1 = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ConnectionString;
+            var connectionStringsSection = (ConnectionStringsSection)config.GetSection("connectionStrings");
+            connectionStringsSection.ConnectionStrings["SASEntitiesEDM"].ConnectionString = finalconnectionstring;
+            config.Save();
+            ConfigurationManager.RefreshSection("connectionStrings");
+            var connectionString = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ConnectionString;
+
+
+        //    //StringBuilder Con = new StringBuilder("Data Source=");
+        //    //Con.Append("SDN-450//SQLEXPRESS");
+        //    //Con.Append(";Initial Catalog=");
+        //    //Con.Append("SimpleAccounting");
+        //    //Con.Append(";Trusted_Connection=True;");
+        //    //string strCon = Con.ToString();
+        //    //updateConfigFile(strCon);
+        //    //SqlConnection Db = new SqlConnection();
+        //    ////to refresh connection string each time else it will use             previous connection string
+        //    //ConfigurationManager.RefreshSection("connectionStrings");
+        //    //Db.ConnectionString = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ToString();
+
+        }
+
+        private void SubMenuRegionVisible(bool isVisible)
+        {
+            this.IsSubMenuRegionVisible = isVisible;
+            this.OnPropertyChanged("IsSubMenuRegionVisible");
+        }
+        private void TitleChanged(string title)
+        {
+            this.Title = title;
+            this.OnPropertyChanged("Title");
+        }
+        //private void MaintainHistoryList()
+        //{
+            
+        //    loadHistoryItem();
+            
+        //}
+        
+        public void loadHistoryItem()
+        {
+          
+            try
+             {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                if (listview.Count > 0 && listview != null)
+                {
+                    listview.Reverse();
+                    Items = new ObservableCollection<string>(listview);
+                }
+            }
+            catch (System.Exception e)
+            {
+
+                List<string> listview = new List<string>();
+            }
+                     
+
+        }
+        
+        private void ShowMainView()
+        {
+            var view = ServiceLocator.Current.GetInstance<MainView>();
+
+            IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+            region1.Add(view);
+            if (region1 != null)
+            {
+                region1.Activate(view);
+            }
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Home");
+           
+
+
+        }
+        //public void ShowStackList()
+        //{
+        //    List<string> listview = (List<string>)Application.Current.Resources["views"];
+        //    Items = (List<string>)listview;
+        //}
+        private void ImportDataView()
+        {
+            SharedValues.getValue = "ImportDataTab";
+            var tabview = ServiceLocator.Current.GetInstance<ImportDataView>();
+
+            var tabregion = this.regionManager.Regions[RegionNames.MainRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            var view2 = ServiceLocator.Current.GetInstance<FileTabView>();
+
+            IRegion region2 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+
+            region2.Add(view2);
+            if (region2 != null)
+            {
+                region2.Activate(view2);
+            }
+            var SubTabView = ServiceLocator.Current.GetInstance<FileSubTabView>();
+            var subMenuRegion = regionManager.Regions[RegionNames.SubMenuBarRegion];
+
+            subMenuRegion.Add(SubTabView);
+
+            if (subMenuRegion != null)
+            {
+                subMenuRegion.Activate(SubTabView);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Import Data");
+        }
+
+        #endregion
+        #region Public Method
+        public void AccountsDetailsView()
+        {
+            SharedValues.getValue = "AccountsDetailsTab";
+            var view = ServiceLocator.Current.GetInstance<AccountsDetailsListView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Details List");
+        }
+
+
+
+        #endregion
+        #region Property Changed Event
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+            switch (name)
+            {
+                case "ScreenName":
+                    SharedValues.ViewName = ScreenName;
+                    itemlist.AddToList();
+                    CloseView close = new CloseView(regionManager, eventAggregator);
+                    close.CloseViewRequest(ScreenName, false);
+                    break;
+
+            }
+            
+
+            base.OnPropertyChanged(name);
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,308 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Settings.DAL
+{
+    using SDN.Settings.DALInterface;
+    using UI.Entities;
+    using SDN.SettingsEDM;
+
+   /// <summary>
+   /// this class is having member functions to get all the tax  codes and rates
+   /// </summary>
+    public class TaxCodesAndRatesDAL : ITaxCodesAndRatesDAL
+    {
+        /// <summary>
+        /// This method is used to get all the taxes with codes and rates
+        /// </summary>
+        /// <returns></returns>
+        public List<TaxModel> GetAllTaxes()
+        {
+            try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+                    var lstTax = (from tax in objEntities.TaxCodesAndRates
+                                  where tax.IsDeleted == false
+                                  select new 
+                                  {
+                                      TaxID = tax.ID,
+                                      TaxName = tax.Tax_Name,
+                                      TaxDescription = tax.Tax_Description,
+                                      TaxCode = tax.Tax_Code,
+                                      TaxRate = tax.Tax_Rate,
+                                      IsDefault=tax.Tax_Default,
+                                      IsInActive=tax.Tax_Inactive,
+                                      Predefined=tax.Predefined
+                                  }).ToList();
+
+                    return lstTax.AsEnumerable() // Client-side from here on
+                   .Select((tax, index) => new TaxModel()
+                   {
+                       TaxID = tax.TaxID,
+                       TaxName = tax.TaxName,
+                       TaxDescription = tax.TaxDescription,
+                       TaxCode = tax.TaxCode,
+                       TaxRate = tax.TaxRate,
+                       IsDefault = tax.IsDefault,
+                       IsInActive = tax.IsInActive,
+                       Predefined = tax.Predefined,
+                       StrTaxRate=tax.TaxRate.ToString()+"%",
+                       Rank = tax.Predefined==true?"#": string.Empty
+                   }).ToList();
+
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public TaxModel GetDefaultTaxes()
+        {
+            try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+
+                    var defaultTax = (from tax in objEntities.TaxCodesAndRates
+                                      where tax.IsDeleted == false
+                                      select new TaxModel()
+                                      {
+                                          TaxID = tax.ID,
+                                          TaxName = tax.Tax_Name,
+                                          TaxDescription = tax.Tax_Description,
+                                          TaxCode = tax.Tax_Code,
+                                          TaxRate = tax.Tax_Rate,
+                                          IsDefault = tax.Tax_Default,
+                                          IsInActive = tax.Tax_Inactive,
+                                          Predefined = tax.Predefined
+                                      }).Where(x => x.IsDefault == true && x.IsInActive != "Y").FirstOrDefault();
+                    
+                    return defaultTax as TaxModel;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+
+ 
+    /// <summary>
+    /// This class having member functions to retrieve single tax code and rates
+    /// </summary>
+    public class TaxDAL : ITaxDAL
+    {
+        /// <summary>
+        /// This method is used to retrieve single tax code and rates
+        /// </summary>
+        /// <param name="taxId"></param>
+        /// <returns></returns>
+        public List<TaxModel> GetTax(int taxId)
+        {
+            try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+                    var lstTax = (from tax in objEntities.TaxCodesAndRates
+                                  where tax.IsDeleted == false
+                                  && tax.ID==taxId
+                                  select new TaxModel
+                                  {
+                                      TaxID = tax.ID,
+                                      TaxName = tax.Tax_Name,
+                                      TaxDescription = tax.Tax_Description,
+                                      TaxCode = tax.Tax_Code,
+                                      TaxRate = tax.Tax_Rate,
+                                      IsDefault = tax.Tax_Default,
+                                      IsInActive = tax.Tax_Inactive,
+                                      Predefined=tax.Predefined
+                                  }).ToList();
+                    return lstTax;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+
+   public class TaxOperationDAL : ITaxOperationDAL
+    {
+        /// <summary>
+        /// This method is used to delete the tax
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteTax(int id)
+        {
+            try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+                    TaxCodesAndRate tax = objEntities.TaxCodesAndRates.SingleOrDefault(t => t.ID ==id);
+
+                    tax.IsDeleted = true;
+                    tax.ModifiedDate = DateTime.Now;
+                    objEntities.SaveChanges();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool IsCodeAndRateExists(TaxModel taxModel)
+        {
+            bool isExists = false;
+            try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+                    var tax = objEntities.TaxCodesAndRates.Where(e => e.Tax_Code.Trim() == taxModel.TaxCode
+                    //&& e.Tax_Rate == taxModel.TaxRate ------removes after client MOM on 11 may 2017 
+                     && e.IsDeleted == false && e.ID != taxModel.TaxID).ToList();
+                    if(tax.Count>0)
+                    {
+                        isExists = true;
+                    }
+                    else
+                    {
+                        isExists = false;
+                    }
+                }
+               return isExists;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+         }
+
+        /// <summary>
+        /// This method is used to save new tax 
+        /// </summary>
+        /// <param name="taxModel"></param>
+        public void SaveTax(TaxModel taxModel)
+        {
+           try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+                    TaxCodesAndRate tax = new TaxCodesAndRate();
+
+                    tax.Tax_Name = taxModel.TaxName;
+                    tax.Tax_Description = taxModel.TaxDescription.Trim();
+                    tax.Tax_Code = taxModel.TaxCode.Trim();
+                    tax.Tax_Rate = taxModel.TaxRate;
+                    if (taxModel.IsInActive == null)
+                    {
+                        tax.Tax_Inactive = "N";
+                    }
+                    else
+                    {
+                        tax.Tax_Inactive = taxModel.IsInActive;
+                    }
+                    tax.Tax_Default = false;
+                    tax.CreatedDate = DateTime.Now;
+                    tax.IsDeleted = false;
+
+                    objEntities.TaxCodesAndRates.Add(tax);
+                    objEntities.SaveChanges();
+
+                    var taxes = objEntities.TaxCodesAndRates.ToList();
+                    if (taxes != null)
+                    {
+                        foreach (var taxItem in taxes)
+                        {
+                            taxItem.Tax_Name = taxModel.TaxName;
+                            objEntities.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to update the tax
+        /// </summary>
+        /// <param name="taxModel"></param>
+        public void UpdateTax(TaxModel taxModel)
+        {
+            try
+            {
+                using (SDNSettingEntities objEntities = new SDNSettingEntities())
+                {
+                    TaxCodesAndRate tax = objEntities.TaxCodesAndRates.SingleOrDefault(t => t.ID == taxModel.TaxID);
+                    tax.Tax_Name = taxModel.TaxName;
+                    tax.Tax_Description = taxModel.TaxDescription;
+                    tax.Tax_Code = taxModel.TaxCode;
+                    tax.Tax_Rate = Convert.ToDecimal(taxModel.TaxRate);
+                    if (taxModel.IsInActive == null)
+                    {
+                        tax.Tax_Inactive = "N";
+                    }
+                    else
+                    {
+                        tax.Tax_Inactive = taxModel.IsInActive;
+                    }
+                    tax.Tax_Default = taxModel.IsDefault;
+                    tax.ModifiedDate = DateTime.Now;
+
+                    objEntities.SaveChanges();
+
+
+                    var lstTax = objEntities.TaxCodesAndRates.Where(e=>e.ID!=taxModel.TaxID).ToList();
+                    if (tax != null)
+                    {
+                        foreach (var c in lstTax)
+                        {
+                            if (taxModel.IsDefault == true)
+                            {
+                                if (c.Tax_Default == true)
+                                {
+                                    c.Tax_Default = false;
+                                }
+                            }
+                            else
+                            {
+                                if (c.Tax_Default == true)
+                                {
+                                    c.Tax_Default = true;
+                                }
+                            }
+                            objEntities.SaveChanges();
+                        }
+                    }
+                    var taxes = objEntities.TaxCodesAndRates.ToList();
+                    if (taxes != null)
+                    {
+                        foreach (var taxItem in taxes)
+                        {
+                            taxItem.Tax_Name = taxModel.TaxName;
+                            objEntities.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+      
+    }
+}

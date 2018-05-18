@@ -1,0 +1,15 @@
+﻿namespace SASClient
+{
+
+
+    partial class SourceQuotationDataSet
+    {
+        partial class View_SalesInvoicesDataTable
+        {
+        }
+
+        partial class View_SalesQuotationUniqueRecordDataTable
+        {
+        }
+    }
+}

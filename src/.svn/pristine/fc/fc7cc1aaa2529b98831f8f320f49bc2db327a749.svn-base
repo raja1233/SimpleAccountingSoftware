@@ -1,0 +1,61 @@
+﻿using SDN.Sales.BL;
+using SDN.Sales.BLInterface;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.Services
+{
+    public class SalesInvoiceRepository: ISalesInvoiceRepository
+    {
+        public List<SalesInvoiceEntity> GetAllSalesInvoices()
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            return pqBL.GetAllSalesInvoices();
+        }
+
+        public string GetLatestInvoiceNo()
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            return pqBL.GetLatestInvoiceNo();
+        }
+
+       public int AddUpdateInvoice(SalesInvoiceForm invoiceData)
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            int i = pqBL.AddUpdateInvoice(invoiceData);
+            return i;
+        }
+        public int DeleteInvoice(string purchaseQuotID)
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            return pqBL.DeleteInvoice(purchaseQuotID);
+        }
+
+        public SalesInvoiceForm GetSalesInvoice(string pqNo)
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            return pqBL.GetSalesInvoice(pqNo);
+        }
+
+        public int UpdationInvoice(SalesInvoiceForm invoiceData)
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            return pqBL.UpdationInvoice(invoiceData);
+        }
+
+        public string GetCategoryContent(string catType)
+        {
+            ISalesInvoiceBL pqBL = new SalesInvoiceBL();
+            return pqBL.GetCategoryContent(catType);
+        }
+        public SalesInvoiceForm GetPrintSalesInvoice(string piNo)
+        {
+            ISalesInvoiceBL piBL = new SalesInvoiceBL();
+            return piBL.GetPrintSalesInvoice(piNo);
+        }
+    }
+}

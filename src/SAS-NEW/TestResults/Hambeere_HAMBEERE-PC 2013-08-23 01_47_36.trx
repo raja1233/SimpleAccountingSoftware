@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="9b2c5cce-77d9-4c7f-95ff-6f2f97e75219" name="Hambeere@HAMBEERE-PC 2013-08-23 01:47:36" runUser="Hambeere-PC\Hambeere" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="cbba068f-ca6b-4d32-97d5-f4739766905c">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Hambeere_HAMBEERE-PC 2013-08-23 01_47_36">
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Sales.EDM\bin\Debug\Sales.EDM.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Sales.DAL\bin\Debug\Sales.DAL.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Sales.DALInterface\bin\Debug\Sales.DALInterface.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2013-08-23T01:47:36.3716381+05:30" queuing="2013-08-23T01:47:36.4086402+05:30" start="2013-08-23T01:47:36.4246411+05:30" finish="2013-08-23T01:47:36.7546600+05:30" />
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="GetAllContacts" storage="d:\ateam\illusion\tests\dataaccesstest\salesdataaccesstest\bin\debug\salesdataaccesstest.dll" id="0f591be0-7ce2-a6fc-89d0-e9726f1d9243">
+      <Execution id="c76155ce-37ab-4dcb-ad9d-90098b5fe1f6" />
+      <TestMethod codeBase="D:/ATeam/Illusion/Tests/DataAccessTest/SalesDataAccessTest/bin/Debug/SalesDataAccessTest.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="SalesDataAccessTest.SalesDALTest, SalesDataAccessTest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="GetAllContacts" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="0f591be0-7ce2-a6fc-89d0-e9726f1d9243" executionId="c76155ce-37ab-4dcb-ad9d-90098b5fe1f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="c76155ce-37ab-4dcb-ad9d-90098b5fe1f6" testId="0f591be0-7ce2-a6fc-89d0-e9726f1d9243" testName="GetAllContacts" computerName="HAMBEERE-PC" duration="00:00:00.1247302" startTime="2013-08-23T01:47:36.4256411+05:30" endTime="2013-08-23T01:47:36.7346588+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c76155ce-37ab-4dcb-ad9d-90098b5fe1f6">
+    </UnitTestResult>
+  </Results>
+</TestRun>

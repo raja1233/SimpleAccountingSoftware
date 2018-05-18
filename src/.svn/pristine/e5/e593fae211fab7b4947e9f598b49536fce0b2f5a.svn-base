@@ -1,0 +1,31 @@
+﻿using SASBAL.CashBank;
+using SDN.UI.Entities.CashandBank;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.CashBank.Services
+{
+    public class AccountsDetailsListRepository : IAccountsDetailsListRepository
+    {
+        public List<AccountsDetailsListEntity> GetAllAccountsDetailsList()
+        {
+            IAccountsDetailsListBL adBL = new AccountsDetailsListBL();
+            return adBL.GetAllAccountsDetails();
+        }
+
+        public AccountsDetailsListEntity StartNewFinancialYear(string status)
+        {
+            IAccountsDetailsListBL obj = new AccountsDetailsListBL();
+            return obj.StartNewFinancialYear(status);
+        }
+
+        public string UpdatePreviousAccount()
+        {
+            IAccountsDetailsListBL obj = new AccountsDetailsListBL();
+            return obj.UpdatePreviousAccount();
+        }
+    }
+}

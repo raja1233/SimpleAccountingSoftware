@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="simpleaccountingModelStoreContainer" CdmEntityContainer="simpleaccountingEntities">
+    <EntitySetMapping Name="Accounts">
+      <EntityTypeMapping TypeName="simpleaccountingModel.Account">
+        <MappingFragment StoreEntitySet="Accounts">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+          <ScalarProperty Name="Acc_Type" ColumnName="Acc-Type" />
+          <ScalarProperty Name="Acc_Open_Bal" ColumnName="Acc-Open-Bal" />
+          <ScalarProperty Name="Acc_Cur_Bal" ColumnName="Acc-Cur-Bal" />
+          <ScalarProperty Name="Acc_Year_to_date" ColumnName="Acc-Year-to-date" />
+          <ScalarProperty Name="Acc_Inactive" ColumnName="Acc-Inactive" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AccountTypes">
+      <EntityTypeMapping TypeName="simpleaccountingModel.AccountType">
+        <MappingFragment StoreEntitySet="AccountType">
+          <ScalarProperty Name="Acc_Type_Code" ColumnName="Acc-Type-Code" />
+          <ScalarProperty Name="Acc_Type_Name" ColumnName="Acc-Type-Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AccountsTransactions">
+      <EntityTypeMapping TypeName="simpleaccountingModel.AccountsTransaction">
+        <MappingFragment StoreEntitySet="AccountsTransactions">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="Invoice_Type" ColumnName="Invoice-Type" />
+          <ScalarProperty Name="In_Active" ColumnName="In-Active" />
+          <ScalarProperty Name="Closing_Balance" ColumnName="Closing-Balance" />
+          <ScalarProperty Name="Opening_Balance" ColumnName="Opening-Balance" />
+          <ScalarProperty Name="Year_to_Date" ColumnName="Year-to-Date" />
+          <ScalarProperty Name="Trans_Amount" ColumnName="Trans-Amount" />
+          <ScalarProperty Name="Trans_Date" ColumnName="Trans-Date" />
+          <ScalarProperty Name="No" ColumnName="No" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Trans_Type" ColumnName="Trans-Type" />
+          <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

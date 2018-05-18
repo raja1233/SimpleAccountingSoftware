@@ -1,0 +1,344 @@
+﻿using Newtonsoft.Json;
+using SASDAL;
+using SDN.Sales.DALInterface;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.DAL
+{
+    public class SalesOrderListDAL: ISalesOrderListDAL
+    {
+        SASEntitiesEDM entities = new SASEntitiesEDM();
+        public List<SalesOrderListEntity> GetAllSalesOrder()
+        {
+            try
+            {
+                List<SalesOrderListEntity> OrderList = (from x in entities.SalesOrders
+                                                        join y in entities.Customers on x.Cus_Id equals y.ID
+                                                        where x.IsDeleted != true && x.Exc_Inc_GST != null
+                                                        join w in entities.CashAndBankTransactions on x.SO_No equals w.SO_CN_PO_DN_No into t
+                                                        from rt in t.DefaultIfEmpty()
+                                                        select new SalesOrderListEntity
+                                                        {
+                                                            ID = x.ID,
+                                                            CustomerName = y.Cus_Name,
+                                                            Cus_ID = x.Cus_Id,
+                                                            OrderNo = x.SO_No,
+                                                            OrderDate = x.SO_Date.ToString(),
+                                                            DeliveryDateTime = x.SO_Del_Date.ToString(),
+                                                            OrderAmount = x.SO_Tot_aft_Tax.ToString(),
+                                                            OAmount = x.SO_Tot_aft_Tax,
+                                                            OrderAmountIncGST = x.SO_Tot_aft_Tax.ToString(),
+                                                            OrderAmountExcGST = x.SO_Tot_bef_Tax.ToString(),
+                                                            ConvertedToSI = x.SO_Conv_to_SI,
+                                                            ConvertedToNo = x.Conv_to_No,
+                                                            //ConvertedToPO = x.PO_Conv_to_PO,
+                                                            IsDeleted = x.IsDeleted,
+                                                            SelectedSearchPQList = x.ID,
+                                                            CreatedDate = x.SO_Date,
+                                                            CreatedDateList = x.CreatedDate,
+                                                            ExcIncGST = x.Exc_Inc_GST,
+                                                            //AmountDeposited = rt.SO_CN_PO_DN_Amt.ToString(), change[3/30/2018] Amount is same as order amount but it should be deposited amount
+                                                            AmountDeposited = rt.Amount.ToString(),
+                                                               DAmount = rt.SO_CN_PO_DN_Amt
+                                                           }).ToList();
+
+
+
+
+                //List<SalesOrderListEntity> OrderList = entities.SalesOrders.Join(entities.Customers, y => y.Cus_Id, x => x.ID, (x, y) => new SalesOrderListEntity
+                //{
+                //    ID = x.ID,
+                //    CustomerName = y.Cus_Name,
+                //    Cus_ID = x.Cus_Id,
+                //    OrderNo = x.SO_No,
+                //    OrderDate = x.SO_Date.ToString(),
+                //    OrderAmount = x.SO_Tot_aft_Tax.ToString(),
+                //    OAmount=x.SO_Tot_aft_Tax,
+                //    OrderAmountIncGST = x.SO_Tot_aft_Tax.ToString(),
+                //    OrderAmountExcGST = x.SO_Tot_bef_Tax.ToString(),
+                //    ConvertedToSI = x.SO_Conv_to_SI,
+                //    //ConvertedToPO = x.PO_Conv_to_PO,
+                //    IsDeleted = x.IsDeleted,
+                //    SelectedSearchPQList = x.ID,
+                //    CreatedDate = x.SO_Date,
+                //    CreatedDateList = x.CreatedDate,
+                //    ExcIncGST = x.Exc_Inc_GST
+                //}).Where(w => w.IsDeleted != true && w.ExcIncGST != null).ToList();
+
+                //List<SalesOrderListEntity> OrderList = entities.SalesOrders.Join(entities.Suppliers, y => y.Sup_Id, x => x.ID, (x, y) => x.).Where(x => x.IsDeleted != true).Select(x => new SalesOrderListEntity
+                //{
+                //    SupplierName = x.Sup_Id.name
+                //}).ToList();
+
+                //List<SalesOrderListEntity> OrderList = (from Order in entities.SalesOrders
+                //                                                  join supplier in entities.Suppliers on Order.Sup_Id equals supplier.ID
+                //                                                  where x => x.IsDeleted != true
+                //                                                  select new SalesOrderListEntity {
+                //                                                      SupplierName = Order. ,
+
+                //                                                  })
+
+
+
+                return OrderList;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public List<SalesOrderListEntity> GetAllSalesOrderJson(string JsonData, bool? ExcincTax)
+        {
+            try
+            {
+                List<SalesOrderListEntity> OrderList = new List<SalesOrderListEntity>();
+                List<SalesOrderListEntity> OrderListReturn = new List<SalesOrderListEntity>();
+
+                OrderList = (from x in entities.SalesOrders
+                             join y in entities.Customers on x.Cus_Id equals y.ID
+                             where x.IsDeleted != true
+                             join w in entities.CashAndBankTransactions on x.SO_No equals w.SO_CN_PO_DN_No into t
+                             from rt in t.DefaultIfEmpty()
+                             select new SalesOrderListEntity
+                             {
+                                 ID = x.ID,
+                                 CustomerName = y.Cus_Name,
+                                 Cus_ID = x.Cus_Id,
+                                 OrderNo = x.SO_No,
+                                 OrderDate = x.SO_Date.ToString(),
+                                 OrderAmount = x.SO_Tot_aft_Tax.ToString(),
+                                 OAmount = x.SO_Tot_aft_Tax,
+                                 OrderAmountIncGST = x.SO_Tot_aft_Tax.ToString(),
+                                 OrderAmountExcGST = x.SO_Tot_bef_Tax.ToString(),
+                                 ConvertedToSI = x.SO_Conv_to_SI,
+                                 ConvertedToNo = x.Conv_to_No,
+                                 //ConvertedToPO = x.PO_Conv_to_PO,
+                                 IsDeleted = x.IsDeleted,
+                                 SelectedSearchPQList = x.ID,
+                                 CreatedDate = x.SO_Date,
+                                 CreatedDateList = x.CreatedDate,
+                                 ExcIncGST = x.Exc_Inc_GST,
+                                 //AmountDeposited = rt.SO_CN_PO_DN_Amt.ToString(), change[3/30/2018] Amount is same as order amount but it should be deposited amount
+                                 AmountDeposited = rt.Amount.ToString(),
+                                 DAmount = rt.SO_CN_PO_DN_Amt,
+                                 OrderDateDateTime = x.SO_Date,
+                                 DeliveryDateDateTime = x.SO_Del_Date,
+                                 DeliveryDateTime = x.SO_Del_Date.ToString()
+                             }).ToList();
+
+
+
+                //OrderList = entities.SalesOrders.Join(entities.Customers, y => y.Cus_Id, x => x.ID, (x, y) => new SalesOrderListEntity
+                //{
+                //    ID = x.ID,
+                //    CustomerName = y.Cus_Name,
+                //    Cus_ID = x.Cus_Id,
+                //    OrderNo = x.SO_No,
+                //    OrderDate = x.SO_Date.ToString(),
+                //    OrderAmount = x.SO_Tot_aft_Tax.ToString(),
+                //    OAmount = x.SO_Tot_aft_Tax,
+                //    OrderAmountIncGST = x.SO_Tot_aft_Tax.ToString(),
+                //    OrderAmountExcGST = x.SO_Tot_bef_Tax.ToString(),
+                     
+                //    DAmount= x.SO_Tot_aft_Tax,  //This will come from transaction table
+                //    ConvertedToSI = x.SO_Conv_to_SI,
+                //    //ConvertedToPO = x.PO_Conv_to_PO,
+                //    IsDeleted = x.IsDeleted,
+                //    SelectedSearchPQList = x.ID,
+                //    CreatedDate = x.SO_Date,
+                //    CreatedDateList = x.CreatedDate,
+                //    ExcIncGST = x.Exc_Inc_GST,
+                //    OrderDateDateTime = x.SO_Date
+                //}).Where(w => w.IsDeleted != true  //&& w.ExcIncGST == ExcincTax //Commented on 23 May 2017
+              
+                if (JsonData != null && JsonData != "[]")
+                {
+                    DateTime startDate = new DateTime();
+                    var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(JsonData);
+                    foreach (var item in objResponse1)
+                    {
+                        switch (item.FieldName)
+                        {
+                            case "Year":
+                                var year = Convert.ToInt32(item.FieldValue);
+                                OrderList = OrderList.Where(x => x.OrderDateDateTime.Value.Year == year).ToList();
+                                break;
+                            case "Quarter":
+                                switch (item.FieldValue)
+                                {
+                                    case "1":
+                                        OrderList = OrderList.Where(x => x.OrderDateDateTime.Value.Month == 1 || x.OrderDateDateTime.Value.Month == 2 || x.OrderDateDateTime.Value.Month == 3).ToList();
+                                        break;
+                                    case "2":
+                                        OrderList = OrderList.Where(x => x.OrderDateDateTime.Value.Month == 4 || x.OrderDateDateTime.Value.Month == 5 || x.OrderDateDateTime.Value.Month == 6).ToList();
+                                        break;
+                                    case "3":
+                                        OrderList = OrderList.Where(x => x.OrderDateDateTime.Value.Month == 7 || x.OrderDateDateTime.Value.Month == 8 || x.OrderDateDateTime.Value.Month == 9).ToList();
+                                        break;
+                                    case "4":
+                                        OrderList = OrderList.Where(x => x.OrderDateDateTime.Value.Month == 10 || x.OrderDateDateTime.Value.Month == 11 || x.OrderDateDateTime.Value.Month == 12).ToList();
+                                        break;
+                                }
+                                break;
+                            case "Month":
+                                var month = Convert.ToInt32(item.FieldValue);
+                                if(month == 0)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    OrderList = OrderList.Where(x => x.OrderDateDateTime.Value.Month == month).ToList();
+                                    break;
+                                }
+                               
+                            case "StartDate":
+                                //startDate = Convert.ToDateTime(item.FieldValue);
+                                 startDate = DateTime.ParseExact(item.FieldValue, "MMM/dd/yyyy", CultureInfo.InvariantCulture);
+                                //OrderList = OrderList.Where(x => x.OrderDateDateTime ).ToList();
+                                break;
+                            case "EndDate":
+                                //DateTime endDate = Convert.ToDateTime(item.FieldValue);
+                                DateTime endDate = DateTime.ParseExact(item.FieldValue, "MMM/dd/yyyy", CultureInfo.InvariantCulture);
+                                OrderList = OrderList.Where(x => x.OrderDateDateTime > startDate && x.OrderDateDateTime < endDate).ToList();
+                                break;
+                        }
+                    }
+                    OrderListReturn = OrderList;
+                }
+                else
+                {
+                    OrderListReturn = OrderList;
+                }
+                return OrderListReturn;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string CheckConvertTo(bool? ConvertedToPI, bool? ConvertedToPO)
+        {
+            if (ConvertedToPI == true)
+                return "Invoice";
+            else if (ConvertedToPO == true)
+                return "Order";
+            else
+                return "";
+        }
+
+        public bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName)
+        {
+            try
+            {
+                var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == ScreenId).FirstOrDefault();
+                if (result != null)
+                {
+                    result.Last_Selection = jsonSearch;
+                    result.Last_Updated = DateTime.Now;
+                    entities.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    LastSelectionHistory lastSelection = new LastSelectionHistory()
+                    {
+                        Screen_Id = ScreenId,
+                        Screen_Name = ScreenName,
+                        Last_Selection = jsonSearch,
+                        Last_Updated = DateTime.Now
+                    };
+                    entities.LastSelectionHistories.Add(lastSelection);
+                    entities.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        //public string GetLastSelectionData(int ScreenId)
+        //{
+        //    try
+        //    {
+        //        var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == ScreenId).FirstOrDefault();
+        //        if (result != null)
+        //            return result.Last_Selection;
+        //        else
+        //            return null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        public string GetLastSelectionData()
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    DateTime dateTime = DateTime.UtcNow.Date;
+                    var quarter = (dateTime.Month + 2) / 3;
+
+                    var lastQuarter = quarter - 1;
+                    if (lastQuarter == 0)
+                    {
+                        lastQuarter = 1;
+                    }
+                    var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == 26).FirstOrDefault();
+                    if (result != null)
+                    {
+                        var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(result.Last_Selection);
+
+                        objResponse1[0].FieldValue = DateTime.UtcNow.Year.ToString();
+                        objResponse1[1].FieldValue = lastQuarter.ToString();
+                        objResponse1[2].FieldValue = "0";
+                        var finalresult = JsonConvert.SerializeObject(objResponse1);
+                        return finalresult;
+
+                    }
+                    else
+                        return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public string GetDateFormat()
+        {
+            try
+            {
+                var DateFormatResult = entities.Options.FirstOrDefault();
+                string DateFormat = null;
+                if (DateFormatResult != null)
+                {
+                    return DateFormat = DateFormatResult.Date_Format;
+                }
+                else
+                {
+                    return DateFormat = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

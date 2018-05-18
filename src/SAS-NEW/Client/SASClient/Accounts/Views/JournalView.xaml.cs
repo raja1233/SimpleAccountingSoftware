@@ -1,0 +1,228 @@
+﻿using SASClient.Accounts.ViewModel;
+using SDN.Common;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace SASClient.Accounts.Views
+{
+    /// <summary>
+    /// Interaction logic for JournalView.xaml
+    /// </summary>
+    public partial class JournalView : UserControl
+    {
+        private bool _tabInvoked;
+        private JournalViewModel _ViemModel;
+      
+       
+        public JournalView(JournalViewModel model)
+        {
+            InitializeComponent();
+            this.DataContext = model;
+            _ViemModel = model;
+            if (_ViemModel.JournalDetailsEntity != null)
+            {
+                this.dg1.ItemsSource = this._ViemModel.JournalDetailsEntity;
+            }
+            if(_ViemModel.MustCompare == true)
+            {
+                JournalDatepicker.IsEnabled = true;
+                parttextbox.IsReadOnly = false;
+            }
+            else
+            {
+                JournalDatepicker.IsEnabled = false;
+                parttextbox.IsReadOnly = true;
+                btnNew.IsEnabled = false;
+            }
+            if(btnSave.IsEnabled == true)
+            {
+
+            }
+            else
+            {
+
+            }
+            CustomGridLines.ItemsSource = DataGridTableCollection.GridLines(9, 50).AsEnumerable();
+           
+        }
+   
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var tb = (TextBox)sender;
+            using (tb.DeclareChangeBlock())
+            {
+                foreach (var c in e.Changes)
+                {
+                    if (c.AddedLength == 0) continue;
+                    tb.Select(c.Offset, c.AddedLength);
+                    if (tb.SelectedText.Contains('.'))
+                    {
+                        tb.SelectedText = tb.SelectedText.Replace('.', '/');
+
+                    }
+                    if (tb.SelectedText.Contains('-'))
+                    {
+                        tb.SelectedText = tb.SelectedText.Replace('-', '/');
+                    }
+                    tb.Select(c.Offset + c.AddedLength, 0);
+                }
+            }
+
+        }
+        public IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+
+                    if (child != null && child is T)
+                        yield return (T)child;
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                        yield return childOfChild;
+
+                }
+            }
+        }
+       
+
+        #region Events
+        private void OpenDatePicker_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!_tabInvoked) return;
+
+            // Reset marker
+            _tabInvoked = false;
+
+            // Go to next control in sequence
+            var element = Keyboard.FocusedElement as UIElement;
+            if (element == null) return;
+            element.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        }
+
+        private void OpenDatePicker_KeyUp(object sender, KeyEventArgs e)
+        {
+            var dp = sender as DatePicker;
+            if (e.Key == Key.Enter && dp != null)
+            {
+                //    // Mark that "tab" was pressed
+                _tabInvoked = true;
+                if (dp.IsDropDownOpen)
+                {
+                    dp.IsDropDownOpen = false;
+                }
+                else
+                {
+                    dp.IsDropDownOpen = true;
+                }
+
+            }
+
+        }
+        private void Item_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ComboBox cmbBox = sender as ComboBox;
+            if (cmbBox != null)
+            {
+                if (cmbBox.IsDropDownOpen == false)
+                {
+                    ((ComboBox)sender).IsDropDownOpen = true;
+                }
+            }
+
+        }
+        private void dg1_GotFocus(object sender, RoutedEventArgs e)
+        {
+            // Lookup for the source to be DataGridCell
+            if (e.OriginalSource.GetType() == typeof(DataGridCell))
+            {
+                // Starts the Edit on the row;
+                DataGrid grd = (DataGrid)sender;
+                if (grd != null)
+                {
+                    grd.BeginEdit(e);
+
+                }
+            }
+
+        }
+        private void dg1_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (e.OriginalSource.GetType() == typeof(DataGridCell))
+            {
+                int retunedRowIndex = -1;
+
+                DataGridColumn column = dg1.CurrentColumn;
+                //DataGrid pdGrid = sender as DataGrid;
+                if (column != null && column.Header != null)
+                {
+                    var focusedElement = Keyboard.FocusedElement as UIElement;
+                    TextBlock cmbPandSHeader = column.Header as TextBlock;
+
+                    if (column.Header.ToString() == "Credit")
+                    {
+                        retunedRowIndex = _ViemModel.ManageDuplicateJournalData();
+
+                        if (focusedElement != null)
+                        {
+                            if (retunedRowIndex > -1)
+                            {
+                                focusedElement.MoveFocus(new TraversalRequest(FocusNavigationDirection.Left));
+                            }
+
+                        }
+                    }
+                }
+                // e.Handled = true;
+            }
+        }
+
+       
+
+        public int ManageDuplicateJournalData()
+        {
+            return _ViemModel.ManageDuplicateJournalData();
+        }
+        #endregion
+    }
+    public class DataGridNumericColumn : DataGridTextColumn
+    {
+        protected override object PrepareCellForEdit(System.Windows.FrameworkElement editingElement, System.Windows.RoutedEventArgs editingEventArgs)
+        {
+            TextBox edit = editingElement as TextBox;
+            edit.PreviewTextInput += OnPreviewTextInput;
+
+            return base.PrepareCellForEdit(editingElement, editingEventArgs);
+        }
+
+        void OnPreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            try
+            {
+                Convert.ToInt32(e.Text);
+            }
+            catch
+            {
+                // Show some kind of error message if you want
+
+                // Set handled to true
+                e.Handled = true;
+            }
+        }
+    }
+}

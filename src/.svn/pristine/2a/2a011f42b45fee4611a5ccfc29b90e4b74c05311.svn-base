@@ -1,0 +1,135 @@
+﻿using SASClient.Accounts.Services;
+using SDN.Common;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class UnpaidPurchaseInvoiceGridViewModel : ViewModelBase
+    {
+        #region private property
+        private int? _ID;
+        private string _SupplierName;
+        private string _InvoiceNo;
+        private DateTime? _InvoiceDate;
+        private decimal? _UnpaidAmount;
+        private int? _SelectedSupplierID;
+        private int _CountQty;
+        private ObservableCollection<UnpaidPurchaseInvoiceEntity> _UnpaidInvoiceService;
+        private IUnpaidPurchaseInvoiceRepository unpaidInvoiceRepository = new UnpaidPurchaseInvoiceRepository();
+        #endregion
+        #region public property
+        public int? ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public int CountQty
+        {
+            get
+            {
+                return _CountQty;
+            }
+            set
+            {
+                _CountQty = value;
+                OnPropertyChanged("CountQty");
+            }
+        }
+        public string SupplierName
+        {
+            get
+            {
+                return _SupplierName;
+            }
+            set
+            {
+                _SupplierName = value;
+                OnPropertyChanged("SupplierName");
+            }
+        }
+        public string InvoiceNo
+        {
+            get
+            {
+                return _InvoiceNo;
+            }
+            set
+            {
+                _InvoiceNo = value;
+                OnPropertyChanged("InvoiceNo");
+            }
+        }
+
+        public DateTime? InvoiceDate
+        {
+            get
+            {
+                return _InvoiceDate;
+            }
+            set
+            {
+                _InvoiceDate = value;
+                OnPropertyChanged("InvoiceDate");
+            }
+        }
+        public decimal? UnpaidAmount
+        {
+            get
+            {
+                return _UnpaidAmount;
+            }
+            set
+            {
+                _UnpaidAmount = value;
+                OnPropertyChanged("UnpaidAmount");
+            }
+        }
+        public int? SelectedSupplierID
+        {
+            get
+            {
+                return _SelectedSupplierID;
+            }
+            set
+            {
+                _SelectedSupplierID = value;
+                OnPropertyChanged("SelectedSupplierID");
+            }
+        }
+        public ObservableCollection<UnpaidPurchaseInvoiceEntity> UnpaidInvoiceService
+        {
+            get
+            {
+                return _UnpaidInvoiceService;
+            }
+            set
+            {
+                _UnpaidInvoiceService = value;
+                OnPropertyChanged("UnpaidInvoiceService");
+            }
+        }
+        public UnpaidPurchaseInvoiceGridViewModel(IEnumerable<UnpaidPurchaseInvoiceEntity> UnpaidInvoiceList)
+        {
+            if (UnpaidInvoiceList == null)
+            {
+                UnpaidInvoiceList = unpaidInvoiceRepository.getSupplierList();
+            }
+            SelectedSupplierID = 0;
+            UnpaidInvoiceService = new ObservableCollection<UnpaidPurchaseInvoiceEntity>(UnpaidInvoiceList);
+        }
+        #endregion
+    }
+}

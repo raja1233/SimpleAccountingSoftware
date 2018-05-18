@@ -1,0 +1,255 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.Accounts.Views;
+using SASClient.CashBank.Views;
+using SDN.CashBank.Views;
+using SDN.Common;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Accounts.ViewModels
+{
+    public  class AccountsTabViewModel : AccountsTabViewEntity
+    {
+        #region "Private Member"
+
+        public AccountsTabViewModel(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+
+        }
+        public AccountsTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.setdefaultTab();
+        }
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+
+
+
+        #endregion
+        #region "click command"
+        private readonly DelegateCommand accountsDetailsClickCommand = null;
+        private readonly DelegateCommand accountsHistoryClickCommand = null;
+        private readonly DelegateCommand accountsTransactionsClickCommand = null;
+        private readonly DelegateCommand journalClickCommand = null;
+        private readonly DelegateCommand ledgerClickCommand = null;
+        private readonly DelegateCommand trailBalanceClickCommand = null;
+        private readonly DelegateCommand profitAndLosStatementClickCommand = null;
+        private readonly DelegateCommand balanceSheetClickCommand = null;
+        private readonly DelegateCommand gSTAndVatClickCommand = null;
+        #endregion
+        #region "Accounts click Command"
+        public DelegateCommand JournalClickCommand
+        {
+            get
+            {
+                return (this.journalClickCommand ?? new DelegateCommand(this.JournalView));
+            }
+        }
+        public DelegateCommand ProfitAndLosStatementClickCommand
+        {
+            get
+            {
+                return (this.profitAndLosStatementClickCommand ?? new DelegateCommand(this.ProfitAndLossView));
+            }
+        }
+        public DelegateCommand BalanceSheetClickCommand
+        {
+            get
+            {
+                return (this.balanceSheetClickCommand ?? new DelegateCommand(this.BalanceSheetView));
+            }
+        }
+        public DelegateCommand AccountsDetailsClickCommand
+        {
+            get
+            {
+                return (this.accountsDetailsClickCommand ?? new DelegateCommand(this.AccountsDetailsView));
+            }
+        }
+        public DelegateCommand GSTAndVatClickCommand
+        {
+            get
+            {
+                return (this.gSTAndVatClickCommand ?? new DelegateCommand(this.GstAndVatView));
+            }
+        }
+        public DelegateCommand TrailBalanceClickCommand
+        {
+            get
+            {
+                return (this.trailBalanceClickCommand ?? new DelegateCommand(this.TrailBalanceView));
+            }
+        }
+        public DelegateCommand AccountsTransactionsClickCommand
+        {
+            get
+            {
+                return (this.accountsTransactionsClickCommand ?? new DelegateCommand(this.AccountsTransactionsView));
+            }
+        }
+        public DelegateCommand AccountsHistoryClickCommand
+        {
+            get
+            {
+                return (this.accountsHistoryClickCommand ?? new DelegateCommand(this.AccountsHistoryView));
+            }
+        }
+
+        #endregion
+        #region "Public method"
+        public void  JournalView()
+        {
+            SharedValues.getValue = "JournalTab";
+            var view = ServiceLocator.Current.GetInstance<JournalListView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Journal List");
+        }
+        public void ProfitAndLossView()
+        {
+            SharedValues.getValue = "ProfitAndLosStatementTab";
+            var view = ServiceLocator.Current.GetInstance<ProfitAndLossStatementView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Profit & Loss Statement");
+        }
+        public void BalanceSheetView()
+        {
+            SharedValues.getValue = "BalanceSheetTab";
+            var view = ServiceLocator.Current.GetInstance<BalanceSheetView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Balance Sheet");
+        }
+        public void AccountsDetailsView()
+        {
+            SharedValues.getValue = "AccountsDetailsTab";
+            var view = ServiceLocator.Current.GetInstance<AccountsDetailsListView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Details List");
+        }
+        public void AccountsHistoryView()
+        {
+
+            SharedValues.getValue = "AccountsHistoryTab";
+            var view = ServiceLocator.Current.GetInstance<AccountHistoryView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts History List");
+        }
+        public void GstAndVatView()
+        {
+
+            SharedValues.getValue = "GSTAndVatTab";
+            var view = ServiceLocator.Current.GetInstance<GstAndVatSummaryView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("GST/VAT Reports - Tax Summary");
+        }
+        public void TrailBalanceView()
+        {
+            SharedValues.getValue = "TrailBalanceTab";
+            var view = ServiceLocator.Current.GetInstance<TrailBalanceView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+           
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Trail Balance");
+            //eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+        }
+        public void AccountsTransactionsView()
+        {
+            SharedValues.getValue = "AccountsTransactionsTab";
+            var view = ServiceLocator.Current.GetInstance<AccountsTransactionsView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Transactions");
+            //eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+        }
+        #endregion
+        private void setdefaultTab()
+        {
+
+            if (SharedValues.getValue == "AccountsHistoryTab")
+            {
+                this.AccountsHistoryTabTrue = true;
+            }
+            if (SharedValues.getValue == "AccountsDetailsTab")
+            {
+                this.AccountsDetailsTabTrue = true;
+            }
+           if (SharedValues.getValue == "AccountsTransactionsTab")
+            {
+                this.AccountsTransactionsTabTrue = true;
+            }
+            if (SharedValues.getValue == "JournalTab")
+            {
+                this.JournalTabTrue = true;
+            }
+            if (SharedValues.getValue == "LedgerTab")
+            {
+                this.LedgerTabTrue = true;
+            }
+            if (SharedValues.getValue == "TrailBalanceTab")
+            {
+                this.TrailBalanceTabTrue = true;
+            }
+            if (SharedValues.getValue == "ProfitAndLosStatementTab")
+            {
+                this.ProfitAndLosStatementTabTrue = true;
+            }
+            if (SharedValues.getValue == "BalanceSheetTab")
+            {
+                this.BalanceSheetTabTrue = true;
+            }
+            if(SharedValues.getValue== "GSTAndVatTab")
+            {
+                this.GSTAndVatTabTrue = true;
+            }
+        }
+    }
+}

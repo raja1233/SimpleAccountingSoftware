@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="SDN.Settings.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Settings.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="13*">
+                    </RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <!--<GroupBox Header="" Grid.Column="0" Grid.Row="1">
+                    <local:CustomerMenuUserControl>
+
+                    </local:CustomerMenuUserControl>
+                </GroupBox>-->
+                <TextBlock Grid.Row="2" Margin="0,0,10,0" HorizontalAlignment="Right" Text="@ 2016 Simple Accounting Software Pte Ltd"></TextBlock>
+            </Grid>
+
+    </Grid>
+</UserControl>

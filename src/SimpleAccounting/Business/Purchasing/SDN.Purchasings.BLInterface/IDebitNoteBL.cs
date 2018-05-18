@@ -1,0 +1,16 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Purchasings.BLInterface
+{
+    using SDN.UI.Entities.Purchase;
+    public interface IDebitNoteBL
+    {
+        DebitNoteForm GetDebitNoteDetails(string debitNoteNo);
+        void UpdateDebitNote(DebitNoteForm debitNote);
+    }
+}

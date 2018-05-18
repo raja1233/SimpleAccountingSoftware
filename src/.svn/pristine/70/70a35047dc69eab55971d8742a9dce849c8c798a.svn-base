@@ -1,0 +1,685 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities
+{
+    using SDN.Common;
+    //using System.ComsonentModel;
+    using System.Globalization;
+
+    public class SalesOrderEntity : BaseEntity
+    {
+        #region "Private members"
+        private int id;
+        private List<CustomerEntity> lstCustomers;
+        private int supId;
+        private string orderNo;
+        private DateTime orderDate;
+        private DateTime deliveryDate;
+        private int? validForDays;
+        private List<PandSDetailsModel> lstPandS;
+        private List<ContentModel> lstContents;
+        private string _Cus_Po_No;
+
+        private int? quantity;
+        private decimal? discount;
+        private string amount;
+        private string termsAndConditions;
+        private decimal? totalBeforeTax = 0;
+        private decimal? totalAfterTax = 0;
+        private decimal? totalTax = 0;
+        private string taxName;
+        private string currencyName;
+        private bool? excludingTax;
+        private bool? includingTax;
+        private ObservableCollection<SalesOrderDetailEntity> soDetailsEntity;
+        private SalesOrderDetailEntity soEntity;
+        private int? createdBy;
+        private DateTime? createdDate;
+        private string shipToAddress;
+        private string billToAddress;
+        private bool? so_Conv_to_SO;
+        private bool? so_Conv_to_SI;
+        private bool? excIncGST;
+        private List<ContentModel> lstSalesman;
+        private int? salesmanID;
+        private int _SOFormGridHeight;
+        private string cus_Balance;
+        private string cus_CreditLimitAmount;
+        private bool? _RubberStampSI;
+        #endregion
+
+        #region "Public members"
+        public bool? RubberStampSI
+        {
+            get
+            {
+                return _RubberStampSI;
+            }
+            set
+            {
+                _RubberStampSI = value;
+                OnPropertyChanged("RubberStampSI");
+            }
+
+        }
+        public int SOFormGridHeight
+        {
+            get
+            {
+                return _SOFormGridHeight;
+            }
+            set
+            {
+                _SOFormGridHeight = value;
+                OnPropertyChanged("SOFormGridHeight");
+            }
+        }
+
+        private byte? status;
+        public byte? Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                OnPropertyChanged("Status");
+            }
+        }
+
+        public int? SalesmanID
+        {
+            get
+            {
+                return salesmanID;
+            }
+            set
+            {
+                salesmanID = value;
+                OnPropertyChanged("SalesmanID");
+            }
+        }
+        public List<ContentModel> LstSalesman
+        {
+            get
+            {
+                return lstSalesman;
+            }
+            set
+            {
+                lstSalesman = value;
+                OnPropertyChanged("LstSalesman");
+            }
+        }
+
+        public int ID
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+                OnPropertyChanged("ID");
+            }
+        }
+
+        public int CustomerID
+        {
+            get
+            {
+                return supId;
+            }
+            set
+            {
+                supId = value;
+                OnPropertyChanged("CustomerID");
+            }
+        }
+
+
+
+        public SalesOrderDetailEntity SOEntity
+        {
+            get
+            {
+                return soEntity;
+            }
+            set
+            {
+                soEntity = value;
+                OnPropertyChanged("SOEntity");
+            }
+        }
+        public bool? SO_Conv_to_SO
+        {
+            get
+            {
+                return so_Conv_to_SO;
+            }
+            set
+            {
+                so_Conv_to_SO = value;
+                OnPropertyChanged("SO_Conv_to_SO");
+            }
+        }
+        public bool? SO_Conv_to_SI
+        {
+            get
+            {
+                return so_Conv_to_SI;
+            }
+            set
+            {
+                so_Conv_to_SI = value;
+                OnPropertyChanged("SO_Conv_to_SI");
+            }
+        }
+
+
+        public string TermsAndConditions
+        {
+            get
+            {
+                return termsAndConditions;
+            }
+            set
+            {
+                termsAndConditions = value;
+                OnPropertyChanged("TermsAndConditions");
+            }
+        }
+        public string Cus_Po_No
+        {
+            get
+            {
+                return _Cus_Po_No;
+            }
+            set
+            {
+                _Cus_Po_No = value;
+                OnPropertyChanged("Cus_Po_No");
+            }
+        }
+
+        public List<CustomerEntity> LstCustomers
+        {
+            get
+            {
+                return lstCustomers;
+            }
+            set
+            {
+                lstCustomers = value;
+                OnPropertyChanged("LstCustomers");
+            }
+        }
+
+        public List<ContentModel> LstContents
+        {
+            get
+            {
+                return lstContents;
+            }
+            set
+            {
+                lstContents = value;
+                OnPropertyChanged("LstContents");
+            }
+        }
+
+        public string OrderNo
+        {
+            get
+            {
+                return orderNo;
+            }
+            set
+            {
+                orderNo = value;
+                OnPropertyChanged("OrderNo");
+            }
+        }
+
+        public DateTime OrderDate
+        {
+            get
+            {
+                return orderDate;
+            }
+            set
+            {
+                orderDate = value;
+                OnPropertyChanged("OrderDate");
+            }
+        }
+        public DateTime DeliveryDate
+        {
+            get
+            {
+                return deliveryDate;
+            }
+            set
+            {
+                deliveryDate = value;
+                OnPropertyChanged("DeliveryDate");
+            }
+        }
+
+        public int? ValidForDays
+        {
+            get
+            {
+                return validForDays;
+            }
+            set
+            {
+                validForDays = value;
+                OnPropertyChanged("ValidForDays");
+            }
+        }
+
+        public List<PandSDetailsModel> LstPandS
+        {
+            get
+            {
+                return lstPandS;
+            }
+            set
+            {
+                lstPandS = value;
+                OnPropertyChanged("LstPandS");
+            }
+        }
+
+        public int? Quantity
+        {
+            get
+            {
+                return quantity;
+            }
+            set
+            {
+                quantity = value;
+                OnPropertyChanged("Quantity");
+            }
+        }
+
+        public decimal? Discount
+        {
+            get
+            {
+                return discount;
+            }
+            set
+            {
+                discount = value;
+                OnPropertyChanged("Discount");
+            }
+        }
+
+        public string Amount
+        {
+            get
+            {
+                return amount;
+            }
+            set
+            {
+                amount = value;
+                OnPropertyChanged("Amount");
+            }
+        }
+
+        public string Cus_Balance
+        {
+            get { return cus_Balance; }
+            set { cus_Balance = value;
+                OnPropertyChanged("Cus_Balance");
+            }
+        }
+        public string Cus_CreditLimitAmount
+        {
+            get { return cus_CreditLimitAmount; }
+            set
+            {
+                cus_CreditLimitAmount = value;
+                OnPropertyChanged("Cus_CreditLimitAmount");
+            }
+        }
+
+        public string TaxName
+        {
+            get
+            {
+                return taxName;
+            }
+            set
+            {
+                taxName = value;
+
+            }
+        }
+
+        public string CurrencyName
+        {
+            get
+            {
+                return currencyName;
+            }
+            set
+            {
+                currencyName = value;
+                OnPropertyChanged("CurrencyName");
+            }
+        }
+
+        public bool? ExcIncGST
+        {
+            get
+            {
+                return excIncGST;
+            }
+            set
+            {
+                excIncGST = value;
+                OnPropertyChanged("ExcIncGST");
+            }
+        }
+
+        public string BillToAddress
+        {
+            get
+            {
+                return billToAddress;
+            }
+            set
+            {
+                billToAddress = value;
+                OnPropertyChanged("BillToAddress");
+            }
+        }
+        public string ShipToAddress
+        {
+            get
+            {
+                return shipToAddress;
+            }
+            set
+            {
+                shipToAddress = value;
+                OnPropertyChanged("ShipToAddress");
+            }
+        }
+        public decimal? TotalBeforeTax
+        {
+            get
+            {
+                return totalBeforeTax;
+            }
+            set
+            {
+                totalBeforeTax = value;
+                OnPropertyChanged("TotalBeforeTax");
+            }
+        }
+        public decimal? TotalAfterTax
+        {
+            get
+            {
+                return totalAfterTax;
+            }
+            set
+            {
+                totalAfterTax = value;
+                OnPropertyChanged("TotalAfterTax");
+            }
+        }
+
+        public decimal? TotalTax
+        {
+            get
+            {
+                return totalTax;
+            }
+            set
+            {
+                totalTax = value;
+                OnPropertyChanged("TotalTax");
+            }
+        }
+
+        private string totalBeforeTaxStr;
+        private string totalTaxStr;
+        private string totalAfterTaxStr;
+        public string TotalBeforeTaxStr
+        {
+            get
+            {
+                //return _OrderAmount;
+                if (totalBeforeTaxStr == null)
+                    return this.totalBeforeTaxStr;
+                else
+                {
+                    if (totalBeforeTaxStr != "")
+                    {
+                        var balance = totalBeforeTaxStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.totalBeforeTaxStr;
+                }
+            }
+            set
+            {
+                totalBeforeTaxStr = value;
+                OnPropertyChanged("TotalBeforeTaxStr");
+            }
+
+        }
+        public string TotalTaxStr
+        {
+            get
+            {
+                //return _OrderAmount;
+                if (totalTaxStr == null)
+                    return this.totalTaxStr;
+                else
+                {
+                    if (totalTaxStr != "")
+                    {
+                        var balance = totalTaxStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.totalTaxStr;
+                }
+            }
+            set
+            {
+                totalTaxStr = value;
+                OnPropertyChanged("TotalTaxStr");
+            }
+
+        }
+        public string TotalAfterTaxStr
+        {
+            get
+            {
+                //return _OrderAmount;
+                if (totalAfterTaxStr == null)
+                    return this.totalAfterTaxStr;
+                else
+                {
+                    if (totalAfterTaxStr != "")
+                    {
+                        var balance = totalAfterTaxStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.totalAfterTaxStr;
+                }
+            }
+            set
+            {
+                totalAfterTaxStr = value;
+                OnPropertyChanged("TotalAfterTaxStr");
+            }
+
+        }
+
+        public bool? ExcludingTax
+        {
+            get
+            {
+                return excludingTax;
+            }
+            set
+            {
+                excludingTax = value;
+                OnPropertyChanged("ExcludingTax");
+            }
+        }
+
+        public bool? IncludingTax
+        {
+            get
+            {
+                return includingTax;
+            }
+            set
+            {
+                includingTax = value;
+                OnPropertyChanged("IncludingTax");
+            }
+        }
+
+        public int? CreatedBy
+        {
+            get
+            {
+                return createdBy;
+            }
+            set
+            {
+                createdBy = value;
+                OnPropertyChanged("CreatedBy");
+            }
+        }
+        public DateTime? CreatedDate
+        {
+            get
+            {
+                return createdDate;
+            }
+            set
+            {
+                createdDate = value;
+                OnPropertyChanged("CreatedDate");
+            }
+        }
+
+        //public ObservableCollection<SalesOrderDetailEntity> SODetailsEntity
+        //{
+        //    get
+        //    {
+        //        return soDetailsEntity=new ObservableCollection<SalesOrderDetailEntity>();
+        //    }
+        //    set
+        //    {
+        //        soDetailsEntity = value;
+        //        OnPropertyChanged("SODetailsEntity");
+        //    }
+        //}
+
+        #endregion
+
+
+    }
+    public class SalesOrderForm : ViewModelBase
+    {
+        private List<CustomerEntity> lstCustomers;
+        private SalesOrderEntity order;
+
+
+        private List<SalesOrderDetailEntity> orderDetails { get; set; }
+
+        public SalesOrderEntity Order
+        {
+            get
+            {
+                return order;
+            }
+            set
+            {
+                order = value;
+                OnPropertyChanged("Order");
+            }
+        }
+
+        public List<SalesOrderDetailEntity> OrderDetails
+        {
+            get
+            {
+                return orderDetails;
+            }
+            set
+            {
+                orderDetails = value;
+                OnPropertyChanged("OrderDetails");
+            }
+        }
+
+        public List<CustomerEntity> LstCustomers
+        {
+            get
+            {
+                return lstCustomers;
+            }
+            set
+            {
+                lstCustomers = value;
+                OnPropertyChanged("LstCustomers");
+            }
+        }
+
+        //public ObservableCollection<PandSDetailsModel> ProductAndServices
+        //{
+        //    get;
+        //    set;
+        //}
+        public ObservableCollection<PandSListModel> ProductAndServices
+        {
+            get;
+            set;
+        }
+
+        public List<ContentModel> LstTermsAndConditions { get; set; }
+    }
+}

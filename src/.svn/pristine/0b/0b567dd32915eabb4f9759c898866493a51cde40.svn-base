@@ -1,0 +1,481 @@
+﻿namespace SDN.Purchasings.DAL
+{
+    using SASDAL;
+    using SDN.Common;
+    using SDN.Purchasings.DALInterface;
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Purchase;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    public class PurchaseInvoiceBEDAL: IPurchaseInvoiceBEDAL
+    {
+        /// <summary>
+        /// This method is used to add or edit purchase invoice
+        /// </summary>
+        /// <param name="invoiceData"></param>
+        /// <returns></returns>
+        public int AddUpdateInvoice(PurchaseInvoiceForm invoiceData)
+        {
+            int autoId = 0;
+            //Add purchase invoice
+            BusinessExpens obj = new BusinessExpens();
+            obj.ID = invoiceData.Invoice.ID;
+            obj.Sup_Id = invoiceData.Invoice.SupplierID;
+
+            obj.PI_Date = invoiceData.Invoice.InvoiceDate;
+            obj.PI_GST_Amt = Convert.ToDecimal(invoiceData.Invoice.TotalTax);
+            obj.PI_No = invoiceData.Invoice.InvoiceNo;
+            obj.PI_TandC = invoiceData.Invoice.TermsAndConditions;
+            obj.PI_Tot_aft_Tax = Convert.ToDecimal(invoiceData.Invoice.TotalAfterTax);
+            obj.PI_Tot_bef_Tax = Convert.ToDecimal(invoiceData.Invoice.TotalBeforeTax);
+            obj.Our_PO_No = invoiceData.Invoice.OurPONo;
+            obj.PI_Pmt_Due_Date = invoiceData.Invoice.PaymentDueDate;
+            obj.Exc_Inc_GST = invoiceData.Invoice.ExcIncGST;
+            obj.PI_Status = Convert.ToByte(PI_Status.UnPaid);
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    if (entities.PurchaseInvoices.AsNoTracking().FirstOrDefault(x => x.ID == invoiceData.Invoice.ID) == null)
+                    {
+                        //obj.CreatedBy = invoiceData.PIModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.BusinessExpenses.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = invoiceData.PIModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+
+                    invoiceData.Invoice.ID = autoId;
+                    CreateDebitNote(invoiceData);
+
+                    if (autoId > 0)
+                    {
+                        BusinessExpensesDetail PIDetails;
+                        if (invoiceData.BEInvoiceDetails != null)
+                        {
+                            foreach (PurchaseInvoiceBEDetailsEntity beDetailEntity in invoiceData.BEInvoiceDetails)
+                            {
+                                PIDetails = new BusinessExpensesDetail();
+                                PIDetails.PI_ID = autoId;
+                                PIDetails.Bus_Expenses_Acc_Name = beDetailEntity.AccountName;
+                               
+                                PIDetails.PI_Amount = beDetailEntity.PQAmount;
+                                PIDetails.GST_Code = beDetailEntity.GSTCode;
+                                PIDetails.GST_Rate = beDetailEntity.GSTRate;
+                                
+                                PIDetails.Bus_Expenses_Desc = beDetailEntity.Description;
+                                if (entities.PurchaseInvoiceDetails.AsNoTracking().FirstOrDefault(x => x.ID == beDetailEntity.ID) == null)
+                                {
+                                    entities.BusinessExpensesDetails.Add(PIDetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(PIDetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                            }
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        private void CreateDebitNote(PurchaseInvoiceForm invoiceData)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    DebitNote deb = entities.DebitNotes.Where(e => e.PI_Id == invoiceData.Invoice.ID).SingleOrDefault();
+                    if (Convert.ToDecimal(invoiceData.Invoice.TotalBeforeTax) < 0)
+                    {
+                        if (deb != null)
+                        {
+                            deb.DN_Date = DateTime.Now;
+                            // deb.DN_No = "DN-" + (GetLastDebitNoteNo() + 1);
+                            //deb.PI_Id = obj.ID;
+                            deb.Sup_Id = invoiceData.Invoice.SupplierID;
+                            deb.Sup_CN_Amount = Convert.ToDecimal(invoiceData.Invoice.TotalBeforeTax);
+                            //deb.ModifiedDate = DateTime.Now;
+                            entities.SaveChanges();
+                        }
+                        else
+                        {
+                            deb = new DebitNote();
+                            deb.DN_Date = DateTime.Now;
+                            deb.DN_No = "DN-" + (GetLastDebitNoteNo() + 1);
+                            deb.PI_Id = invoiceData.Invoice.ID;
+                            deb.Sup_Id = invoiceData.Invoice.SupplierID;
+                            deb.Sup_CN_Amount = Convert.ToDecimal(invoiceData.Invoice.TotalBeforeTax);
+                            deb.CreatedDate = DateTime.Now;
+                            entities.DebitNotes.Add(deb);
+                            entities.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        if (deb != null)
+                        {
+                            entities.DebitNotes.Remove(deb);
+                            entities.SaveChanges();
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public int UpdationInvoice(PurchaseInvoiceForm invoiceData)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    BusinessExpens obj = entities.BusinessExpenses.Where(e => e.PI_No == invoiceData.Invoice.InvoiceNo
+                    ).SingleOrDefault();
+                    if (obj != null)
+                    {
+                        //obj.ID = invoiceData.Invoice.ID;
+                        obj.Sup_Id = invoiceData.Invoice.SupplierID;
+
+                        obj.PI_Date = invoiceData.Invoice.InvoiceDate;
+                        obj.PI_GST_Amt = Convert.ToDecimal(invoiceData.Invoice.TotalTax);
+                        obj.PI_No = invoiceData.Invoice.InvoiceNo;
+                        obj.PI_TandC = invoiceData.Invoice.TermsAndConditions;
+                        obj.PI_Tot_aft_Tax = Convert.ToDecimal(invoiceData.Invoice.TotalAfterTax);
+                        obj.PI_Tot_bef_Tax = Convert.ToDecimal(invoiceData.Invoice.TotalBeforeTax);
+                        obj.PI_Pmt_Due_Date = invoiceData.Invoice.PaymentDueDate;
+                        obj.Our_PO_No = invoiceData.Invoice.OurPONo;
+                        obj.Exc_Inc_GST = invoiceData.Invoice.ExcIncGST;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+
+                    invoiceData.Invoice.ID = obj.ID;
+                    CreateDebitNote(invoiceData);
+
+                    var objPurchase = entities.PurchaseInvoiceDetails.Where
+                        (e => e.PI_ID == obj.ID && e.Type=="BE").ToList();
+                    if (objPurchase != null)
+                    {
+                        foreach (var item in objPurchase)
+                        {
+                            entities.PurchaseInvoiceDetails.Remove(item);
+                            entities.SaveChanges();
+                        }
+                    }
+                    BusinessExpensesDetail PIDetails;
+
+                    if (invoiceData.BEInvoiceDetails != null)
+                    {
+                        foreach (PurchaseInvoiceBEDetailsEntity beDetailEntity in invoiceData.BEInvoiceDetails)
+                        {
+                            PIDetails = new BusinessExpensesDetail();
+                            PIDetails.PI_ID = obj.ID;
+                            PIDetails.Bus_Expenses_Acc_Name = beDetailEntity.AccountName;
+
+                            PIDetails.PI_Amount = beDetailEntity.PQAmount;
+                            PIDetails.GST_Code = beDetailEntity.GSTCode;
+                            PIDetails.GST_Rate = beDetailEntity.GSTRate;
+                           
+                            PIDetails.Bus_Expenses_Desc = beDetailEntity.Description;
+                            entities.BusinessExpensesDetails.Add(PIDetails);
+                            entities.SaveChanges();
+
+                        }
+                    }
+                    return obj.ID;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public int DeleteInvoice(string pqNo)
+        {
+            int PIStatus = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var PInvoice = entities.BusinessExpenses.Where(e => e.PI_No == pqNo).FirstOrDefault();
+                    if (PInvoice != null)
+                    {
+                        var PO_PI = entities.CashAndBankTransactions.Where(x => x.SO_CN_PO_DN_No == pqNo
+                        ).FirstOrDefault();
+
+                        if (PO_PI != null)
+                        {
+                            if (PO_PI.Amt_Due != null)
+                            {
+                                PInvoice.PI_Status = Convert.ToByte(PI_Status.UnPaid);
+                                PIStatus = Convert.ToByte(PI_Status.UnPaid);
+                            }
+                            else
+                            {
+                                PInvoice.PI_Status = Convert.ToByte(PI_Status.Paid);
+                                PIStatus = Convert.ToByte(PI_Status.Paid);
+                            }
+
+                        }
+                        else
+                        {
+                            PInvoice.PI_Status = Convert.ToByte(PI_Status.Cancelled);
+                            PIStatus = Convert.ToByte(PI_Status.Cancelled);
+                        }
+                        entities.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return PIStatus;
+
+        }
+
+        private int GetLastDebitNoteNo()
+        {
+            int qno = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.DebitNotes
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate
+                              }
+
+                             );
+                    if (pq != null)
+                    {
+                        qno = pq.Take(1).SingleOrDefault().ID;
+                    }
+                    else
+                    {
+                        qno = 0;
+                    }
+                }
+                return qno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public int GetLastInvoiceNo()
+        {
+            int qNo = 0;
+            string cNo = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.BusinessExpenses
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate,
+                                  pqs.Our_PO_No
+                              }
+
+                             ).ToList();
+                    if (pq.Count > 0)
+                    {
+                        cNo = pq.Take(1).SingleOrDefault().Our_PO_No;
+                        if (cNo !=null)
+                        {
+                            string[] str = cNo.Split('-');
+                            if (str != null)
+                            {
+                                qNo = (Convert.ToInt32(str[1]) + 1);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        qNo = 1;
+                    }
+                }
+                return qNo;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get category content 
+        /// </summary>
+        /// <returns></returns>
+        public string GetCategoryContent(string catType)
+        {
+            string tandCContent = string.Empty;
+            using (SASEntitiesEDM objProdEntities = new SASEntitiesEDM())
+            {
+                try
+                {
+                    var tandC = (from content in objProdEntities.TermsAndConditions
+                                 where content.Cat_Code == catType
+                                 select new ContentModel
+                                 {
+                                     ContentName = content.Cat_Content,
+                                     ContentID = content.ID
+                                 });
+                    if (tandC != null)
+                    {
+                        tandCContent = tandC.SingleOrDefault().ContentName;
+                    }
+                    return tandCContent;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get all purchase invoices
+        /// </summary>
+        /// <returns></returns>
+        public List<PurchaseInvoiceEntity> GetAllPurchaseInvoices()
+        {
+            // List<PurchaseInvoiceModel> lstPIF = new List<PurchaseInvoiceForm>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var lstPIs = (from pq in entities.BusinessExpenses
+                                  where (pq.IsDeleted == false || pq.IsDeleted == null)
+
+                                  select new PurchaseInvoiceEntity
+                                  {
+                                      SupplierID = pq.Sup_Id,
+                                      InvoiceNo = pq.PI_No,
+                                      InvoiceDate = pq.PI_Date,
+                                      PaymentDueDate = pq.PI_Pmt_Due_Date,
+                                      OurPONo = pq.Our_PO_No,
+                                      TotalBeforeTax = pq.PI_Tot_bef_Tax,
+                                      TotalTax = pq.PI_GST_Amt,
+                                      TotalAfterTax = pq.PI_Tot_aft_Tax,
+                                      TermsAndConditions = pq.PI_TandC,
+                                      CreatedBy = pq.CreatedBy,
+                                      CreatedDate = pq.CreatedDate
+
+                                  }).ToList<PurchaseInvoiceEntity>();
+
+                    return lstPIs;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// This method is used to get Purchase Invoice details
+        /// </summary>
+        /// <param name="pqId"></param>
+        /// <returns></returns>
+        public PurchaseInvoiceForm GetPurchaseInvoice(string pqno)
+        {
+            PurchaseInvoiceForm pqf = new PurchaseInvoiceForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.BusinessExpenses
+                              where pqs.PI_No == pqno && (pqs.IsDeleted == false || pqs.IsDeleted == null)
+                              select new PurchaseInvoiceEntity
+                              {
+                                  ID = pqs.ID,
+                                  SupplierID = pqs.Sup_Id,
+                                  InvoiceNo = pqs.PI_No,
+                                  InvoiceDate = pqs.PI_Date,
+                                  PaymentDueDate = pqs.PI_Pmt_Due_Date,
+                                  TermsAndConditions = pqs.PI_TandC,
+                                  TotalBeforeTax = pqs.PI_Tot_bef_Tax,
+                                  TotalTax = pqs.PI_GST_Amt,
+                                  TotalAfterTax = pqs.PI_Tot_aft_Tax,
+                                  ExcIncGST = pqs.Exc_Inc_GST,
+                                  OurPONo = pqs.Our_PO_No,
+                                  PIStatus = pqs.PI_Status
+
+                              }).SingleOrDefault();
+
+                    if (pq != null)
+                    {
+                        pqf.Invoice = pq;
+
+                        var pqd = (from pqds in entities.BusinessExpensesDetails
+                                   where pqds.PI_ID == pq.ID
+                                   
+                                   select new PurchaseInvoiceBEDetailsEntity
+                                   {
+                                       ID = pqds.ID,
+                                       Description=pqds.Bus_Expenses_Desc,
+                                       AccountName=pqds.Bus_Expenses_Acc_Name,
+                                       PQAmount=pqds.PI_Amount,
+                                       GSTRate = pqds.GST_Rate
+                                   }).ToList<PurchaseInvoiceBEDetailsEntity>();
+
+                        if (pqd != null)
+                        {
+
+                            pqf.BEInvoiceDetails = pqd;
+                        }
+                    }
+                    
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9f59423c2ff545c294b48e956a73d0e1" Name="Diagram1" ZoomLevel="71">
+        <EntityTypeShape EntityType="simpleaccountingModel.Category" Width="1.5" PointX="10.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CategoriesContent" Width="1.5" PointX="13" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CustomerDetail" Width="1.5" PointX="5.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CustomersBusinessCard" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.SalesInvoice" Width="1.5" PointX="0.75" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.SalesInvoiceDetail" Width="1.5" PointX="3" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.SalesOrder" Width="1.5" PointX="6" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.SalesOrderDetail" Width="1.5" PointX="8.25" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.SalesQuotation" Width="1.5" PointX="8.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.SalesQuotationDetail" Width="1.5" PointX="11" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.ShippingAddress" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="simpleaccountingModel.FK_CategoriesContent_Categories" ManuallyRouted="false" />
+        <AssociationConnector Association="simpleaccountingModel.FK_SalesInvoiceDetails_SalesInvoice" ManuallyRouted="false" />
+        <AssociationConnector Association="simpleaccountingModel.FK_SalesOrder_ShippingAddress" ManuallyRouted="false" />
+        <AssociationConnector Association="simpleaccountingModel.FK_SalesOrderDetails_SalesOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="simpleaccountingModel.FK_SalesQuotationDetails_SalesQuotation" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Customer" Width="1.5" PointX="0.75" PointY="1.375" />
+        <AssociationConnector Association="simpleaccountingModel.FK_CustomersBusinessCard_Customers" />
+        <AssociationConnector Association="simpleaccountingModel.FK_SalesOrder_Customers" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

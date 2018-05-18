@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6d4fc725e6b749dfb7f3802b04560967" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="simpleaccountingModel.Option" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.PurchaseInvoice" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.PurchaseOrder" Width="1.5" PointX="5.375" PointY="6.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.PurchaseQuotation" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Supplier" Width="1.5" PointX="3.125" PointY="5.625" />
+        <AssociationConnector Association="simpleaccountingModel.FK_PurchaseOrder_Suppliers" />
+        <EntityTypeShape EntityType="simpleaccountingModel.PurchaseQuotationDetail" Width="1.5" PointX="9.625" PointY="1.375" />
+        <AssociationConnector Association="simpleaccountingModel.FK_PurchaseQuotationDetails_PurchaseQuotation" />
+        <EntityTypeShape EntityType="simpleaccountingModel.LastSelectionHistory" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.DebitNote" Width="1.5" PointX="7.625" PointY="6.875" />
+        <AssociationConnector Association="simpleaccountingModel.FK_DebitNotes_PurchaseInvoice" />
+        <AssociationConnector Association="simpleaccountingModel.FK_DebitNotes_Suppliers" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CashAndBankTransaction" Width="1.5" PointX="0.75" PointY="10.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

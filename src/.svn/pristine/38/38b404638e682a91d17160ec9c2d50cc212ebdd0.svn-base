@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SDN.UI.Entities.CashandBank;
+
+namespace SASDAL.CashBank
+{
+    public class AccountsDetailsListDAL : IAccountsDetailsListDAL
+    {
+        public List<AccountsDetailsListEntity> GetAllAccountsDetailsList()
+        {
+            List<AccountsDetailsListEntity> lstAccountsDetails = new List<AccountsDetailsListEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    lstAccountsDetails = entities.Database.SqlQuery<AccountsDetailsListEntity>("USP_GetAccountsDetailList").ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return lstAccountsDetails;
+        }
+    }
+}

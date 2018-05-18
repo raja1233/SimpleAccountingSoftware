@@ -1,0 +1,14 @@
+﻿using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASBAL.File
+{
+    public interface IRestoreDataBL
+    {
+        RestoreDataEntity RestoreDb(string filename);  
+    }
+}

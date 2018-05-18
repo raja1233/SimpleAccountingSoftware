@@ -1,0 +1,24 @@
+﻿
+using SDN.SettingsEDM;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Settings.DALInterface
+{
+   public interface ICompanyDAL
+    {
+
+        bool AddCompanyDAL(CompanyDetailsEntities companyDetail);
+        CompanyDetailsEntities GetCompanyDetails();
+        //IEnumerable<ShippingAddressEntity> ShippingAddressDetails( int ID,string EntityType);
+        //IEnumerable<ShippingAddressEntity> ShippingAddressDetails(int ShipId);
+        //bool DeleteShippingaddress(int ShippingId);
+        void AddCompanyLogo(byte[] Image);
+        //List<Country> GetAllCountryModel();
+        //List<State> GetAllStateModel();
+    }
+}

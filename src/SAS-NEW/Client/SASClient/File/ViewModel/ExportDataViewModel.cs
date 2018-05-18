@@ -1,0 +1,438 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using SASClient.CloseRequest;
+using SASClient.File.Services;
+using SDN.Common;
+using SDN.Purchasing.Services;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SASClient.File.ViewModel
+{
+    public class ExportDataViewModel : ViewModelBase
+    {
+        #region Private Properties
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private ObservableCollection<TransactionEntity> _Transactionlist = new ObservableCollection<TransactionEntity>();
+        private ObservableCollection<MasterEntity> _Masterlist = new ObservableCollection<MasterEntity>();
+        private IExportDataRepository exportRepository = new ExportDataRepository();
+        StackList itemlist = new StackList();
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private int _UserGridHeight;
+        private DateTime? _StartdateCalender;
+        private DateTime? _EnddateCalender;
+        private string _DateFormat;
+        private string _DateErrors;
+        private string _SelectedMasterItem;
+
+        //private ObservableCollection<ExportDataEntity> _UserSecurityEmptyGrid = new ObservableCollection<ExportDataEntity>();
+
+        #endregion
+
+        #region Public Properties
+
+        public ObservableCollection<TransactionEntity> TransactionList
+        {
+            get
+            {
+                // _Transactionlist.Clear();
+                // TransactionData();
+                return _Transactionlist;
+            }
+            set
+            {
+                _Transactionlist = value;
+                OnPropertyChanged("Transactionlist");
+            }
+        }
+        public string SelectedMasterItem
+        {
+            get
+            {
+                return _SelectedMasterItem;
+            }
+            set
+            {
+                _SelectedMasterItem = value;
+                OnPropertyChanged("SelectedMasterItem");
+            }
+        }
+        public void TransactionData()
+        {
+            ////_Transactionlist.Add(new TransactionEntity { ID = 1, TransactionName = "Sales Quotations", IsChecked = false });
+            ////_Transactionlist.Add(new TransactionEntity { ID = 2, TransactionName = "Sales Orders", IsChecked = false });
+            //_Transactionlist.Add(new TransactionEntity { ID = 3, TransactionName = "Sales Invoices", IsChecked = false });
+            //_Transactionlist.Add(new TransactionEntity { ID = 4, TransactionName = "Credit Notes", IsChecked = false });
+            //_Transactionlist.Add(new TransactionEntity { ID = 5, TransactionName = "Purchase Invoices", IsChecked = false });
+            //_Transactionlist.Add(new TransactionEntity { ID = 6, TransactionName = "Debit Notes", IsChecked = false });
+            //_Transactionlist.Add(new TransactionEntity { ID = 7, TransactionName = "Products & Services Sold", IsChecked = false });
+            //_Transactionlist.Add(new TransactionEntity { ID = 8, TransactionName = "Products & Services Purchased", IsChecked = false });
+            ////_Transactionlist.Add(new TransactionEntity { ID = 9, TransactionName = "Cash & Bank Statement", IsChecked = false });
+            _Transactionlist.Add(new TransactionEntity { ID = 9, TransactionName = "GST Summary", IsChecked = false });
+            _Transactionlist.Add(new TransactionEntity { ID = 10, TransactionName = "GST Collected Details", IsChecked = false });
+            _Transactionlist.Add(new TransactionEntity { ID = 11, TransactionName = "GST Paid Details", IsChecked = false });
+        }
+        public ObservableCollection<MasterEntity> MasterList
+        {
+            get
+            {
+                //_Masterlist.Clear();
+                //MasterData();
+                return _Masterlist;
+            }
+            set
+            {
+                _Masterlist = value;
+                OnPropertyChanged("MasterList");
+            }
+        }
+        private void MasterData()
+        {
+            _Masterlist.Add(new MasterEntity { ID = 1, MasterName = "Trail Balance", IsCheckedMaster = false });
+            _Masterlist.Add(new MasterEntity { ID = 2, MasterName = "Profit & Loss Statement", IsCheckedMaster = false });
+            _Masterlist.Add(new MasterEntity { ID = 3, MasterName = "Balance Sheet", IsCheckedMaster = false });
+            _Masterlist.Add(new MasterEntity { ID = 4, MasterName = "Customers Details", IsCheckedMaster = false });
+            _Masterlist.Add(new MasterEntity { ID = 5, MasterName = "Suppliers Details", IsCheckedMaster = false });
+            _Masterlist.Add(new MasterEntity { ID = 6, MasterName = "Products & Services Details", IsCheckedMaster = false });
+            _Masterlist.Add(new MasterEntity { ID = 7, MasterName = "Accounts Details", IsCheckedMaster = false });
+            //_Masterlist.Add(new MasterEntity { ID = 5, MasterName = "GST/VAT Codes & Rates" });
+            //_Masterlist.Add(new MasterEntity { ID = 6, MasterName = "Ledger" });
+            //_Masterlist.Add(new MasterEntity { ID = 7, MasterName = "Trail Balance" });
+            //_Masterlist.Add(new MasterEntity { ID = 8, MasterName = "Profit & Loss Statement" });
+            //_Masterlist.Add(new MasterEntity { ID = 9, MasterName = "Balance Sheet" });
+            //_Masterlist.Add(new MasterEntity { ID = 10, MasterName = "Stock Quantities" });
+            //_Masterlist.Add(new MasterEntity { ID = 11, MasterName = "Stock Value" });
+        }
+
+        public int UserGridHeight
+        {
+            get
+            {
+                return _UserGridHeight;
+            }
+            set
+            {
+                _UserGridHeight = value;
+                OnPropertyChanged("UserGridHeight");
+            }
+        }
+        public DateTime? StartdateCalender
+        {
+            get
+            {
+                return _StartdateCalender;
+            }
+            set
+            {
+                _StartdateCalender = value;
+                OnPropertyChanged("StartdateCalender");
+            }
+        }
+        public DateTime? EnddateCalender
+        {
+            get
+            {
+                return _EnddateCalender;
+            }
+            set
+            {
+                _EnddateCalender = value;
+                OnPropertyChanged("EnddateCalender");
+            }
+        }
+        public string DateFormat
+        {
+            get { return _DateFormat; }
+            set { SetProperty(ref _DateFormat, value, "DateFormat"); }
+        }
+        public string DateErrors
+        {
+            get
+            {
+                return _DateErrors;
+            }
+            set
+            {
+                _DateErrors = value;
+                OnPropertyChanged("DateErrors");
+            }
+        }
+
+
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportDataEntity"/> class.
+        /// </summary>
+        public ExportDataViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            CheckIsActive = new RelayCommand(checkisactive);
+            CheckIsActiveMaster = new RelayCommand(checkisactivemaster);
+            ExportCommand = new RelayCommand(ExportCommands, CanSave);
+            CloseCommand = new DelegateCommand(Close);
+            TransactionData();
+            MasterData();
+            this.LoadBackground();
+        }
+        public ICommand CloseCommand { get; set; }
+        public RelayCommand CheckIsActive { get; set; }
+        public RelayCommand CheckIsActiveMaster { get; set; }
+
+        public RelayCommand ExportCommand { get; set; }
+
+        #endregion
+
+        #region Background Worked
+        private void LoadBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+            //worker.DoWork += (s, e) =>
+            //{
+            //    Thread.Sleep(2000);
+            //};
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadUserSecurityBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadUserSecurityBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+
+
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadUserSecurityBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadUserSecurityBackground(object sender, DoWorkEventArgs e)
+        {
+            int minHeight = 300;
+            int headerRows = 180;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 512;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.UserGridHeight = minHeight;
+            IPurchaseQuotationListRepository purchaseRepository = new PurchaseQuotationListRepository();
+            this.DateFormat = purchaseRepository.GetDateFormat();
+
+        }
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadUserSecurityBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadUserSecurityBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+        }
+        #endregion
+
+        #region Click Commands
+        private void Close()
+        {
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                var secondlast = listview.AsEnumerable().Reverse().Skip(1).First();
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest(secondlast, true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            catch (Exception)
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest("MainView", true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            //List<string> calledlist = stack.x();
+        }
+        void checkisactive(object param)
+        {
+            if (param.ToString() == "True")
+            {
+                foreach (var item in TransactionList)
+                {
+                    item.IsChecked = true;
+                }
+            }
+            else
+            {
+                foreach (var item in TransactionList)
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+        void checkisactivemaster(object param)
+        {
+            if (param.ToString() == "True")
+            {
+                foreach (var item in MasterList)
+                {
+                    item.IsCheckedMaster = true;
+                }
+            }
+            else
+            {
+                foreach (var item in MasterList)
+                {
+                    item.IsCheckedMaster = false;
+                }
+            }
+        }
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+            switch (name)
+            {
+                case "StartdateCalender":
+                    FillStartDate();
+                    break;
+                case "EnddateCalender":
+                    FillEndDate();
+                    break;
+
+            }
+
+            base.OnPropertyChanged(name);
+        }
+        void FillStartDate()
+        {
+            string date = this.DateFormat as string;
+            foreach (var item in TransactionList)
+            {
+                item.StartDate = Convert.ToDateTime(this.StartdateCalender).ToString(date);
+                item.StartDateDate = this.StartdateCalender;
+            }
+        }
+        void FillEndDate()
+        {
+            string date = this.DateFormat as string;
+            foreach (var item in TransactionList)
+            {
+                item.EndDate = Convert.ToDateTime(this.EnddateCalender).ToString(date);
+                item.EndDateDate = this.EnddateCalender;
+            }
+        }
+        public void ExportCommands(object param)
+        {
+
+            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+            saveFileDialog.Filter = "Excel file (*.xlxs)|*.xlxs|Excel file (*.xls)|*.xls ";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                var transactionlist = exportRepository.ExportData(TransactionList, saveFileDialog.FileName);
+                var masterlist = exportRepository.ExportDataMaster(MasterList, saveFileDialog.FileName);
+                Mouse.OverrideCursor = null;
+            }
+        }
+        public bool CanSave(object param)
+        {
+            var checkmaster = MasterList.Where(x => x.IsCheckedMaster == true).ToList();
+
+            var check = TransactionList.Where(x => x.IsChecked == true).ToList();
+            string date = this.DateFormat as string;
+            int count = 0;
+            if (check != null && check.Count != 0)
+            {
+                foreach (var item in check)
+                {
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(item.StartDate) && !string.IsNullOrWhiteSpace(item.StartDate) && !string.IsNullOrEmpty(item.EndDate) && !string.IsNullOrEmpty(item.EndDate))
+                        {
+
+                            //item.StartDate = item.StartDate.Replace('.', '/');
+                            //item.StartDate = item.StartDate.Replace('-', '/');
+                            //item.EndDate = item.EndDate.Replace('.', '/');
+                            //item.EndDate = item.EndDate.Replace('-', '/');
+                            var Start = (DateTime.ParseExact(item.StartDate, date, CultureInfo.InvariantCulture));
+                            var End = (DateTime.ParseExact(item.EndDate, date, CultureInfo.InvariantCulture));
+                            this.DateErrors = "";
+                            if (End > Start)
+                                count++;
+                            else
+                            {
+                                this.DateErrors = "End Date should be greater than start date!";
+                                return false;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        this.DateErrors = "Please enter the date in " + date + " format!";
+                        return false;
+                    }
+                }
+                var checkedcount = check.Count();
+                if (checkedcount == count && checkedcount > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else if (checkmaster != null)
+            {
+                var checkedcount = checkmaster.Count();
+                if (checkedcount > 0)
+                    return true;
+                else
+                    return false;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+    }
+
+    #endregion
+
+
+}
+

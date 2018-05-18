@@ -1,0 +1,279 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.CloseRequest;
+using SASClient.Customers.Views;
+using SDN.Common;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Customers.ViewModel
+{
+    public class StatementSubTabViewModel : CustomerTabEntity
+    {
+        #region "Private members"
+
+        StackList itemlist = new StackList();
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+
+        public StatementSubTabViewModel(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+
+        }
+        public StatementSubTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            // this.setdefaultTab();
+            //inInitializer();
+        }
+
+        /// <summary>
+        /// The Companydetails click command
+        /// </summary>
+        private readonly DelegateCommand unPaidInvoicesClickCommand = null;
+        private readonly DelegateCommand invCreditPaymentsClickCommand = null;
+        private readonly DelegateCommand costPricesClickCommand = null;
+        private readonly DelegateCommand stockQuantitiesClickCommand = null;
+        private readonly DelegateCommand gSTCodesRatesClickCommand = null;
+        private readonly DelegateCommand stockValuesClickCommand = null;
+        private readonly DelegateCommand countandAdjustClickCommand = null;
+        private readonly DelegateCommand paymentDueClickCommand = null;
+        private readonly DelegateCommand creditPaidDaysCommand = null;
+
+
+
+        #endregion
+
+        #region "Public properties"
+
+        /// <summary>
+        /// Gets the Company details click command.
+        /// </summary>
+        /// <value>
+        /// The Companydetails click command.
+        /// </value>
+
+        public DelegateCommand UnPaidInvoicesClickCommand
+        {
+            get
+            {
+                return (this.unPaidInvoicesClickCommand ?? new DelegateCommand(this.ShowUnPaidInvoicesView));
+            }
+        }
+        public DelegateCommand InvCreditPaymentsClickCommand
+        {
+            get
+            {
+                return (this.invCreditPaymentsClickCommand ?? new DelegateCommand(this.ShowInvoiceCreditPaymentsView));
+            }
+        }
+        public DelegateCommand CostPricesClickCommand
+        {
+            get
+            {
+                return (this.costPricesClickCommand ?? new DelegateCommand(this.CostPricesView));
+            }
+        }
+        public DelegateCommand StockQuantitiesClickCommand
+        {
+            get
+            {
+                return (this.stockQuantitiesClickCommand ?? new DelegateCommand(this.StockQuantitiesView));
+            }
+        }
+        public DelegateCommand GSTCodesRatesClickCommand
+        {
+            get
+            {
+                return (this.gSTCodesRatesClickCommand ?? new DelegateCommand(this.GSTCodesRatesView));
+            }
+        }
+        public DelegateCommand PaymentDueClickCommand
+        {
+            get
+            {
+                return (this.paymentDueClickCommand ?? new DelegateCommand(this.PaymentDueView));
+            }
+        }
+        public DelegateCommand CreditPaidDaysCommand
+        {
+            get
+            {
+                return (this.creditPaidDaysCommand ?? new DelegateCommand(this.CreditPaidDaysView));
+            }
+        }
+
+
+        #endregion
+
+        #region "Private Methods"
+
+        private void ShowUnPaidInvoicesView()
+        {
+            SharedValues.ViewName = "CustomersUnPaidInvoicesView";
+            SharedValues.getValue = "CustomerStatementTab";
+            var view = ServiceLocator.Current.GetInstance<CustomersUnPaidInvoicesView>();
+
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Statement - Unpaid Invoices");
+            itemlist.AddToList();
+        }
+        private void PaymentDueView()
+        {
+            //SharedValues.getValue = "PaymentDueDaysTab";
+            SharedValues.ViewName = "CustomerPaymentDueDaysView";
+            var view = ServiceLocator.Current.GetInstance<CustomerPaymentDueDaysView>();
+
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Statement - Payment Due Days");
+            itemlist.AddToList();
+        }
+
+        private void CreditPaidDaysView()
+        {
+            SharedValues.ViewName = "CustomerCreditPaidDaysView";
+            //SharedValues.getValue = "PaymentDueDaysTab";
+            var view = ServiceLocator.Current.GetInstance<CustomerCreditPaidDaysView>();
+
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Statement - Credit days and Paid in days");
+            itemlist.AddToList();
+        }
+
+        private void ShowInvoiceCreditPaymentsView()
+        {
+            SharedValues.ViewName = "InvoiceCreditPaymentsView";
+            var view = ServiceLocator.Current.GetInstance<InvoiceCreditPaymentsView>();
+
+
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Statement - Invoices, Credits Notes, Payments");
+            itemlist.AddToList();
+        }
+
+        private void CostPricesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            //var view = ServiceLocator.Current.GetInstance<PandSCostPriceListView>();
+
+            ////var region = this.regionManager.Regions[RegionNames.MainRegion];
+            ////region.Add(view);
+            ////if (region != null)
+            ////{
+            ////    region.Activate(view);
+            ////}
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            //eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Cost Prices");
+        }
+        private void StockQuantitiesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            //var view = ServiceLocator.Current.GetInstance<PandSStockQuantitiesListView>();
+
+            ////var region = this.regionManager.Regions[RegionNames.MainRegion];
+            ////region.Add(view);
+            ////if (region != null)
+            ////{
+            ////    region.Activate(view);
+            ////}
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            //eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Stock Quantities");
+        }
+        private void GSTCodesRatesView()
+        {
+            ////SharedValues.getValue = "CountandAdjustStockTab";
+            //var view = ServiceLocator.Current.GetInstance<PandSCodesAndRatesListView>();
+
+            ////var region = this.regionManager.Regions[RegionNames.MainRegion];
+            ////region.Add(view);
+            ////if (region != null)
+            ////{
+            ////    region.Activate(view);
+            ////}
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            //eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - GST Codes and Rate");
+        }
+
+
+        #endregion
+        private void setdefaultTab()
+        {
+
+            //if (SharedValues.getValue == "UnpaidInvoicesTab")
+            //{
+            //    this.CustomerStatementTabTrue = true;
+            //    this.UnpaidInvoicesTabTrue = true;
+            //}
+            //else if (SharedValues.getValue == "InvDebPaymentTab")
+            //{
+            //    this.InvDebPaymentTabTrue = true;
+            //}
+            //else if (SharedValues.getValue == "PaymentDueDaysTab")
+            //{
+            //    this.PaymentDueDaysTabTrue = true;
+            //}
+            //else if (SharedValues.getValue == "CreditPaidTab")
+            //{
+            //    this.CreditPaidTabTrue = true;
+            //}
+            //else
+            //{
+            //    this.CustomerStatementTabTrue = true;
+            //}
+        }
+    }
+}

@@ -1,0 +1,148 @@
+﻿using SASClient.Accounts.Services;
+using SDN.Common;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class UndeliveredSalesOrdersWithDepositsGridViewModel : ViewModelBase
+    {
+        #region private property
+        private int? _ID;
+        private string _CustomerName;
+        private string _OrderNo;
+        private string _OrderDate;
+        private decimal? _DepositAmount;
+        private decimal? _UndeliveredAmount;
+        private int? _SelectedCustomerID;
+        private int _CountQty;
+        private ObservableCollection<UndeliveredSalesOrdersWithDepositsViewEntity> _UnpaidInvoiceService;
+        private IUndeliveredSalesOrdersWithDepositsRepository unpaidInvoiceRepository = new UndeliveredSalesOrdersWithDepositsRepository();
+        #endregion
+        #region public property
+        public int? ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public int CountQty
+        {
+            get
+            {
+                return _CountQty;
+            }
+            set
+            {
+                _CountQty = value;
+                OnPropertyChanged("CountQty");
+            }
+        }
+        public string OrderNo
+        {
+            get
+            {
+                return _OrderNo;
+            }
+            set
+            {
+                _OrderNo = value;
+                OnPropertyChanged("OrderNo");
+            }
+        }
+        public string CustomerName
+        {
+            get
+            {
+                return _CustomerName;
+            }
+            set
+            {
+                _CustomerName = value;
+                OnPropertyChanged("CustomerName");
+            }
+        }
+        public string OrderDate
+        {
+            get
+            {
+                return _OrderDate;
+            }
+            set
+            {
+                _OrderDate = value;
+                OnPropertyChanged("OrderDate");
+            }
+        }
+
+        public decimal? DepositAmount
+        {
+            get
+            {
+                return _DepositAmount;
+            }
+            set
+            {
+                _DepositAmount = value;
+                OnPropertyChanged("DepositAmount");
+            }
+        }
+        public decimal? UndeliveredAmount
+        {
+            get
+            {
+                return _UndeliveredAmount;
+            }
+            set
+            {
+                _UndeliveredAmount = value;
+                OnPropertyChanged("UndeliveredAmount");
+            }
+        }
+        public int? SelectedCustomerID
+        {
+            get
+            {
+                return _SelectedCustomerID;
+            }
+            set
+            {
+                _SelectedCustomerID = value;
+                OnPropertyChanged("SelectedCustomerID");
+            }
+        }
+        public ObservableCollection<UndeliveredSalesOrdersWithDepositsViewEntity> UnpaidInvoiceService
+        {
+            get
+            {
+                return _UnpaidInvoiceService;
+            }
+            set
+            {
+                _UnpaidInvoiceService = value;
+                OnPropertyChanged("UnpaidInvoiceService");
+            }
+        }
+        public UndeliveredSalesOrdersWithDepositsGridViewModel(IEnumerable<UndeliveredSalesOrdersWithDepositsViewEntity> UnpaidInvoiceList)
+        {
+            if (UnpaidInvoiceList == null)
+            {
+                UnpaidInvoiceList = unpaidInvoiceRepository.GetCustomerList();
+            }
+            SelectedCustomerID = 0;
+            UnpaidInvoiceService = new ObservableCollection<UndeliveredSalesOrdersWithDepositsViewEntity>(UnpaidInvoiceList);
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,271 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Product.ViewModel
+{
+    using Common;
+    using Microsoft.Practices.Prism.Commands;
+    using Microsoft.Practices.Prism.Events;
+    using Microsoft.Practices.Prism.Regions;
+    using Microsoft.Practices.ServiceLocation;
+    using UI.Entities.Product;
+    using View;
+
+    public class PandSSubTabViewModel : ProductTabEntity
+    {
+        #region "Private members"
+
+        public PandSSubTabViewModel(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+
+        }
+        public PandSSubTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+           // this.setdefaultTab();
+            //inInitializer();
+        }
+       
+        //public void inInitializer()
+        //{
+        //    IRegionManager regionManager = regionManager1;
+        //    IEventAggregator eventAggregator = eventAggregator1;
+        //}
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+
+        /// <summary>
+        /// The Companydetails click command
+        /// </summary>
+        private readonly DelegateCommand pAndSDescriptionClickCommand = null;
+        private readonly DelegateCommand sellPricesClickCommand = null;
+        private readonly DelegateCommand costPricesClickCommand = null;
+        private readonly DelegateCommand stockQuantitiesClickCommand = null;
+        private readonly DelegateCommand gSTCodesRatesClickCommand = null;
+        private readonly DelegateCommand stockValuesClickCommand = null;
+        // private readonly DelegateCommand countandAdjustClickCommand = null;
+
+
+
+        #endregion
+
+        #region "Public properties"
+
+        /// <summary>
+        /// Gets the Company details click command.
+        /// </summary>
+        /// <value>
+        /// The Companydetails click command.
+        /// </value>
+
+        public DelegateCommand PAndSDescriptionClickCommand
+        {
+            get
+            {
+                return (this.pAndSDescriptionClickCommand ?? new DelegateCommand(this.PAndSDescriptionView));
+            }
+        }
+        public DelegateCommand SellPricesClickCommand
+        {
+            get
+            {
+                return (this.sellPricesClickCommand ?? new DelegateCommand(this.SellPricesView));
+            }
+        }
+        public DelegateCommand CostPricesClickCommand
+        {
+            get
+            {
+                return (this.costPricesClickCommand ?? new DelegateCommand(this.CostPricesView));
+            }
+        }
+        public DelegateCommand StockQuantitiesClickCommand
+        {
+            get
+            {
+                return (this.stockQuantitiesClickCommand ?? new DelegateCommand(this.StockQuantitiesView));
+            }
+        }
+        public DelegateCommand GSTCodesRatesClickCommand
+        {
+            get
+            {
+                return (this.gSTCodesRatesClickCommand ?? new DelegateCommand(this.GSTCodesRatesView));
+            }
+        }
+        public DelegateCommand StockValuesClickCommand
+        {
+            get
+            {
+                return (this.stockValuesClickCommand ?? new DelegateCommand(this.stockValuesView));
+            }
+        }
+
+        #endregion
+
+        #region "Private Methods"
+
+        private void PAndSDescriptionView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            var view = ServiceLocator.Current.GetInstance<PandSDescriptionListView>();
+
+            
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+           
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Description");
+        }
+
+        private void SellPricesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            var view = ServiceLocator.Current.GetInstance<PandSSellPriceListView>();
+
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Sell Prices");
+        }
+
+        private void CostPricesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            var view = ServiceLocator.Current.GetInstance<PandSCostPriceListView>();
+
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Cost Prices");
+        }
+        private void StockQuantitiesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            var view = ServiceLocator.Current.GetInstance<PandSStockQuantitiesListView>();
+
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Stock Quantities");
+        }
+        private void GSTCodesRatesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            var view = ServiceLocator.Current.GetInstance<PandSCodesAndRatesListView>();
+
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - GST Codes and Rates");
+        }
+        private void stockValuesView()
+        {
+            //SharedValues.getValue = "CountandAdjustStockTab";
+            var view = ServiceLocator.Current.GetInstance<PandSStockValueListView>();
+
+            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+            //region.Add(view);
+            //if (region != null)
+            //{
+            //    region.Activate(view);
+            //}
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Products and Services Details List - Stock Value");
+        }
+
+
+        #endregion
+        private void setdefaultTab()
+        {
+           
+            if (SharedValues.getValue == "PSDescriptionTab")
+            {
+                this.PSDetailsTabTrue = true;
+                this.PSDescriptionTabTrue = true;
+            }
+            else if (SharedValues.getValue == "PSHistoryTab")
+            {
+                this.PSHistoryTabTrue = true;
+            }
+            else if (SharedValues.getValue == "StockInOutCardTab")
+            {
+                this.StockInOutCardTabTrue = true;
+            }
+            else if (SharedValues.getValue == "CountandAdjustStockTab")
+            {
+                this.CountandAdjustStockTabTrue = true;
+            }
+            else if (SharedValues.getValue == "PSSoldTab")
+            {
+                this.PSSoldTabTrue = true;
+            }
+            else if (SharedValues.getValue == "PSPurchasedTab")
+            {
+                this.PSPurchasedTabTrue = true;
+            }
+            else if (SharedValues.getValue == "TopPSTab")
+            {
+                this.TopPSTabTrue = true;
+            }
+            else
+            {
+                this.PSDetailsTabTrue = true;
+            }
+        }
+    }
+}

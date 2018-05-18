@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Cat_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Cat_Code" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+    <Property Name="Content_Type" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="CategoriesContents" Relationship="Self.FK_CategoriesContent_Categories" FromRole="Categories" ToRole="CategoriesContent" />
+  </EntityType>
+  <EntityType Name="CategoriesContent">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Cat_Id" Type="Int32" />
+    <Property Name="Content_Limit" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Cat_Contents" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Set_Default" Type="Boolean" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsDeleted" Type="Boolean" />
+    <Property Name="Predefined" Type="Boolean" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_CategoriesContent_Categories" FromRole="CategoriesContent" ToRole="Categories" />
+  </EntityType>
+  <EntityType Name="ProductsAndService">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PandS_Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="PandS_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="PandS_Code" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PandS_Name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PandS_Cat1" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="PandS_Cat2" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="PandS_Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Income_Account" Type="Int32" />
+    <Property Name="Cost_Account" Type="Int32" />
+    <Property Name="Asset_Account" Type="Int32" />
+    <Property Name="Tax_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Tax_Rate" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Std_Sell_Price_bef_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Std_Sell_Price_aft_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Ave_Sell_Price_bef_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Ave_Sell_Price_aft_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Last_Sold_Price_bef_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Last_Sold_Price_aft_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Std_Cost_Price_bef_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Std_Cost_Price_aft_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Ave_Cost_Price_bef_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Ave_Cost_Price_aft_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Last_Pur_Price_bef_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Last_Pur_Price_aft_GST" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Min_Qty" Type="Int32" />
+    <Property Name="PandS_Qty_in_stock" Type="Int32" Nullable="false" />
+    <Property Name="PandS_Qty_for_SO" Type="Int32" />
+    <Property Name="PandS_Qty_on_PO" Type="Int32" />
+    <Property Name="PandS_Stock_Value" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="PandS_Stock_Picture" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsDeleted" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="TaxCodesAndRate">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Tax_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Tax_Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Tax_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="Tax_Rate" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Tax_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="Tax_Default" Type="Boolean" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsDeleted" Type="Boolean" />
+    <Property Name="Predefined" Type="Boolean" />
+  </EntityType>
+  <Association Name="FK_CategoriesContent_Categories">
+    <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
+    <End Role="CategoriesContent" Type="Self.CategoriesContent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Categories">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CategoriesContent">
+        <PropertyRef Name="Cat_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SDNProductDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Categories" EntityType="Self.Category" />
+    <EntitySet Name="CategoriesContents" EntityType="Self.CategoriesContent" />
+    <EntitySet Name="ProductsAndServices" EntityType="Self.ProductsAndService" />
+    <EntitySet Name="TaxCodesAndRates" EntityType="Self.TaxCodesAndRate" />
+    <AssociationSet Name="FK_CategoriesContent_Categories" Association="Self.FK_CategoriesContent_Categories">
+      <End Role="Categories" EntitySet="Categories" />
+      <End Role="CategoriesContent" EntitySet="CategoriesContents" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

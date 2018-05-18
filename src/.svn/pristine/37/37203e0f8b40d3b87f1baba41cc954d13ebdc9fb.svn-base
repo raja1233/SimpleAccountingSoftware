@@ -1,0 +1,62 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using SASClient.CloseRequest;
+using SDN.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class LedgerViewModel
+    {
+        #region Private Properties
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        StackList itemlist = new StackList();
+        #endregion
+        #region Public Properties
+        #endregion
+        #region Constructor
+        public LedgerViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            CloseCommand = new DelegateCommand(Close);
+        }
+        #endregion
+        #region Relay Commands
+        public ICommand CloseCommand { get; set; }
+        #endregion
+        #region Button Click Events
+        private void Close()
+        {
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                var secondlast = listview.AsEnumerable().Reverse().Skip(1).First();
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest(secondlast, true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            catch (Exception)
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest("MainView", true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            //List<string> calledlist = stack.x();
+        }
+        #endregion
+        #region Public method
+        #endregion
+        #region Background Work
+        #endregion
+    }
+}

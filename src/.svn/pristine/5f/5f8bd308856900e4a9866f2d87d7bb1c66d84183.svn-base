@@ -1,0 +1,36 @@
+﻿using SDN.UI.Entities;
+using SDN.UI.Entities.Export;
+using SDN.UI.Entities.ProductandServices;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.File
+{
+    public interface IExportDataDAL
+    {
+        List<SalesQuotationEntity> GetSalesQuotationsList(string StartDate, string EndDate);
+        //List<SalesOrderListEntity> GetSalesOrdersList(string StartDate, string EndDate);
+        //List<SalesInvoiceEntity> GetSalesInvoicesList(string StartDate, string EndDate);
+        //List<PurchaseQuotationEntity> GetPurchaseQuotationsList(string StartDate, string EndDate);
+        //List<PurchaseOrderEntity> GetPurchaseOrdersList(string StartDate, string EndDate);
+        //List<PurchaseInvoiceListEntity> GetPurchaseInvoicesList(string StartDate, string EndDate);
+        //List<PandSSoldEntity> GetProductsServicesSold(string StartDate, string EndDate);
+        //List<PandSPurchaseEntity> GetProductsServicesPurchased(string StartDate, string EndDate);
+        //List<SalesQuotationEntity> GetCashBankStatement(string StartDate, string EndDate);
+        //List<SalesQuotationEntity> GetGSTSummary(string StartDate, string EndDate);
+
+        //List<SalesQuotationEntity> GetGSTCollectedDetails(string StartDate, string EndDate);
+        //List<SalesQuotationEntity> GetGSTPaidDetails(string StartDate, string EndDate);
+        List<Customer_Detail> GetCustomerDetailList();
+        List<Supplier_Detail> GetSupplierDetailList();
+        List<PandS_Details> GetPandSDetailList();
+        List<Account_Detail> GetAccountDetailList();
+        List<Tax_Codes_and_Rates> GetTaxCodeRatelList();
+       
+
+    }
+}

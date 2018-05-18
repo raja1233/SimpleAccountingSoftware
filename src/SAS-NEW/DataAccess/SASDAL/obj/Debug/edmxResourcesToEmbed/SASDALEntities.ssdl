@@ -1,0 +1,1810 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SimpleAccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Accounts">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Acc-Type" Type="int" />
+    <Property Name="Acc-Open-Bal" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Acc-Cur-Bal" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Acc-Year-to-date" Type="datetime" />
+    <Property Name="Acc-Inactive" Type="char" MaxLength="1" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="AccountsTransactions">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Id" Type="int" />
+    <Property Name="Trans-Type" Type="nvarchar" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Trans-Date" Type="datetime" />
+    <Property Name="Trans-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Year-to-Date" Type="datetime" />
+    <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Closing-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="In-Active" Type="char" MaxLength="1" />
+    <Property Name="Invoice-Type" Type="nvarchar" MaxLength="5" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="AccountType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Type-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="Acc-Type-Code" Type="nvarchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="CashAndBank">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Id" Type="int" />
+    <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Current-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Year-to-Date" Type="date" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CashAndBankDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Cash-Cheq-No" Type="nvarchar" MaxLength="20" />
+    <Property Name="Cash-Cheq-Date" Type="date" />
+    <Property Name="Cash-Cheq-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SO-SI-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="SO-SI-Date" Type="date" />
+    <Property Name="SO-SI-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CashAndBankHistory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Id" Type="int" />
+    <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Year1" Type="tinyint" />
+    <Property Name="Year2" Type="tinyint" />
+    <Property Name="Quater" Type="tinyint" />
+    <Property Name="Col1-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col2-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col3-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Total" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CashAndBankStatement">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Id" Type="int" />
+    <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Cash-Cheq-No" Type="nvarchar" MaxLength="20" />
+    <Property Name="Cash-Cheq-Date" Type="date" />
+    <Property Name="Deposit" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Withdrawal" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CashAndBankTransactions">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Sup-Id" Type="int" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Type" Type="nchar" MaxLength="1" />
+    <Property Name="Acc-Id" Type="int" />
+    <Property Name="Is-Cheque" Type="bit" />
+    <Property Name="Cash-Cheque-No" Type="nvarchar" MaxLength="20" />
+    <Property Name="Cash-Cheque-Date" Type="date" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Remarks" Type="nvarchar" MaxLength="200" />
+    <Property Name="Cheque-Photo" Type="varchar(max)" />
+    <Property Name="SO-CN-PO-DN-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="SO-CN-PO-DN-Date" Type="datetime" />
+    <Property Name="SO-CN-PO-DN-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Due" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Discount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Refunded" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="DN-CN-No" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="CashFlowCalendar">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Year1" Type="tinyint" />
+    <Property Name="Year2" Type="tinyint" />
+    <Property Name="Cash-Flow-Month" Type="tinyint" />
+    <Property Name="Amt-Mon" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Tue" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Wed" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Thu" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Fri" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Sat" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amt-Sun" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Row-Type" Type="nchar" MaxLength="3" />
+    <Property Name="View-Type" Type="nchar" MaxLength="2" Nullable="false" />
+    <Property Name="Payment-To-Cus" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Payment-To-Sup" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="LV-Net-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Categories">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" />
+    <Property Name="Content-Type" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="CategoriesContent">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Id" Type="int" />
+    <Property Name="Content-Limit" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="Cat-Contents" Type="nvarchar" MaxLength="200" />
+    <Property Name="Set-Default" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Predefined" Type="bit" />
+  </EntityType>
+  <EntityType Name="CompanyDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Comp-Name" Type="nvarchar" MaxLength="70" Nullable="false" />
+    <Property Name="Comp-Reg-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-GST-Reg-Date" Type="datetime" />
+    <Property Name="Comp-GST-Dereg-Date" Type="datetime" />
+    <Property Name="Comp-Tel" Type="nvarchar" MaxLength="30" />
+    <Property Name="Comp-Fax" Type="nvarchar" MaxLength="30" />
+    <Property Name="Comp-Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Comp-year-start-date" Type="date" />
+    <Property Name="Comp-year-end-date" Type="date" />
+    <Property Name="Comp-Logo" Type="varbinary(max)" />
+    <Property Name="Software-Ser-No" Type="nvarchar" MaxLength="100" />
+    <Property Name="Comp-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Comp-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Comp-Bill-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-Bill-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-Bill-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Comp-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Comp-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Comp-Ship-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-Ship-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-Ship-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Comp-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="Country">
+    <Key>
+      <PropertyRef Name="CountryId" />
+    </Key>
+    <Property Name="CountryId" Type="int" Nullable="false" />
+    <Property Name="CountryName" Type="nvarchar" MaxLength="50" />
+    <Property Name="CountryCode" Type="nvarchar" MaxLength="2" />
+    <Property Name="NumCode" Type="tinyint" />
+    <Property Name="PhoneCode" Type="tinyint" />
+    <Property Name="Inactive" Type="nchar" MaxLength="10" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="CountryCurrency">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Category" Type="nvarchar" MaxLength="50" />
+    <Property Name="CountryName" Type="nvarchar" MaxLength="200" />
+    <Property Name="CurrencyName" Type="nvarchar" MaxLength="10" />
+    <Property Name="CurrencySymbol" Type="nvarchar" MaxLength="10" />
+    <Property Name="CurrencyDecimalCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="CurrencyHexaCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="CurrencyCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedOn" Type="datetime" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedOn" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Priority" Type="tinyint" />
+  </EntityType>
+  <EntityType Name="CreditNotes">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CN-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CN-Date" Type="datetime" />
+    <Property Name="Cus-DN-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-DN-Date" Type="datetime" />
+    <Property Name="Salesman" Type="int" />
+    <Property Name="Cus-DN-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="SI-Id" Type="int" Nullable="false" />
+    <Property Name="CN-Status" Type="tinyint" />
+    <Property Name="CN-Reason" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="CustomerDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Inactive" Type="char" MaxLength="1" />
+    <Property Name="Cus-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Type" Type="int" />
+    <Property Name="Cus-Salesman" Type="int" />
+    <Property Name="Cus-Credit-Limit-Days" Type="int" />
+    <Property Name="Cus-Credit-Limit-Amount" Type="int" />
+    <Property Name="Cus-Discount" Type="int" />
+    <Property Name="Cus-Telephone" Type="nvarchar" MaxLength="30" />
+    <Property Name="Cus-Fax" Type="nvarchar" MaxLength="30" />
+    <Property Name="Cus-Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Contact-Person" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Charge-GST" Type="bit" />
+    <Property Name="Cus-Remarks" Type="nvarchar(max)" />
+    <Property Name="Cus-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Bill-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Bill-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Bill-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Cus-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Ship-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Ship-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Ship-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="100" />
+    <Property Name="LastUpdateDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Cus-Balance" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Inactive" Type="char" MaxLength="1" />
+    <Property Name="Cus-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Type" Type="nvarchar" MaxLength="10" />
+    <Property Name="Cus-Salesman" Type="int" />
+    <Property Name="Cus-Credit-Limit-Days" Type="int" />
+    <Property Name="Cus-Credit-Limit-Amount" Type="int" />
+    <Property Name="Cus-Discount" Type="int" />
+    <Property Name="Cus-Telephone" Type="nvarchar" MaxLength="30" />
+    <Property Name="Cus-Fax" Type="nvarchar" MaxLength="30" />
+    <Property Name="Cus-Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Contact-Person" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Charge-GST" Type="bit" />
+    <Property Name="Cus-Remarks" Type="nvarchar(max)" />
+    <Property Name="Cus-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Bill-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Bill-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Bill-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Cus-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Ship-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Ship-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Ship-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Cus-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Cus-Balance" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="IsRefreshed" Type="bit" />
+    <Property Name="RefreshedDate" Type="datetime" />
+    <Property Name="TaxId" Type="int" />
+  </EntityType>
+  <EntityType Name="CustomersBusinessCard">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" />
+    <Property Name="Cus-Bus-Card-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cus-Bus-Card-Photos" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="CustomersCreditDaysPaidInDays">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Inv-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Inv-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inv-Date" Type="datetime" />
+    <Property Name="Payment-Due-Date" Type="datetime" />
+    <Property Name="Paid-Date" Type="datetime" />
+    <Property Name="Credit-Days" Type="int" />
+    <Property Name="Paidin-Days" Type="int" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CustomersHistory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Col1-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col2-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col3-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Total-Sales-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Year1" Type="tinyint" />
+    <Property Name="Year2" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="[Inc-GST" Type="bit" />
+    <Property Name="LastUpdated" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CustomersPaymentDueDays">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="1-30Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="31-60Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="61-90Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="GreaterThen-90Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="CustomersStatement">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Statement-Date" Type="date" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="1-30Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="31-60Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="61-90Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="GreaterThen-90Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inv-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Inv-Date" Type="datetime" />
+    <Property Name="Payment-Due-Date" Type="datetime" />
+    <Property Name="Inv-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount-Paid" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount-Due" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="LastUpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="DebitNotes">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DN-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="DN-Date" Type="datetime" />
+    <Property Name="Sup-CN-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-CN-Date" Type="datetime" />
+    <Property Name="Sup-CN-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="PI-Id" Type="int" Nullable="false" />
+    <Property Name="DN-Reason" Type="nvarchar" MaxLength="200" />
+    <Property Name="DN-Status" Type="tinyint" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="InvoicesCreditNotesPayments">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Transaction-Type" Type="nvarchar" MaxLength="30" />
+    <Property Name="Transaction-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Trans-Date" Type="datetime" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Closing-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="InvoicesDebitNotesPayments">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Transaction-Type" Type="nvarchar" MaxLength="30" />
+    <Property Name="Transaction-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Trans-Date" Type="datetime" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Closing-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="LastSelectionHistory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Screen-Id" Type="int" Nullable="false" />
+    <Property Name="Screen-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Last-Selection" Type="nvarchar(max)" />
+    <Property Name="Last-Updated" Type="datetime" />
+    <Property Name="Last-UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="MasterModules">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Module-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Module-Id" Type="int" Nullable="false" />
+    <Property Name="Tab-Id" Type="int" Nullable="false" />
+    <Property Name="Tab-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Order-Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Options">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Date-Format" Type="nvarchar" MaxLength="30" />
+    <Property Name="Number-Format" Type="nvarchar" MaxLength="30" />
+    <Property Name="Decimal-Places" Type="tinyint" />
+    <Property Name="Currency-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Starting-Sales-Inv-No" Type="nvarchar" MaxLength="10" />
+    <Property Name="Name-to-Print-Sales-Invoice" Type="nvarchar" MaxLength="100" />
+    <Property Name="Def-Cash-Bank-Acc" Type="nvarchar" MaxLength="50" />
+    <Property Name="Show-Amount-Inc-GST" Type="bit" />
+    <Property Name="Show-Account-Balance" Type="bit" />
+    <Property Name="Cus-Detail-Allow-Chg-Limit" Type="bit" />
+    <Property Name="PS-Detail-Allow-Chg-Act" Type="bit" />
+    <Property Name="Allow-to-Create-Sales-Inv" Type="bit" />
+    <Property Name="Show-PS-Name" Type="bit" />
+    <Property Name="Show-PS-Name-Desc" Type="bit" />
+    <Property Name="Allow-Edit-PS-Name-Desc" Type="bit" />
+    <Property Name="Allow-Edit-PS-Price" Type="bit" />
+    <Property Name="Allow-Edit-Discount" Type="bit" />
+    <Property Name="Hide-Discount-Column" Type="bit" />
+    <Property Name="PS-Qty-Jump-Next-Line" Type="bit" />
+    <Property Name="Print-PS-Name" Type="bit" />
+    <Property Name="Print-PS-Name-Desc" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="Print-Del-Sales-Inv" Type="bit" />
+  </EntityType>
+  <EntityType Name="PandSHistory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="P&amp;S-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Col1-Sal-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col1-Pur-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col2-Sal-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col2-Pur-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col3-Sal-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col3-Pur-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Cat1" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Cat2" Type="nvarchar" MaxLength="10" />
+    <Property Name="Year1" Type="tinyint" />
+    <Property Name="Year2" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" />
+    <Property Name="LastUpdated" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="PandSPurchase">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="PandS-Cat1" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Cat2" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="InvoiceID" Type="int" />
+  </EntityType>
+  <EntityType Name="PandSPurchasedFromSuppliers">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Inv-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Inv-Date" Type="datetime" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="PandSSold">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Year" Type="int" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="PandS-Cat1" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Cat2" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="TaxRate" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="PandSSoldToCustomer">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Inv-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Inv-Date" Type="datetime" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="ProductsAndServices">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="PandS-Inactive" Type="char" MaxLength="1" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="PandS-Cat1" Type="int" />
+    <Property Name="PandS-Cat2" Type="int" />
+    <Property Name="PandS-Description" Type="nvarchar(max)" />
+    <Property Name="Income-Account" Type="int" />
+    <Property Name="Cost-Account" Type="int" />
+    <Property Name="Asset-Account" Type="int" />
+    <Property Name="Tax-ID" Type="int" />
+    <Property Name="Tax-Rate" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Sell-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Sell-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Sell-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Sell-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Sold-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Sold-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Cost-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Cost-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Cost-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Cost-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Pur-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Pur-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Min-Qty" Type="int" />
+    <Property Name="PandS-Qty-in-stock" Type="int" />
+    <Property Name="PandS-Qty-for-SO" Type="int" />
+    <Property Name="PandS-Qty-on-PO" Type="int" />
+    <Property Name="PandS-Stock-Value" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Stock-Picture" Type="varbinary(max)" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="IsRefresh" Type="bit" />
+    <Property Name="RefreshDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="PurchaseAndSales_Categories">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" />
+    <Property Name="Content-Type" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="PurchaseAndSales_CategoriesContent">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Id" Type="int" />
+    <Property Name="Cat-Contents" Type="nvarchar(max)" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="PurchaseInvoice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PI-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="PI-Date" Type="datetime" Nullable="false" />
+    <Property Name="PI-Pmt-Due-Date" Type="datetime" />
+    <Property Name="Our-PO-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Exc-Inc-GST" Type="bit" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Ship-to-address" Type="int" />
+    <Property Name="PI-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PI-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PI-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PI-TandC" Type="nvarchar(max)" />
+    <Property Name="BusinessExpenses" Type="bit" />
+    <Property Name="PI-Status" Type="tinyint" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="PurchaseInvoiceDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PI-ID" Type="int" Nullable="false" />
+    <Property Name="PI-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="PI-Qty" Type="int" />
+    <Property Name="PI-Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PI-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PI-Discount" Type="decimal" Precision="12" Scale="4" />
+    <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Bus-Expenses-Desc" Type="nvarchar" MaxLength="200" />
+    <Property Name="Bus-Expenses-Acc-Name" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="PurchaseOrder">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PO-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="PO-Date" Type="datetime" Nullable="false" />
+    <Property Name="PO-Del-Date" Type="datetime" Nullable="false" />
+    <Property Name="Exc-Inc-GST" Type="bit" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Ship-to-address" Type="int" />
+    <Property Name="PO-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PO-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PO-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PO-TandC" Type="nvarchar(max)" />
+    <Property Name="PO-Conv-to-PI" Type="bit" />
+    <Property Name="PO-Status" Type="tinyint" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Conv-to-No" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="PurchaseOrderDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PO-ID" Type="int" Nullable="false" />
+    <Property Name="PO-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="PO-Qty" Type="int" />
+    <Property Name="PO-Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PO-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PO-Discount" Type="decimal" Precision="12" Scale="4" />
+    <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="PurchaseQuotation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PQ-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="PQ-Date" Type="datetime" Nullable="false" />
+    <Property Name="PQ-Valid-for" Type="int" />
+    <Property Name="Exc-Inc-GST" Type="bit" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Ship-to-address" Type="int" />
+    <Property Name="PQ-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PQ-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PQ-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PQ-TandC" Type="nvarchar(max)" />
+    <Property Name="PQ-Conv-to-PO" Type="bit" />
+    <Property Name="PQ-Conv-to-PI" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Conv-to-No" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="PurchaseQuotationDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PQ-ID" Type="int" Nullable="false" />
+    <Property Name="PQ-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="PQ-Qty" Type="int" />
+    <Property Name="PQ-Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PQ-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PQ-Discount" Type="decimal" Precision="12" Scale="4" />
+    <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="SalesInvoice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SI-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="SI-Date" Type="datetime" Nullable="false" />
+    <Property Name="SI-Credit-Days" Type="int" />
+    <Property Name="Cus-PO-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Salesman" Type="int" />
+    <Property Name="Exc-Inc-GST" Type="bit" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="SI-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SI-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SI-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SI-TandC" Type="nvarchar(max)" />
+    <Property Name="SI-Status" Type="tinyint" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="SalesInvoiceDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SI-ID" Type="int" Nullable="false" />
+    <Property Name="SI-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="SI-Qty" Type="int" />
+    <Property Name="SI-Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SI-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SI-Discount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="SalesOrder">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SO-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="SO-Date" Type="datetime" Nullable="false" />
+    <Property Name="SO-Del-Date" Type="datetime" Nullable="false" />
+    <Property Name="Cus-PO-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Salesman" Type="int" />
+    <Property Name="Exc-Inc-GST" Type="bit" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Ship-to-address" Type="int" />
+    <Property Name="SO-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SO-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SO-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SO-TandC" Type="nvarchar(max)" />
+    <Property Name="SO-Conv-to-SI" Type="bit" />
+    <Property Name="SO-Status" Type="tinyint" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Conv-to-No" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="SalesOrderDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SO-ID" Type="int" Nullable="false" />
+    <Property Name="SO-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="SO-Qty" Type="int" />
+    <Property Name="SO-Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SO-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SO-Discount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="SalesQuotation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SQ-No" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="SQ-Date" Type="datetime" Nullable="false" />
+    <Property Name="SQ-Valid-for" Type="int" />
+    <Property Name="Salesman" Type="int" />
+    <Property Name="Exc-Inc-GST" Type="bit" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Ship-to-address" Type="int" />
+    <Property Name="SQ-Tot-bef-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SQ-GST-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SQ-Tot-aft-Tax" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SQ-TandC" Type="nvarchar(max)" />
+    <Property Name="SQ-Conv-to-SO" Type="bit" />
+    <Property Name="SQ-Conv-to-SI" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Conv-to-No" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="SalesQuotationDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SQ-ID" Type="int" Nullable="false" />
+    <Property Name="SQ-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="SQ-Qty" Type="int" />
+    <Property Name="SQ-Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SQ-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="SQ-Discount" Type="decimal" Precision="12" Scale="4" />
+    <Property Name="GST-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="GST-Rate" Type="decimal" Precision="18" Scale="4" />
+  </EntityType>
+  <EntityType Name="ShippingAddress">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EntityId" Type="int" Nullable="false" />
+    <Property Name="EntityType" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Ship-to-line1" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Ship-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Ship-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Ship-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Ship-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="State">
+    <Key>
+      <PropertyRef Name="StateId" />
+    </Key>
+    <Property Name="StateId" Type="int" Nullable="false" />
+    <Property Name="StateName" Type="nvarchar" MaxLength="50" />
+    <Property Name="StateCode" Type="nvarchar" MaxLength="5" />
+    <Property Name="CountryId" Type="int" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="StockCounts">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="10" />
+    <Property Name="SysQty" Type="int" />
+    <Property Name="CountQty" Type="int" />
+    <Property Name="Difference" Type="int" />
+    <Property Name="Average-Cost" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Adjusted-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Stock-count-no" Type="nvarchar" MaxLength="50" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+    <Property Name="StockDate" Type="datetime" />
+    <Property Name="StockType" Type="smallint" />
+    <Property Name="PSID" Type="int" />
+  </EntityType>
+  <EntityType Name="StockInOutCard">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SI-PI" Type="int" />
+    <Property Name="Cus-Sup-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Trans-Type" Type="nvarchar" MaxLength="30" />
+    <Property Name="Trans-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Price" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="QtyIn" Type="int" />
+    <Property Name="Qtyout" Type="int" />
+    <Property Name="Trans-Date" Type="datetime" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="SupplierDetails">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Inactive" Type="char" MaxLength="1" />
+    <Property Name="Sup-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Type" Type="nvarchar" MaxLength="10" />
+    <Property Name="Sup-Salesman" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Credit-Limit-Days" Type="int" />
+    <Property Name="Sup-Credit-Limit-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sup-Discount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sup-Telephone" Type="nvarchar" MaxLength="30" />
+    <Property Name="Sup-Fax" Type="nvarchar" MaxLength="30" />
+    <Property Name="Sup-Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Contact-Person" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Charge-GST" Type="bit" />
+    <Property Name="Sup-Remarks" Type="nvarchar(max)" />
+    <Property Name="Sup-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Bill-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Bill-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Bill-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Sup-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Ship-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Ship-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Ship-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="100" />
+    <Property Name="LastUpdateDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="Suppliers">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Inactive" Type="char" MaxLength="1" />
+    <Property Name="Sup-Company-Reg-no" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Credit-Limit-Days" Type="int" />
+    <Property Name="Sup-Credit-Limit-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sup-Telephone" Type="nvarchar" MaxLength="30" />
+    <Property Name="Sup-Fax" Type="nvarchar" MaxLength="30" />
+    <Property Name="Sup-Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Contact-Person" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-GST-Reg-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Charge-GST" Type="bit" />
+    <Property Name="Sup-Remarks" Type="nvarchar(max)" />
+    <Property Name="Sup-Bill-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Bill-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Bill-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Bill-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Bill-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Bill-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Sup-Ship-to-line1" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Ship-to-line2" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Ship-to-city" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Ship-to-state" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Ship-to-country" Type="nvarchar" MaxLength="50" />
+    <Property Name="Sup-Ship-to-post-code" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="IsRefreshed" Type="bit" />
+    <Property Name="RefreshedDate" Type="datetime" />
+    <Property Name="TaxId" Type="int" />
+  </EntityType>
+  <EntityType Name="SuppliersBusinessCard">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" />
+    <Property Name="Sup-Bus-Card-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Sup-Bus-Card-Photos" Type="varbinary(max)" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="SuppliersCreditDaysPaidInDays">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Inv-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Inv-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inv-Date" Type="datetime" />
+    <Property Name="Payment-Due-Date" Type="datetime" />
+    <Property Name="Paid-Date" Type="datetime" />
+    <Property Name="Credit-Days" Type="int" />
+    <Property Name="Paidin-Days" Type="int" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="SuppliersHistory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Col1-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col2-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Col3-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Total-Purchase-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Year1" Type="tinyint" />
+    <Property Name="Year2" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="[Inc-GST" Type="bit" />
+    <Property Name="LastUpdated" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="SuppliersStatement">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Statement-Date" Type="date" />
+    <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="1-30Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="31-60Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="61-90Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="GreaterThen-90Days" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inv-No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Inv-Date" Type="datetime" />
+    <Property Name="Payment-Due-Date" Type="datetime" />
+    <Property Name="Inv-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount-Paid" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Amount-Due" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="LastUpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="TaxCodesAndRates">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Tax-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Tax-Description" Type="nvarchar" MaxLength="100" />
+    <Property Name="Tax-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Tax-Rate" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Tax-Inactive" Type="char" MaxLength="1" />
+    <Property Name="Tax-Default" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Predefined" Type="bit" />
+  </EntityType>
+  <EntityType Name="TermsAndConditions">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Name" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" Nullable="false" />
+    <Property Name="SrNo" Type="int" />
+    <Property Name="Cat-Content" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="TopCustomers">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cus-Id" Type="int" Nullable="false" />
+    <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="Sales-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sales-Percentage" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Payment-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Payment-Percentage" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Profit-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Profit-Percentage" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="TopPandS">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="PandS-Cat1" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Cat2" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" />
+    <Property Name="Sales-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sales-Per" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Purchase-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Purchase-Per" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Profit-Amt" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Profit-Per" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="TopSuppliers">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sup-Id" Type="int" Nullable="false" />
+    <Property Name="Sup-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Year" Type="tinyint" />
+    <Property Name="Quarter" Type="tinyint" />
+    <Property Name="Month" Type="tinyint" />
+    <Property Name="Start-Date" Type="date" />
+    <Property Name="End-Date" Type="date" />
+    <Property Name="Inc-GST" Type="bit" />
+    <Property Name="Sales-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Sales-Percentage" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Payment-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Payment-Percentage" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Profit-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Profit-Percentage" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="TransferMoney">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="From-Acc-Id" Type="int" Nullable="false" />
+    <Property Name="To-Acc-Id" Type="int" Nullable="false" />
+    <Property Name="Cheque" Type="bit" />
+    <Property Name="Cheque-No" Type="nvarchar" MaxLength="20" />
+    <Property Name="Cheque-Date" Type="datetime" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="Remarks" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cheque-Photo" Type="varbinary(max)" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="UserRoles">
+    <Key>
+      <PropertyRef Name="UserRoleId" />
+    </Key>
+    <Property Name="UserRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleId" Type="int" />
+    <Property Name="UserId" Type="int" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="User-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="User-Password" Type="nvarchar" MaxLength="255" />
+    <Property Name="User-Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="User-Type" Type="int" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="IsSuperAdmin" Type="bit" />
+    <Property Name="DeletedBy" Type="int" />
+    <Property Name="DeletedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="UserSecurity">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="User-Id" Type="int" />
+    <Property Name="Tab-Id" Type="nchar" MaxLength="10" />
+  </EntityType>
+  <Association Name="FK_CategoriesContent_Categories">
+    <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+    <End Role="CategoriesContent" Type="Self.CategoriesContent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Categories">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CategoriesContent">
+        <PropertyRef Name="Cat-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CreditNotes_SalesInvoice">
+    <End Role="SalesInvoice" Type="Self.SalesInvoice" Multiplicity="1" />
+    <End Role="CreditNotes" Type="Self.CreditNotes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SalesInvoice">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CreditNotes">
+        <PropertyRef Name="SI-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CustomersBusinessCard_Customers">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+    <End Role="CustomersBusinessCard" Type="Self.CustomersBusinessCard" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CustomersBusinessCard">
+        <PropertyRef Name="Cus-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DebitNotes_PurchaseInvoice">
+    <End Role="PurchaseInvoice" Type="Self.PurchaseInvoice" Multiplicity="1" />
+    <End Role="DebitNotes" Type="Self.DebitNotes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchaseInvoice">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DebitNotes">
+        <PropertyRef Name="PI-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DebitNotes_Suppliers">
+    <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
+    <End Role="DebitNotes" Type="Self.DebitNotes" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Suppliers">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DebitNotes">
+        <PropertyRef Name="Sup-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories">
+    <End Role="PurchaseAndSales_Categories" Type="Self.PurchaseAndSales_Categories" Multiplicity="0..1" />
+    <End Role="PurchaseAndSales_CategoriesContent" Type="Self.PurchaseAndSales_CategoriesContent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchaseAndSales_Categories">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PurchaseAndSales_CategoriesContent">
+        <PropertyRef Name="Cat-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PurchaseInvoiceDetails_PurchaseInvoice">
+    <End Role="PurchaseInvoice" Type="Self.PurchaseInvoice" Multiplicity="1" />
+    <End Role="PurchaseInvoiceDetails" Type="Self.PurchaseInvoiceDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchaseInvoice">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PurchaseInvoiceDetails">
+        <PropertyRef Name="PI-ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PurchaseOrder_ShippingAddress">
+    <End Role="ShippingAddress" Type="Self.ShippingAddress" Multiplicity="0..1" />
+    <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShippingAddress">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PurchaseOrder">
+        <PropertyRef Name="Ship-to-address" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PurchaseOrder_Suppliers">
+    <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
+    <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Suppliers">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PurchaseOrder">
+        <PropertyRef Name="Sup-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PurchaseOrderDetails_PurchaseOrder">
+    <End Role="PurchaseOrder" Type="Self.PurchaseOrder" Multiplicity="1" />
+    <End Role="PurchaseOrderDetails" Type="Self.PurchaseOrderDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchaseOrder">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PurchaseOrderDetails">
+        <PropertyRef Name="PO-ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PurchaseQuotationDetails_PurchaseQuotation">
+    <End Role="PurchaseQuotation" Type="Self.PurchaseQuotation" Multiplicity="1" />
+    <End Role="PurchaseQuotationDetails" Type="Self.PurchaseQuotationDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchaseQuotation">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PurchaseQuotationDetails">
+        <PropertyRef Name="PQ-ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesInvoiceDetails_SalesInvoice">
+    <End Role="SalesInvoice" Type="Self.SalesInvoice" Multiplicity="1" />
+    <End Role="SalesInvoiceDetails" Type="Self.SalesInvoiceDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SalesInvoice">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SalesInvoiceDetails">
+        <PropertyRef Name="SI-ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesOrder_Customers">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="1" />
+    <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SalesOrder">
+        <PropertyRef Name="Cus-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesOrder_ShippingAddress">
+    <End Role="ShippingAddress" Type="Self.ShippingAddress" Multiplicity="0..1" />
+    <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShippingAddress">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SalesOrder">
+        <PropertyRef Name="Ship-to-address" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesOrderDetails_SalesOrder">
+    <End Role="SalesOrder" Type="Self.SalesOrder" Multiplicity="1" />
+    <End Role="SalesOrderDetails" Type="Self.SalesOrderDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SalesOrder">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SalesOrderDetails">
+        <PropertyRef Name="SO-ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SalesQuotationDetails_SalesQuotation">
+    <End Role="SalesQuotation" Type="Self.SalesQuotation" Multiplicity="1" />
+    <End Role="SalesQuotationDetails" Type="Self.SalesQuotationDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SalesQuotation">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SalesQuotationDetails">
+        <PropertyRef Name="SQ-ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SuppliersBusinessCard_Suppliers">
+    <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="0..1" />
+    <End Role="SuppliersBusinessCard" Type="Self.SuppliersBusinessCard" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Suppliers">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="SuppliersBusinessCard">
+        <PropertyRef Name="Sup-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TransferMoney_Accounts">
+    <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
+    <End Role="TransferMoney" Type="Self.TransferMoney" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Accounts">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TransferMoney">
+        <PropertyRef Name="From-Acc-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TransferMoney_Accounts1">
+    <End Role="Accounts" Type="Self.Accounts" Multiplicity="1" />
+    <End Role="TransferMoney" Type="Self.TransferMoney" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Accounts">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TransferMoney">
+        <PropertyRef Name="To-Acc-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserRoles_Roles">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+    <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="UserRoles">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserRoles_Users">
+    <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+    <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserRoles">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SimpleAccountingModelStoreContainer">
+    <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AccountsTransactions" EntityType="Self.AccountsTransactions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AccountType" EntityType="Self.AccountType" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashAndBank" EntityType="Self.CashAndBank" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashAndBankDetails" EntityType="Self.CashAndBankDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashAndBankHistory" EntityType="Self.CashAndBankHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashAndBankStatement" EntityType="Self.CashAndBankStatement" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashAndBankTransactions" EntityType="Self.CashAndBankTransactions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashFlowCalendar" EntityType="Self.CashFlowCalendar" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CategoriesContent" EntityType="Self.CategoriesContent" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CompanyDetails" EntityType="Self.CompanyDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CountryCurrency" EntityType="Self.CountryCurrency" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CreditNotes" EntityType="Self.CreditNotes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomerDetails" EntityType="Self.CustomerDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomersBusinessCard" EntityType="Self.CustomersBusinessCard" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomersCreditDaysPaidInDays" EntityType="Self.CustomersCreditDaysPaidInDays" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomersHistory" EntityType="Self.CustomersHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomersPaymentDueDays" EntityType="Self.CustomersPaymentDueDays" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CustomersStatement" EntityType="Self.CustomersStatement" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DebitNotes" EntityType="Self.DebitNotes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="InvoicesCreditNotesPayments" EntityType="Self.InvoicesCreditNotesPayments" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="InvoicesDebitNotesPayments" EntityType="Self.InvoicesDebitNotesPayments" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="LastSelectionHistory" EntityType="Self.LastSelectionHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MasterModules" EntityType="Self.MasterModules" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Options" EntityType="Self.Options" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PandSHistory" EntityType="Self.PandSHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PandSPurchase" EntityType="Self.PandSPurchase" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PandSPurchasedFromSuppliers" EntityType="Self.PandSPurchasedFromSuppliers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PandSSold" EntityType="Self.PandSSold" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PandSSoldToCustomer" EntityType="Self.PandSSoldToCustomer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductsAndServices" EntityType="Self.ProductsAndServices" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseAndSales_Categories" EntityType="Self.PurchaseAndSales_Categories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseAndSales_CategoriesContent" EntityType="Self.PurchaseAndSales_CategoriesContent" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseInvoice" EntityType="Self.PurchaseInvoice" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseInvoiceDetails" EntityType="Self.PurchaseInvoiceDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseOrder" EntityType="Self.PurchaseOrder" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseOrderDetails" EntityType="Self.PurchaseOrderDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseQuotation" EntityType="Self.PurchaseQuotation" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseQuotationDetails" EntityType="Self.PurchaseQuotationDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SalesInvoice" EntityType="Self.SalesInvoice" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SalesInvoiceDetails" EntityType="Self.SalesInvoiceDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SalesOrder" EntityType="Self.SalesOrder" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SalesOrderDetails" EntityType="Self.SalesOrderDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SalesQuotation" EntityType="Self.SalesQuotation" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SalesQuotationDetails" EntityType="Self.SalesQuotationDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ShippingAddress" EntityType="Self.ShippingAddress" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="State" EntityType="Self.State" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCounts" EntityType="Self.StockCounts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockInOutCard" EntityType="Self.StockInOutCard" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SupplierDetails" EntityType="Self.SupplierDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SuppliersBusinessCard" EntityType="Self.SuppliersBusinessCard" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SuppliersCreditDaysPaidInDays" EntityType="Self.SuppliersCreditDaysPaidInDays" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SuppliersHistory" EntityType="Self.SuppliersHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SuppliersStatement" EntityType="Self.SuppliersStatement" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TaxCodesAndRates" EntityType="Self.TaxCodesAndRates" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TermsAndConditions" EntityType="Self.TermsAndConditions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TopCustomers" EntityType="Self.TopCustomers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TopPandS" EntityType="Self.TopPandS" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TopSuppliers" EntityType="Self.TopSuppliers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TransferMoney" EntityType="Self.TransferMoney" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserSecurity" EntityType="Self.UserSecurity" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_CategoriesContent_Categories" Association="Self.FK_CategoriesContent_Categories">
+      <End Role="Categories" EntitySet="Categories" />
+      <End Role="CategoriesContent" EntitySet="CategoriesContent" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CreditNotes_SalesInvoice" Association="Self.FK_CreditNotes_SalesInvoice">
+      <End Role="SalesInvoice" EntitySet="SalesInvoice" />
+      <End Role="CreditNotes" EntitySet="CreditNotes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CustomersBusinessCard_Customers" Association="Self.FK_CustomersBusinessCard_Customers">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="CustomersBusinessCard" EntitySet="CustomersBusinessCard" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DebitNotes_PurchaseInvoice" Association="Self.FK_DebitNotes_PurchaseInvoice">
+      <End Role="PurchaseInvoice" EntitySet="PurchaseInvoice" />
+      <End Role="DebitNotes" EntitySet="DebitNotes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DebitNotes_Suppliers" Association="Self.FK_DebitNotes_Suppliers">
+      <End Role="Suppliers" EntitySet="Suppliers" />
+      <End Role="DebitNotes" EntitySet="DebitNotes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" Association="Self.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories">
+      <End Role="PurchaseAndSales_Categories" EntitySet="PurchaseAndSales_Categories" />
+      <End Role="PurchaseAndSales_CategoriesContent" EntitySet="PurchaseAndSales_CategoriesContent" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PurchaseInvoiceDetails_PurchaseInvoice" Association="Self.FK_PurchaseInvoiceDetails_PurchaseInvoice">
+      <End Role="PurchaseInvoice" EntitySet="PurchaseInvoice" />
+      <End Role="PurchaseInvoiceDetails" EntitySet="PurchaseInvoiceDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PurchaseOrder_ShippingAddress" Association="Self.FK_PurchaseOrder_ShippingAddress">
+      <End Role="ShippingAddress" EntitySet="ShippingAddress" />
+      <End Role="PurchaseOrder" EntitySet="PurchaseOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PurchaseOrder_Suppliers" Association="Self.FK_PurchaseOrder_Suppliers">
+      <End Role="Suppliers" EntitySet="Suppliers" />
+      <End Role="PurchaseOrder" EntitySet="PurchaseOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PurchaseOrderDetails_PurchaseOrder" Association="Self.FK_PurchaseOrderDetails_PurchaseOrder">
+      <End Role="PurchaseOrder" EntitySet="PurchaseOrder" />
+      <End Role="PurchaseOrderDetails" EntitySet="PurchaseOrderDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PurchaseQuotationDetails_PurchaseQuotation" Association="Self.FK_PurchaseQuotationDetails_PurchaseQuotation">
+      <End Role="PurchaseQuotation" EntitySet="PurchaseQuotation" />
+      <End Role="PurchaseQuotationDetails" EntitySet="PurchaseQuotationDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesInvoiceDetails_SalesInvoice" Association="Self.FK_SalesInvoiceDetails_SalesInvoice">
+      <End Role="SalesInvoice" EntitySet="SalesInvoice" />
+      <End Role="SalesInvoiceDetails" EntitySet="SalesInvoiceDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesOrder_Customers" Association="Self.FK_SalesOrder_Customers">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="SalesOrder" EntitySet="SalesOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesOrder_ShippingAddress" Association="Self.FK_SalesOrder_ShippingAddress">
+      <End Role="ShippingAddress" EntitySet="ShippingAddress" />
+      <End Role="SalesOrder" EntitySet="SalesOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesOrderDetails_SalesOrder" Association="Self.FK_SalesOrderDetails_SalesOrder">
+      <End Role="SalesOrder" EntitySet="SalesOrder" />
+      <End Role="SalesOrderDetails" EntitySet="SalesOrderDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SalesQuotationDetails_SalesQuotation" Association="Self.FK_SalesQuotationDetails_SalesQuotation">
+      <End Role="SalesQuotation" EntitySet="SalesQuotation" />
+      <End Role="SalesQuotationDetails" EntitySet="SalesQuotationDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SuppliersBusinessCard_Suppliers" Association="Self.FK_SuppliersBusinessCard_Suppliers">
+      <End Role="Suppliers" EntitySet="Suppliers" />
+      <End Role="SuppliersBusinessCard" EntitySet="SuppliersBusinessCard" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TransferMoney_Accounts" Association="Self.FK_TransferMoney_Accounts">
+      <End Role="Accounts" EntitySet="Accounts" />
+      <End Role="TransferMoney" EntitySet="TransferMoney" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TransferMoney_Accounts1" Association="Self.FK_TransferMoney_Accounts1">
+      <End Role="Accounts" EntitySet="Accounts" />
+      <End Role="TransferMoney" EntitySet="TransferMoney" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserRoles_Roles" Association="Self.FK_UserRoles_Roles">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="UserRoles" EntitySet="UserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserRoles_Users" Association="Self.FK_UserRoles_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserRoles" EntitySet="UserRoles" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

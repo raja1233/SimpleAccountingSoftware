@@ -1,0 +1,36 @@
+﻿using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.Accounts
+{
+    public class AccountsTransactionsDAL : IAccountsTransactionsDAL
+    {
+        SASEntitiesEDM entities = new SASEntitiesEDM();
+
+        //public List<AccountsTransactionsEntity> GetAccountsTransactionNameAndType()
+        //{
+            
+        //}
+        public List<AccountsTransactionsEntity> GetAccountsTransactionNameAndType()
+        {
+            List<AccountsTransactionsEntity> AccountsList = new List<AccountsTransactionsEntity>();
+            try
+            {
+                
+                AccountsList = entities.Database.SqlQuery<AccountsTransactionsEntity>("USP_GetAccountsTransactionNemeAndType").ToList();
+               
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+            return AccountsList;
+
+        }
+    }
+}

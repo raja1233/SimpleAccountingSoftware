@@ -1,0 +1,64 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using SDN.Common;
+using SDN.UI.Entities.Login;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Navigation.ViewModel
+{
+    public class EnterDatabaseNameViewModel : ViewModelBase
+    {
+        #region Private Properties
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+        private string databaseName;
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+        #region Public Properties
+        private string DatabaseName
+        {
+            get
+            {
+                return databaseName;
+            }
+            set
+            {
+                databaseName = value;
+                OnPropertyChanged("DatabaseName");
+            }
+        }
+        #endregion
+        #region Constructor
+        public EnterDatabaseNameViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            eventAggregator.GetEvent<HeaderVisibilityChangeEvent>().Publish(false);
+            eventAggregator.GetEvent<FooterVisibilityChangeEvent>().Publish(false);
+
+        }
+        #endregion
+        #region Relay Commands
+        #endregion
+        #region Button Commands
+        #endregion
+        #region Public Methods
+        #endregion
+    }
+}

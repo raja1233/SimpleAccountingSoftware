@@ -1,0 +1,72 @@
+﻿
+using SDN.CashBank.BLInterface;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SASDAL;
+using SDN.CashBank.DALInterface;
+using SDN.CashBank.DAL;
+
+namespace SDN.CashBank.BL
+{
+    public class AccountDetailsBL : IAccountDetailsBL
+    {
+        public List<AccountsEntity> GetAccountDetails()
+        {
+            IAccountDetialsDAL AccountDetails = new AccountDetialDAL();
+            var optionDAL = AccountDetails.GetAccountDetails();
+            return optionDAL;
+        }
+        public AccountDetailEntity GetDefaultAccount()
+        {
+            IAccountDetialsDAL AccountDetails = new AccountDetialDAL();
+            var optionDAL = AccountDetails.GetDefaultAccount();
+            optionDAL.AccountOpeningBal = optionDAL.AccountOpeningBal == null ? null : string.Format("{0:G29}", decimal.Parse(optionDAL.AccountOpeningBal));
+            return optionDAL;
+        }
+        public AccountDetailEntity GetAccInfo(int AccountId)
+        {
+            IAccountDetialsDAL AccountDetails = new AccountDetialDAL();
+            var optionDAL = AccountDetails.GetAccInfo(AccountId);
+            optionDAL.AccountOpeningBal = string.Format("{0:G29}", decimal.Parse(optionDAL.AccountOpeningBal));
+            if (optionDAL.IsInActivestring == "Y")
+                optionDAL.IsInActive = true;
+            else
+                optionDAL.IsInActive = false;
+            return optionDAL;
+        }
+        public int AddEditAccount(AccountDetailEntity cashbankEntity)
+        {
+            IAccountDetialsDAL AccountDetails = new AccountDetialDAL();
+            //var openingbal = Convert.ToDecimal(cashbankEntity.AccountOpeningBal);
+            cashbankEntity.AccountOpeningBal = string.Format("{0:G29}", decimal.Parse(cashbankEntity.AccountOpeningBal));
+            if (cashbankEntity.IsInActive == true)
+                cashbankEntity.IsInActivestring = "Y";
+            else
+                cashbankEntity.IsInActivestring = "N";
+            int result = AccountDetails.AddEditAccount(cashbankEntity);
+            return result;
+        }
+        public bool DeleteAccount(int AccountId)
+        {
+            IAccountDetialsDAL AccountDetails = new AccountDetialDAL();
+            bool result = AccountDetails.DeleteAccount(AccountId);
+            return result;
+        }
+        public bool CanDeleteAccount(int AccountId)
+        {
+            IAccountDetialsDAL AccountDetails = new AccountDetialDAL();
+            bool result = AccountDetails.CanDeleteAccount(AccountId);
+            return result;
+        }
+        public List<AccountsEntity> GetAccountTypes()
+        {
+            IAccountDetialsDAL cashbankBL = new AccountDetialDAL();
+            List<AccountsEntity> result = cashbankBL.GetAccountTypes();
+            return result;
+        }
+    }
+}

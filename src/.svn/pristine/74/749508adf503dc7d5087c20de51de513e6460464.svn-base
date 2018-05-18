@@ -1,0 +1,148 @@
+﻿using SASClient.Accounts.Services;
+using SDN.Common;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class UndeliveredPurchaseOrdersDepositsGridViewModel : ViewModelBase
+    {
+        #region private property
+        private int? _ID;
+        private string _SupplierName;
+        private string _OrderNo;
+        private DateTime? _OrderDate;
+        private decimal? _UndeliveredAmount;
+        private decimal? _DepositAmount;
+        private int? _SelectedSupplierID;
+        private int _CountQty;
+        private ObservableCollection<UndeliveredPurchaseOrdersDepositsEntity> _UndeliveredPurchaseService;
+        private IUndeliveredPurchaseOrdersDepositsRepository UndeliveredPurchaseRepository = new UndeliveredPurchaseOrdersDepositsRepository();
+        #endregion
+        #region public property
+        public int? ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public int CountQty
+        {
+            get
+            {
+                return _CountQty;
+            }
+            set
+            {
+                _CountQty = value;
+                OnPropertyChanged("CountQty");
+            }
+        }
+        public string SupplierName
+        {
+            get
+            {
+                return _SupplierName;
+            }
+            set
+            {
+                _SupplierName = value;
+                OnPropertyChanged("SupplierName");
+            }
+        }
+        public string OrderNo
+        {
+            get
+            {
+                return _OrderNo;
+            }
+            set
+            {
+                _OrderNo = value;
+                OnPropertyChanged("OrderNo");
+            }
+        }
+
+        public DateTime? OrderDate
+        {
+            get
+            {
+                return _OrderDate;
+            }
+            set
+            {
+                _OrderDate = value;
+                OnPropertyChanged("OrderDate");
+            }
+        }
+        public decimal? UndeliveredAmount
+        {
+            get
+            {
+                return _UndeliveredAmount;
+            }
+            set
+            {
+                _UndeliveredAmount = value;
+                OnPropertyChanged("UndeliveredAmount");
+            }
+        }
+        public decimal? DepositAmount
+        {
+            get
+            {
+                return _DepositAmount;
+            }
+            set
+            {
+                _DepositAmount = value;
+                OnPropertyChanged("DepositAmount");
+            }
+        }
+        public int? SelectedSupplierID
+        {
+            get
+            {
+                return _SelectedSupplierID;
+            }
+            set
+            {
+                _SelectedSupplierID = value;
+                OnPropertyChanged("SelectedSupplierID");
+            }
+        }
+        public ObservableCollection<UndeliveredPurchaseOrdersDepositsEntity> UndeliveredPurchaseService
+        {
+            get
+            {
+                return _UndeliveredPurchaseService;
+            }
+            set
+            {
+                _UndeliveredPurchaseService = value;
+                OnPropertyChanged("UndeliveredPurchaseService");
+            }
+        }
+        public UndeliveredPurchaseOrdersDepositsGridViewModel(IEnumerable<UndeliveredPurchaseOrdersDepositsEntity> UndeliveredPurchaseList)
+        {
+            if (UndeliveredPurchaseList == null)
+            {
+                UndeliveredPurchaseList = UndeliveredPurchaseRepository.getSupplierList();
+            }
+            SelectedSupplierID = 0;
+            UndeliveredPurchaseService = new ObservableCollection<UndeliveredPurchaseOrdersDepositsEntity>(UndeliveredPurchaseList);
+        }
+        #endregion
+    }
+}

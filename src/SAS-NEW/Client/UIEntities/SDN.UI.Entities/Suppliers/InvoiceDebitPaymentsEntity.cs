@@ -1,0 +1,928 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities.Suppliers
+{
+    using SDN.Common;
+    using System.Globalization;
+
+    public class InvoiceDebitPaymentsEntity:ViewModelBase
+    {
+        #region "Private members"
+      
+        private int gridHeight;
+        private int invoiceGridHeight;
+        private int selectedSupplierID;
+        private bool isSelected;
+        private int supplierID;
+        private string supplierName;
+        private string _TaxName;
+        private string _DateFormat; 
+        private string currencyName;
+        private string closingAmount;
+        private string openingAmount;
+        private List<InvoiceDebitPaymentsEntity> lstSuppliers;
+       private  List<InvDebitPaymentsDetailsEntity> lstInvoiceDetails;
+
+        private string _SelectedSearchYear;                                                                                                                                                                   
+        private string _SelectedSearchQuarter;
+        private string _SelectedSearchMonth;
+       
+        private List<YearEntity> _YearRange;
+        private List<QuarterEntity> _QuarterRange;
+
+        private string _JsonData;
+
+        private string _SupplierName;
+        private string _SupplierBillAddress1;
+        private string _SupplierBillAddress2;
+        private string _SupplierBillAddressCity;
+        private string _SupplierBillAddressState;
+        private string _SupplierBillAddressCountary;    
+        private string _SupplierBillPostCode;
+        private string _SupplierTelephone;
+        private string _SupplierShipAddress1;
+        private string _SupplierShipAddress2;
+        private string _SupplierShipAddressCity;
+        private string _SupplierShipAddressState;
+        private string _SupplierShipAddressCountary;
+        private string _SupplierShipPostCode;
+        private string _CompanyName;
+        private string _CompanyRegNumber;
+        private string _Telephone;
+        private string _CompanyFax;
+        private string _CompanyEmail;
+        private string _CompanyGstNumber;
+        private string _CompanyBillToAddressLine1;
+        private string _CompanyBillToAddressLine2;
+        private string _CompanyBillToCity;
+        private string _CompanyBillToState;
+        private string _CompanyBillToCountary;
+        private string _CompanyBillToPostCode;
+        private string _CompanyShipToAddressLine1;
+        private string _CompanyShipToAddressLine2;
+        private string _CompanyShipToCity;
+        private string _CompanyShipToState;
+        private string _CompanyShipToCountary;
+        private string _CompanyShipToPostCode;
+        private string _CurrencyCode;
+        //private BitmapSource _CompanyLogo;
+        private byte[] _CompanyLogo;
+        #endregion
+
+        #region "Public Properties"
+
+        #region "company entity"
+        public string CompanyName
+        {
+            get
+            {
+                return _CompanyName;
+            }
+            set
+            {
+                _CompanyName = value;
+                OnPropertyChanged("CompanyName");
+            }
+        }
+        public string CompanyRegNumber
+        {
+            get
+            {
+                return _CompanyRegNumber;
+            }
+            set
+            {
+                _CompanyRegNumber = value;
+                OnPropertyChanged("CompanyRegNumber");
+            }
+        }
+        public string Telephone
+        {
+            get
+            {
+                return _Telephone;
+            }
+            set
+            {
+                _Telephone = value;
+                OnPropertyChanged("Telephone");
+            }
+        }
+        public string CompanyFax
+        {
+            get
+            {
+                return _CompanyFax;
+            }
+            set
+            {
+                _CompanyFax = value;
+                OnPropertyChanged("CompanyFax");
+            }
+        }
+        public string CompanyEmail
+        {
+            get
+            {
+                return _CompanyEmail;
+            }
+            set
+            {
+                _CompanyEmail = value;
+                OnPropertyChanged("CompanyEmail");
+            }
+        }
+        public string CompanyGstNumber
+        {
+            get
+            {
+                return _CompanyGstNumber;
+            }
+            set
+            {
+                _CompanyGstNumber = value;
+                OnPropertyChanged("CompanyGstNumber");
+            }
+        }
+        public string CompanyBillToAddressLine1
+        {
+            get
+            {
+                return _CompanyBillToAddressLine1;
+            }
+            set
+            {
+                _CompanyBillToAddressLine1 = value;
+                OnPropertyChanged("CompanyBillToAddressLine1");
+            }
+        }
+        public string CompanyShipToAddressLine1
+        {
+            get
+            {
+                return _CompanyShipToAddressLine1;
+            }
+            set
+            {
+                _CompanyShipToAddressLine1 = value;
+                OnPropertyChanged("CompanyShipToAddressLine1");
+            }
+        }
+        public string CompanyShipToAddressLine2
+        {
+            get
+            {
+                return _CompanyShipToAddressLine2;
+            }
+            set
+            {
+                _CompanyShipToAddressLine2 = value;
+                OnPropertyChanged("CompanyShipToAddressLine2");
+            }
+        }
+        public string CompanyShipToCity
+        {
+            get
+            {
+                return _CompanyShipToCity;
+            }
+            set
+            {
+                _CompanyShipToCity = value;
+                OnPropertyChanged("CompanyShipToCity");
+            }
+        }
+        public string CompanyShipToState
+        {
+            get
+            {
+                return _CompanyShipToState;
+            }
+            set
+            {
+                _CompanyShipToState = value;
+                OnPropertyChanged("CompanyShipToState");
+            }
+        }
+        public string CompanyShipToCountary
+        {
+            get
+            {
+                return _CompanyShipToCountary;
+            }
+            set
+            {
+                _CompanyShipToCountary = value;
+                OnPropertyChanged("CompanyShipToCountary");
+            }
+        }
+        public string CompanyShipToPostCode
+        {
+            get
+            {
+                return _CompanyShipToPostCode;
+            }
+            set
+            {
+                _CompanyShipToPostCode = value;
+                OnPropertyChanged("CompanyShipToPostCode");
+            }
+        }
+        public string CompanyBillToAddressLine2
+        {
+            get
+            {
+                return _CompanyBillToAddressLine2;
+            }
+            set
+            {
+                _CompanyBillToAddressLine2 = value;
+                OnPropertyChanged("CompanyBillToAddressLine2");
+            }
+        }
+        public string CompanyBillToCity
+        {
+            get
+            {
+                return _CompanyBillToCity;
+            }
+            set
+            {
+                _CompanyBillToCity = value;
+                OnPropertyChanged("CompanyBillToCity");
+            }
+        }
+        public string CompanyBillToState
+        {
+            get
+            {
+                return _CompanyBillToState;
+            }
+            set
+            {
+                _CompanyBillToState = value;
+                OnPropertyChanged("CompanyBillToState");
+            }
+        }
+        public string CompanyBillToCountary
+        {
+            get
+            {
+                return _CompanyBillToCountary;
+            }
+            set
+            {
+                _CompanyBillToCountary = value;
+                OnPropertyChanged("CompanyBillToCountary");
+            }
+        }
+        public string CompanyBillToPostCode
+        {
+            get
+            {
+                return _CompanyBillToPostCode;
+            }
+            set
+            {
+                _CompanyBillToPostCode = value;
+                OnPropertyChanged("CompanyBillToPostCode");
+            }
+        }
+
+        public byte[] CompanyLogo
+        {
+            get
+            {
+                return this._CompanyLogo;
+            }
+            set
+            {
+                this._CompanyLogo = value;
+                this.OnPropertyChanged("CompanyLogo");
+            }
+        }
+        #endregion
+        #region "options entity"
+        public string CurrencyCode
+        {
+            get
+            {
+                return _CurrencyCode;
+            }
+            set
+            {
+                _CurrencyCode = value;
+                OnPropertyChanged("CurrencyCode");
+            }
+        }
+        #endregion
+        public string SupplierName
+        {
+            get
+            {
+                return _SupplierName;
+            }
+            set
+            {
+                _SupplierName = value;
+                OnPropertyChanged("SupplierName");
+            }
+        }
+        public string SupplierBillAddress2
+        {
+            get
+            {
+                return _SupplierBillAddress2;
+            }
+            set
+            {
+                _SupplierBillAddress2 = value;
+                OnPropertyChanged("SupplierBillAddress2");
+            }
+
+        }
+        public string SupplierBillAddressCity
+        {
+            get
+            {
+                return _SupplierBillAddressCity;
+            }
+            set
+            {
+                _SupplierBillAddressCity = value;
+                OnPropertyChanged("CSupplierBillAddressCity");
+            }
+        }
+        public string SupplierBillAddressState
+        {
+            get
+            {
+                return _SupplierBillAddressState;
+            }
+            set
+            {
+                _SupplierBillAddressState = value;
+                OnPropertyChanged("SupplierBillAddressState");
+            }
+        }
+        public string SupplierBillAddressCountary
+        {
+            get
+            {
+                return _SupplierBillAddressCountary;
+            }
+            set
+            {
+                _SupplierBillAddressCountary = value;
+                OnPropertyChanged("SupplierBillAddressCountary");
+            }
+        }
+        public string SupplierBillPostCode
+        {
+            get
+            {
+                return _SupplierBillPostCode;
+            }
+            set
+            {
+                _SupplierBillPostCode = value;
+                OnPropertyChanged("SupplierBillPostCode");
+            }
+        }
+        public string SupplierTelephone
+        {
+            get
+            {
+                return _SupplierTelephone;
+            }
+            set
+            {
+                _SupplierTelephone = value;
+                OnPropertyChanged("SupplierTelephone");
+            }
+        }
+        public string SupplierShipAddress1
+        {
+            get
+            {
+                return _SupplierShipAddress1;
+            }
+            set
+            {
+                _SupplierShipAddress1 = value;
+                OnPropertyChanged("SupplierShipAddress1");
+            }
+        }
+        public string SupplierShipAddress2
+        {
+            get
+            {
+                return _SupplierShipAddress2;
+            }
+            set
+            {
+                _SupplierShipAddress2 = value;
+                OnPropertyChanged("SupplierShipAddress2");
+            }
+        }
+        public string SupplierShipAddressCity
+        {
+            get
+            {
+                return _SupplierShipAddressCity;
+            }
+            set
+            {
+                _SupplierShipAddressCity = value;
+                OnPropertyChanged("SupplierShipAddressCity");
+            }
+        }
+        public string SupplierShipAddressState
+        {
+            get
+            {
+                return _SupplierShipAddressState;
+            }
+            set
+            {
+                _SupplierShipAddressState = value;
+                OnPropertyChanged("SupplierShipAddressState");
+            }
+        }
+        public string SupplierShipAddressCountary
+        {
+            get
+            {
+                return _SupplierShipAddressCountary;
+            }
+            set
+            {
+                _SupplierShipAddressCountary = value;
+                OnPropertyChanged("SupplierShipAddressCountary");
+            }
+        }
+        public string SupplierShipPostCode
+        {
+            get
+            {
+                return _SupplierShipPostCode;
+            }
+            set
+            {
+                _SupplierShipPostCode = value;
+                OnPropertyChanged("SupplierShipPostCode");
+            }
+        }
+        public string SupplierBillAddress1
+        {
+            get
+            {
+                return _SupplierBillAddress1;
+            }
+            set
+            {
+                _SupplierBillAddress1 = value;
+                OnPropertyChanged("SupplierBillAddress1");
+            }
+        }
+        private byte? status;
+
+        public byte? Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                OnPropertyChanged("Status");
+            }
+        }
+        public string CurrencyName
+        {
+            get
+            {
+                return currencyName;
+            }
+            set
+            {
+                currencyName = value;
+                OnPropertyChanged("CurrencyName");
+            }
+        }
+        public string TaxName
+        {
+            get
+            {
+                return _TaxName;
+            }
+            set
+            {
+                _TaxName = value;
+                OnPropertyChanged("TaxName");
+            }
+        }
+        public string DateFormat
+        {
+            get { return _DateFormat; }
+            set { SetProperty(ref _DateFormat, value, "DateFormat"); }
+        }
+        public int GridHeight
+        {
+            get
+            {
+                return gridHeight;
+            }
+            set
+            {
+                gridHeight = value;
+                OnPropertyChanged("GridHeight");
+            }
+        }
+        public int InvoiceGridHeight
+        {
+            get
+            {
+                return invoiceGridHeight;
+            }
+            set
+            {
+                invoiceGridHeight = value;
+                OnPropertyChanged("InvoiceGridHeight");
+            }
+        }
+
+        public bool IsSelected
+        {
+            get {return isSelected; }
+            set
+            {
+                isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
+
+        public int SelectedSupplierID
+        {
+            get
+            {
+                return selectedSupplierID;
+            }
+            set
+            {
+                selectedSupplierID = value;
+                OnPropertyChanged("SelectedSupplierID");
+            }
+        }
+
+        public int SupplierID
+        {
+            get { return supplierID; }
+            set
+            {
+                supplierID = value;
+                OnPropertyChanged("SupplierID");
+            }
+        }
+        
+
+        public string ClosingAmount
+        {
+            get
+            {
+                if (closingAmount == null)
+                    return this.closingAmount;
+                else
+                {
+                    if (closingAmount != "")
+                    {
+                        var balance = closingAmount.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.closingAmount;
+                }
+            }
+            set
+            {
+                closingAmount = value;
+                OnPropertyChanged("ClosingAmount");
+            }
+        }
+        public string OpeningAmount
+        {
+            get
+            {
+                if (openingAmount == null)
+                    return this.openingAmount;
+                else
+                {
+                    if (openingAmount != "")
+                    {
+                        var balance = openingAmount.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.openingAmount;
+                }
+            }
+            set
+            {
+                openingAmount = value;
+                OnPropertyChanged("OpeningAmount");
+            }
+        }
+
+        public List<YearEntity> YearRange
+        {
+            get
+            {
+                return _YearRange;
+            }
+            set
+            {
+                _YearRange = value;
+                OnPropertyChanged("YearRange");
+            }
+        }
+
+        public List<QuarterEntity> QuarterRange
+        {
+            get
+            {
+                return _QuarterRange;
+            }
+            set
+            {
+                _QuarterRange = value;
+                OnPropertyChanged("QuarterRange");
+            }
+        }
+
+        public string SelectedSearchYear
+        {
+            get
+            {
+                return _SelectedSearchYear;
+            }
+            set
+            {
+                _SelectedSearchYear = value;
+                OnPropertyChanged("SelectedSearchYear");
+            }
+        }
+        public string SelectedSearchQuarter
+        {
+            get
+            {
+                return _SelectedSearchQuarter;
+            }
+            set
+            {
+                _SelectedSearchQuarter = value;
+                OnPropertyChanged("SelectedSearchQuarter");
+            }
+        }
+        public string SelectedSearchMonth
+        {
+            get
+            {
+                return _SelectedSearchMonth;
+            }
+            set
+            {
+                _SelectedSearchMonth = value;
+                OnPropertyChanged("SelectedSearchMonth");
+            }
+        }
+        public string JsonData
+        {
+            get
+            {
+                return _JsonData;
+            }
+            set
+            {
+                _JsonData = value;
+                OnPropertyChanged("JsonData");
+            }
+        }
+        public List<InvoiceDebitPaymentsEntity> LstSuppliers
+        {
+            get { return lstSuppliers; }
+            set
+            {
+                lstSuppliers = value;
+                OnPropertyChanged("LstSuppliers");
+            }
+        }
+        
+        public List<InvDebitPaymentsDetailsEntity> LstInvoiceDetails
+        {
+            get { return lstInvoiceDetails; }
+            set
+            {
+                lstInvoiceDetails = value;
+                OnPropertyChanged("LstInvoiceDetails");
+            }
+        }
+        public InvoiceDebitPaymentsEntity InvoiceDebitPayement
+        {
+            get;
+            set;
+
+        }
+        #endregion
+    }
+
+    public class InvDebitPaymentsDetailsEntity
+    {
+
+        private string transactionNo;
+        private DateTime? transactionDate;
+        private string transactionDateStr;
+        private decimal? invoiceAmount;
+        private string invoiceAmountStr;
+        private decimal? cnPayment;
+        private decimal? balance;
+        private string cnPaymentStr;
+        private string balanceStr;
+        private bool? _NoHyperLink;
+        public string TransactionNo
+        {
+            get { return transactionNo; }
+            set
+            {
+                transactionNo = value;
+                // OnPropertyChanged("InvoiceNo");
+            }
+        }
+        public DateTime? TransactionDate
+        {
+            get { return transactionDate; }
+            set
+            {
+                transactionDate = value;
+                // OnPropertyChanged("InvoiceDate");
+            }
+        }
+
+        public string TransactionDateStr
+        {
+            get { return transactionDateStr; }
+            set
+            {
+                transactionDateStr = value;
+                // OnPropertyChanged("InvoiceDateStr");
+            }
+        }
+
+        public decimal? InvoiceAmount
+        {
+            get { return invoiceAmount; }
+            set
+            {
+                invoiceAmount = value;
+                //  OnPropertyChanged("InvoiceAmount");
+            }
+        }
+        public string InvoiceAmountStr
+        {
+            get
+            {
+                if (invoiceAmountStr == null)
+                    return this.invoiceAmountStr;
+                else
+                {
+                    if (invoiceAmountStr != "")
+                    {
+                        var balance = invoiceAmountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.invoiceAmountStr;
+                }
+            }
+            set
+            {
+                invoiceAmountStr = value;
+                // OnPropertyChanged("InvoiceAmountStr");
+            }
+        }
+        public decimal? CNPayment
+        {
+            get
+            {
+                return cnPayment;
+            }
+            set
+            {
+                cnPayment = value;
+            }
+        }
+        public decimal? Balance
+        {
+            get
+            {
+                return balance;
+            }
+            set
+            {
+                balance = value;
+            }
+        }
+        public string CNPaymentStr
+        {
+            get
+            {
+                if (cnPaymentStr == null)
+                    return this.cnPaymentStr;
+                else
+                {
+                    if (cnPaymentStr != "")
+                    {
+                        var balance = cnPaymentStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.cnPaymentStr;
+                }
+            }
+            set
+            {
+                cnPaymentStr = value;
+                // OnPropertyChanged("AmountPaidStr");
+            }
+        }
+        public string BalanceStr
+        {
+            get
+            {
+                if (balanceStr == null)
+                    return this.balanceStr;
+                else
+                {
+                    if (balanceStr != "")
+                    {
+                        var balance = balanceStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.balanceStr;
+                }
+            }
+            set
+            {
+                balanceStr = value;
+                // OnPropertyChanged("AmountDueStr");
+            }
+        }
+        public bool? NoHyperLink
+        {
+            get { return _NoHyperLink; }
+            set
+            {
+                _NoHyperLink = value;
+                // OnPropertyChanged("InvoiceNo");
+            }
+        }
+    }
+}

@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="SDN.Navigation.View.OpenCompanyFileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Navigation.View"
+             mc:Ignorable="d" 
+             Height="180" Width="300" BorderBrush="Black" BorderThickness="1">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <RadioButton Loaded="RadioButton1_Loaded" Grid.Row="0" Margin="10,10,0,13" Command="{Binding SelectDBCommand}" IsChecked="{Binding IsOpenCompanyFileTrue}" Name="RadioButton1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="15" Foreground="Black">
+
+           Open Company File
+
+        </RadioButton>
+        <RadioButton Loaded="RadioButton2_Loaded" Grid.Row="1" IsChecked="{Binding IsNewCompanyFileTrue}" Command="{Binding CreateCompanyCommand}" Margin="10,10,0,13" Name="RadioButton2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="15" Foreground="Black">
+
+            New Company File
+
+        </RadioButton>
+        <RadioButton Loaded="RadioButton3_Loaded" Grid.Row="2" IsChecked="{Binding isExitTrue}" Click="CloseApplication_Click" Margin="10,10,0,13" Name="RadioButton3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="15" Foreground="Black">
+
+            Exit
+
+        </RadioButton>
+        <TextBlock Grid.Row="3" Margin="25 20 0 0" Text="@2017 Simple Accounting Software Pte Ltd"></TextBlock>
+    </Grid>
+    <!--<Grid RenderTransformOrigin="0.478,0.459" Width="729">
+        <Button Height="20" Margin="-600 0 0 0" Style="{DynamicResource AuditTrialButton}" Command="{Binding SelectDBCommand}" >
+            <TextBlock Text="Select Database" Foreground="Black" ></TextBlock>
+        </Button>
+        <Button Height="20" Margin="-300 0 0 0 " Style="{DynamicResource AuditTrialButton}" >
+            <TextBlock Text="Create Database" Foreground="Black" ></TextBlock>
+        </Button>
+        <Button Height="20" Margin="281,0,319,0" Style="{DynamicResource AuditTrialButton}"  >
+            <TextBlock Text="Create Database" Foreground="Black" ></TextBlock>
+        </Button>
+    </Grid>-->
+</UserControl>

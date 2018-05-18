@@ -1,0 +1,10 @@
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\SDN.CashBank.EDM.dll.config
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\SDN.CashBank.EDM.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\SDN.CashBank.EDM.pdb
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\EntityFramework.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\EntityFramework.SqlServer.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\EntityFramework.xml
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\bin\Debug\EntityFramework.SqlServer.xml
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\obj\Debug\SDN.CashBank.EDM.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\obj\Debug\SDN.CashBank.EDM.pdb
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\DataAccess\CashBank\SDN.CashBank.EDM\obj\Debug\SDN.CashBank.EDM.csprojResolveAssemblyReference.cache

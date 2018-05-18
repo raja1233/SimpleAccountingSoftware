@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D2DE95A2-9053-4F19-870B-97C4487820F9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SDN.UI.Entities</RootNamespace>
+    <AssemblyName>SDN.UI.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\SDN.SimpleAccounting\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountDetailEntity.cs" />
+    <Compile Include="AccountsEntity.cs" />
+    <Compile Include="BaseEntity.cs" />
+    <Compile Include="BillOfMaterialEntity.cs" />
+    <Compile Include="CashAndBankTabEntity.cs" />
+    <Compile Include="CashandBank\PayMoneyListEntity.cs" />
+    <Compile Include="CashandBank\ReceiveMoneyListEntity.cs" />
+    <Compile Include="CashandBank\TransferMoneyListEntity.cs" />
+    <Compile Include="CashBankDetailEntity.cs" />
+    <Compile Include="CategoryModel.cs" />
+    <Compile Include="CompanyDetailsEntities.cs" />
+    <Compile Include="ContactEntity.cs" />
+    <Compile Include="ContentModel.cs" />
+    <Compile Include="CountryEntity.cs" />
+    <Compile Include="CurrencyFormat.cs" />
+    <Compile Include="CustomerEntity.cs" />
+    <Compile Include="CustomersEntity.cs" />
+    <Compile Include="Customers\CustomerCreditPaidDaysEntity.cs" />
+    <Compile Include="Customers\CustomerPaymentDueDaysEntity.cs" />
+    <Compile Include="Customers\CustomersDetailsListEntity.cs" />
+    <Compile Include="Customers\CustomersUnpaidInvoicesEntity.cs" />
+    <Compile Include="Customers\InvoiceCreditPaymentsEntity.cs" />
+    <Compile Include="CustomerTabEntity.cs" />
+    <Compile Include="DebitNoteListEntity.cs" />
+    <Compile Include="EntityBase.cs" />
+    <Compile Include="Entity\City.cs" />
+    <Compile Include="Entity\Country.cs" />
+    <Compile Include="Entity\PostalCode.cs" />
+    <Compile Include="Entity\State.cs" />
+    <Compile Include="Export\Account_Detail.cs" />
+    <Compile Include="Export\Customer_Detail.cs" />
+    <Compile Include="Export\PandS_Details.cs" />
+    <Compile Include="Export\Supplier_Detail.cs" />
+    <Compile Include="Export\Tax_Codes_and_Rates.cs" />
+    <Compile Include="FileTabEntity.cs" />
+    <Compile Include="HomeScreenTabEntity.cs" />
+    <Compile Include="HomeScreen\AuditTrailListEntity.cs" />
+    <Compile Include="HomeScreen\FormNameEntity.cs" />
+    <Compile Include="HomeScreen\NotificationListEntity.cs" />
+    <Compile Include="HomeScreen\TodoUnpaidDetailEntity.cs" />
+    <Compile Include="ImportEntity.cs" />
+    <Compile Include="LocationEntity.cs" />
+    <Compile Include="MasterEntity.cs" />
+    <Compile Include="MonthEntity.cs" />
+    <Compile Include="OptionsEntity.cs" />
+    <Compile Include="PandSDetailsModel.cs" />
+    <Compile Include="PandSGSTMockRecord.cs" />
+    <Compile Include="PandSListModel.cs" />
+    <Compile Include="PandSStockMockRecord.cs" />
+    <Compile Include="PandSSummaryMockRecord.cs" />
+    <Compile Include="PaymentsToSuppliersListEntity.cs" />
+    <Compile Include="PayMoneyEntity.cs" />
+    <Compile Include="ProductandServices\PandSCodesAndRatesListEntity.cs" />
+    <Compile Include="ProductandServices\PandSCostPriceListEntity.cs" />
+    <Compile Include="ProductandServices\PandSDescriptionListEntity.cs" />
+    <Compile Include="ProductandServices\PandSPurchaseEntity.cs" />
+    <Compile Include="ProductandServices\PandSSellPriceListEntity.cs" />
+    <Compile Include="ProductandServices\PandSSoldEntity.cs" />
+    <Compile Include="ProductandServices\PandSStockQuantitiesListEntity.cs" />
+    <Compile Include="ProductandServices\PandSStockValueListEntity.cs" />
+    <Compile Include="ProductandServices\TopPandSEntity.cs" />
+    <Compile Include="ProductAssemblyEntity.cs" />
+    <Compile Include="ProductEntity.cs" />
+    <Compile Include="ProductInventoryEntity.cs" />
+    <Compile Include="ProductModelEntity.cs" />
+    <Compile Include="ProductVendorEntity.cs" />
+    <Compile Include="Product\CountAndAdjustStockEntity.cs" />
+    <Compile Include="Product\CountAndAdjustStockListEntity.cs" />
+    <Compile Include="Product\PandSHistoryEntity.cs" />
+    <Compile Include="Product\PandSQtyAndStockModel.cs" />
+    <Compile Include="Product\ProductTabEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchaseInvoiceListEntity.cs" />
+    <Compile Include="PurchaseOrderListEntity.cs" />
+    <Compile Include="PurchaseQuotationListEntity.cs" />
+    <Compile Include="PurchaseTabEntity.cs" />
+    <Compile Include="Purchase\AdjustDebitNoteDetailsEntity.cs" />
+    <Compile Include="Purchase\AdjustDebitNoteEntity.cs" />
+    <Compile Include="Purchase\DebitNoteEntity.cs" />
+    <Compile Include="Purchase\PandSPurchasedFromSuppliersEntity.cs" />
+    <Compile Include="Purchase\PaymentToSupplierDetailsEntity.cs" />
+    <Compile Include="Purchase\PaymentToSupplierEntity.cs" />
+    <Compile Include="Purchase\PurchaseInvoiceBEDetailsEntity.cs" />
+    <Compile Include="Purchase\PurchaseInvoiceDetailEntity.cs" />
+    <Compile Include="Purchase\PurchaseInvoiceEntity.cs" />
+    <Compile Include="Purchase\PurchaseOrderDetailEntity.cs" />
+    <Compile Include="Purchase\PurchaseOrderEntity.cs" />
+    <Compile Include="Purchase\PurchaseQuotationDetailEntity.cs" />
+    <Compile Include="Purchase\PurchaseQuotationEntity.cs" />
+    <Compile Include="Purchase\RefundFromSupplierDetailsEntity.cs" />
+    <Compile Include="Purchase\RefundFromSupplierEntity.cs" />
+    <Compile Include="Purchase\RefundFromSuppliersListEntity.cs" />
+    <Compile Include="Purchase\SupplierHistoryEntity.cs" />
+    <Compile Include="Purchase\SuppliersDetailsListEntity.cs" />
+    <Compile Include="QuarterEntity.cs" />
+    <Compile Include="QuotationList.cs" />
+    <Compile Include="ReceiveMoneyEntity.cs" />
+    <Compile Include="Sales\AdjustCreditNoteDetailsEntity.cs" />
+    <Compile Include="Sales\AdjustCreditNoteEntity.cs" />
+    <Compile Include="Sales\CreditNoteEntity.cs" />
+    <Compile Include="Sales\CreditNoteListEntity.cs" />
+    <Compile Include="Sales\CustomerHistoryEntity.cs" />
+    <Compile Include="Sales\PandSSoldToCustomersEntity.cs" />
+    <Compile Include="Sales\PaymentFromCustomerDetailsEntity.cs" />
+    <Compile Include="Sales\PaymentFromCustomerEntity.cs" />
+    <Compile Include="Sales\PaymentFromCustomersListEntity.cs" />
+    <Compile Include="Sales\RefundToCustomerDetailsEntity.cs" />
+    <Compile Include="Sales\RefundToCustomerEntity.cs" />
+    <Compile Include="Sales\RefundToCustomersListEntity.cs" />
+    <Compile Include="Sales\SalesInvoiceDetailEntity.cs" />
+    <Compile Include="Sales\SalesInvoiceEntity.cs" />
+    <Compile Include="Sales\SalesInvoiceListEntity.cs" />
+    <Compile Include="Sales\SalesOrderDetailEntity.cs" />
+    <Compile Include="Sales\SalesOrderEntity.cs" />
+    <Compile Include="Sales\SalesOrderListEntity.cs" />
+    <Compile Include="Sales\SalesQuotationDetailEntity.cs" />
+    <Compile Include="Sales\SalesQuotationEntity.cs" />
+    <Compile Include="Sales\SalesQuotationListEntity.cs" />
+    <Compile Include="Sales\SalesTabEntity.cs" />
+    <Compile Include="SearchEntity.cs" />
+    <Compile Include="SettingsTabEntity.cs" />
+    <Compile Include="ShippingAddressEntity.cs" />
+    <Compile Include="StoreEntity.cs" />
+    <Compile Include="SupplierDetailEntity.cs" />
+    <Compile Include="Suppliers\InvoiceDebitPaymentsEntity.cs" />
+    <Compile Include="Suppliers\SupplierCreditPaidDaysEntity.cs" />
+    <Compile Include="Suppliers\SupplierPaymentDueDaysEntity.cs" />
+    <Compile Include="Suppliers\SuppliersUnpaidInvoicesEntity.cs" />
+    <Compile Include="SupplierTabEntity.cs" />
+    <Compile Include="TaxModel.cs" />
+    <Compile Include="TopCustomersEntity.cs" />
+    <Compile Include="TopSuppliersEntity.cs" />
+    <Compile Include="TransactionEntity.cs" />
+    <Compile Include="TransferMoneyEntity.cs" />
+    <Compile Include="UserRoleModel.cs" />
+    <Compile Include="UsersSecurityEntity.cs" />
+    <Compile Include="VendorContactEntity.cs" />
+    <Compile Include="VendorEntity.cs" />
+    <Compile Include="WorkOrderEntity.cs" />
+    <Compile Include="YearEntity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\SDN.Common\SDN.Common.csproj">
+      <Project>{F9920E3E-8140-4DB5-ACE4-85043E727AAD}</Project>
+      <Name>SDN.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

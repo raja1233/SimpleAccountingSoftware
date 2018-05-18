@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CB50448D-4F2E-44B3-9F48-38FBA4C8033C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SalesDataAccessTest</RootNamespace>
+    <AssemblyName>SalesDataAccessTest</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
+      <Visible>False</Visible>
+    </CodeAnalysisDependentAssemblyPaths>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ManufacturingTest.cs" />
+    <Compile Include="ProductDALTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SalesDALTest.cs" />
+    <Compile Include="UnitTest1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DataAccess\Manufacturing\SDN.ManufacturingEDM\SDN.ManufacturingEDM.csproj">
+      <Project>{f625364d-632c-404b-b094-c33a8399ec6e}</Project>
+      <Name>SDN.ManufacturingEDM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Manufacturing\SDN.Manufacturings.DALInterface\SDN.Manufacturings.DALInterface.csproj">
+      <Project>{b650b403-dd79-4e18-a743-8803fefb5f18}</Project>
+      <Name>SDN.Manufacturings.DALInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Manufacturing\SDN.Manufacturings.DAL\SDN.Manufacturings.DAL.csproj">
+      <Project>{d0aa797d-1d5a-4eec-bd86-3a4de7b3f7da}</Project>
+      <Name>SDN.Manufacturings.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Product\SDN.Product.DALInterface\SDN.Products.DALInterface.csproj">
+      <Project>{3406c43f-4163-42af-b1ec-4d576cde3619}</Project>
+      <Name>SDN.Products.DALInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Product\SDN.Product.DAL\SDN.Products.DAL.csproj">
+      <Project>{ebb0e477-2ffd-4ef9-85a0-c88830fa68f5}</Project>
+      <Name>SDN.Products.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Product\SDN.ProductEDM\SDN.ProductEDM.csproj">
+      <Project>{dc50d424-973b-44a1-8540-096f4e256226}</Project>
+      <Name>SDN.ProductEDM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Purchasing\SDN.Purchasings.DALInterface\SDN.Purchasings.DALInterface.csproj">
+      <Project>{2fb114ee-625c-4db8-89e1-de4d04d1231a}</Project>
+      <Name>SDN.Purchasings.DALInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Purchasing\SDN.Purchasings.DAL\SDN.Purchasings.DAL.csproj">
+      <Project>{d443dc29-9d3e-413a-af22-01c97e8c48cc}</Project>
+      <Name>SDN.Purchasings.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Purchasing\SDN.PurchasingsEDM\SDN.PurchasingsEDM.csproj">
+      <Project>{907d65b4-5041-4958-a1d6-933334124031}</Project>
+      <Name>SDN.PurchasingsEDM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Sales\Sales.DALInterface\SDN.Sales.DALInterface.csproj">
+      <Project>{cf212421-74fe-4fd2-8dc4-f4e5f1bf387f}</Project>
+      <Name>SDN.Sales.DALInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Sales\Sales.DAL\SDN.Sales.DAL.csproj">
+      <Project>{42b0a6f5-812e-40a1-b54c-66e82df553dc}</Project>
+      <Name>SDN.Sales.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DataAccess\Sales\Sales.EDM\SDN.Sales.EDM.csproj">
+      <Project>{fd5959ad-c64a-4b51-8143-10bd50272e56}</Project>
+      <Name>SDN.Sales.EDM</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using SDN.UI.Entities;
+using System.Data;
+
+namespace SASClient.File.Services
+{
+   public interface IImportDataRepository
+    {
+        bool ImportData(ObservableCollection<ImportEntity> ImportList, string FileName);
+        DataTable ExcelToDataTable(string filepath);
+        void DataTableToList(int Id, string filepath, bool RUBool);
+    }
+}

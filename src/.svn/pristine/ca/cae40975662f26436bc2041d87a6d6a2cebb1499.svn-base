@@ -1,0 +1,86 @@
+﻿using SASDAL.Product;
+using SDN.Settings.DAL;
+using SDN.Settings.DALInterface;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Product;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASBAL.Product
+{
+    public class PandSHistoryBL: IPandSHistoryBL
+    {
+        public List<PandSHistoryEntity> GetAllSalesInvoice()
+        {
+            IPandSHistoryDAL pandsdal = new PandSHistoryDAL();
+            return pandsdal.GetAllSalesInvoice();
+        }
+        public List<PandSHistoryEntity> GetAllSalesInvoiceJson(string JsonData ,bool? ExcincTax)
+        {
+            IPandSHistoryDAL pandsdal = new PandSHistoryDAL();
+            return pandsdal.GetAllSalesInvoiceJson(JsonData, ExcincTax);
+        }
+        public bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName)
+        {
+            IPandSHistoryDAL purQuotation = new PandSHistoryDAL();
+            var result = purQuotation.SaveSearchJson(jsonSearch, ScreenId, ScreenName);
+            return result;
+        }
+        public string GetLastSelectionData(int ScreenId)
+        {
+            IPandSHistoryDAL purQuotation = new PandSHistoryDAL();
+            var result = purQuotation.GetLastSelectionData(ScreenId);
+            return result;
+        }
+        public string GetDateFormat()
+        {
+            IPandSHistoryDAL purQuotation = new PandSHistoryDAL();
+            var result = purQuotation.GetDateFormat();
+            return result;
+        }
+
+        public List<YearEntity> GetYearRange()
+        {
+            IOptionsDAL YearInfo = new OptionsDAL();
+            var StartYear = YearInfo.GetYearStart();
+            List<YearEntity> YearRange = new List<YearEntity>();
+            YearEntity obj = new YearEntity();
+            if (StartYear == 0)
+            {
+                obj.Year = (DateTime.Today.Year - 1).ToString();
+                YearRange.Add(obj);
+
+                obj.Year = DateTime.Today.Year.ToString();
+                YearRange.Add(obj);
+                return YearRange;
+            }
+            else
+            {
+                int diff = DateTime.Now.Year - StartYear;
+                for (int i = 0; i <= diff; i++)
+                {
+                    obj.Year = StartYear.ToString();
+                    YearRange.Add(obj);
+                    StartYear++;
+                }
+                return YearRange;
+            }
+        }
+
+        public TaxModel GetDefaultTaxes()
+        {
+            ITaxCodesAndRatesDAL objTax = new TaxCodesAndRatesDAL();
+            return objTax.GetAllTaxes().FirstOrDefault();
+        }
+        public OptionsEntity GetOptionSettings()
+        {
+
+            IOptionsDAL optionsDAL = new OptionsDAL();
+
+            return optionsDAL.GetOptionsDetails();
+        }
+    }
+}

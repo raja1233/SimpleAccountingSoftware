@@ -1,0 +1,806 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0DF6773E-F12B-4942-A7FD-9541E6C64AFB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SASClient</RootNamespace>
+    <AssemblyName>SASClient</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\SDN.SimpleAccounting\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReferenceLibrary\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.Interactivity, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReferenceLibrary\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.MefExtensions">
+      <HintPath>..\..\ReferenceLibrary\Microsoft.Practices.Prism.MefExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.UnityExtensions">
+      <HintPath>..\..\ReferenceLibrary\Microsoft.Practices.Prism.UnityExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReferenceLibrary\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ReferenceLibrary\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Prism.Core.6.3.0\lib\net45\Prism.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Prism.Unity.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Prism.Unity.6.3.0\lib\net45\Prism.Unity.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CashBank\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CashBank\Services\AccountDetailsService.cs" />
+    <Compile Include="CashBank\Services\CashBankDetailsService.cs" />
+    <Compile Include="CashBank\Services\IAccountDetailsService.cs" />
+    <Compile Include="CashBank\Services\ICashBankDetailsService.cs" />
+    <Compile Include="CashBank\ViewModels\AccountDetailViewModel.cs" />
+    <Compile Include="CashBank\ViewModels\CashAndBankTabViewModel.cs" />
+    <Compile Include="CashBank\ViewModels\CashBankDetailViewModel.cs" />
+    <Compile Include="CashBank\Views\AccountsDetailsView.xaml.cs">
+      <DependentUpon>AccountsDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CashBank\Views\AccountTabView.xaml.cs">
+      <DependentUpon>AccountTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CashBank\Views\CashBankDetailView.xaml.cs">
+      <DependentUpon>CashBankDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CashBank\Views\CashBankTabView.xaml.cs">
+      <DependentUpon>CashBankTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\CustomersModule.cs" />
+    <Compile Include="Customers\Services\CustomerHistoryRepository.cs" />
+    <Compile Include="Customers\Services\CustomerRepository.cs" />
+    <Compile Include="Customers\Services\ICustomerHistoryRepository.cs" />
+    <Compile Include="Customers\Services\ICustomerRepository.cs" />
+    <Compile Include="Customers\Services\IPandSSoldToCustomersRepository.cs" />
+    <Compile Include="Customers\Services\PandSSoldToCustomersRepository.cs" />
+    <Compile Include="Customers\ViewModel\CustomerHistoryViewModel.cs" />
+    <Compile Include="Customers\ViewModel\CustomersTabViewModel.cs" />
+    <Compile Include="Customers\ViewModel\CustomersViewModel.cs" />
+    <Compile Include="Customers\ViewModel\PandSSoldToCustomersViewModel.cs" />
+    <Compile Include="Customers\Views\CustomerHistoryView.xaml.cs">
+      <DependentUpon>CustomerHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\Views\CustomersHistoryView.xaml.cs">
+      <DependentUpon>CustomersHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\Views\CustomersStatementView.xaml.cs">
+      <DependentUpon>CustomersStatementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\Views\CustomersTabView.xaml.cs">
+      <DependentUpon>CustomersTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\Views\CustomersView.xaml.cs">
+      <DependentUpon>CustomersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\Views\PandSSoldToCustomersView.xaml.cs">
+      <DependentUpon>PandSSoldToCustomersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\Views\TopCustomersView.xaml.cs">
+      <DependentUpon>TopCustomersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\DialogBox\PandSDialogBox.xaml.cs">
+      <DependentUpon>PandSDialogBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\DialogBox\PandSDialogViewModel.cs" />
+    <Compile Include="Product\ProductModule.cs" />
+    <Compile Include="Product\Services\CountAndAdjustStockListRepository.cs" />
+    <Compile Include="Product\Services\CountAndAdjustStockRepository.cs" />
+    <Compile Include="Product\Services\ICountAndAdjustStockListRepository.cs" />
+    <Compile Include="Product\Services\ICountAndAdjustStockRepository.cs" />
+    <Compile Include="Product\Services\IPandSCodesAndRatesListRepository.cs" />
+    <Compile Include="Product\Services\IPandSCostPriceListRepository.cs" />
+    <Compile Include="Product\Services\IPandSDescriptionListRepository.cs" />
+    <Compile Include="Product\Services\IPandSDetailsRepository.cs" />
+    <Compile Include="Product\Services\IPandSPurchaseRepository.cs" />
+    <Compile Include="Product\Services\IPandSSellPriceListRepository.cs" />
+    <Compile Include="Product\Services\IPandSSoldRepository.cs" />
+    <Compile Include="Product\Services\IPandSStockQuantitiesListRepository.cs" />
+    <Compile Include="Product\Services\IPandSStockValueListRepository.cs" />
+    <Compile Include="Product\Services\PandSCodesAndRatesListRepository.cs" />
+    <Compile Include="Product\Services\PandSCostPriceListRepository.cs" />
+    <Compile Include="Product\Services\PandSDescriptionListRepository.cs" />
+    <Compile Include="Product\Services\PandSDetailsRepository.cs" />
+    <Compile Include="Product\Services\PandSPurchaseRepository.cs" />
+    <Compile Include="Product\Services\PandSSellPriceListRepository.cs" />
+    <Compile Include="Product\Services\PandSSoldRepository.cs" />
+    <Compile Include="Product\Services\PandSStockQuantitiesListRepository.cs" />
+    <Compile Include="Product\Services\PandSStockValueListRepository.cs" />
+    <Compile Include="Product\ViewModel\CountAndAdjustStockListViewModel.cs" />
+    <Compile Include="Product\ViewModel\CountAndAdjustStockViewModel.cs" />
+    <Compile Include="Product\ViewModel\DataGridViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSCodesAndRatesListViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSCostPriceListViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSDescriptionListViewModel.cs" />
+    <Compile Include="Product\ViewModel\PAndSDetailsViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSPurchaseViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSSellPriceListViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSSoldViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSStockQuantitiesListViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSStockValueListViewModel.cs" />
+    <Compile Include="Product\ViewModel\PandSSubTabViewModel.cs" />
+    <Compile Include="Product\ViewModel\ProductTabViewModel.cs" />
+    <Compile Include="Product\View\CountAndAdjustStockListView.xaml.cs">
+      <DependentUpon>CountAndAdjustStockListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\CountAndAdjustStockView.xaml.cs">
+      <DependentUpon>CountAndAdjustStockView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSCodesAndRatesListView.xaml.cs">
+      <DependentUpon>PandSCodesAndRatesListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSCostPriceListView.xaml.cs">
+      <DependentUpon>PandSCostPriceListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSDescriptionListView.xaml.cs">
+      <DependentUpon>PandSDescriptionListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSDetailsView.xaml.cs">
+      <DependentUpon>PandSDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSPurchase.xaml.cs">
+      <DependentUpon>PandSPurchase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSSellPriceListView.xaml.cs">
+      <DependentUpon>PandSSellPriceListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSSoldView.xaml.cs">
+      <DependentUpon>PandSSoldView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSStockQuantitiesListView.xaml.cs">
+      <DependentUpon>PandSStockQuantitiesListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSStockValueListView.xaml.cs">
+      <DependentUpon>PandSStockValueListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\PandSSubTabView.xaml.cs">
+      <DependentUpon>PandSSubTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Product\View\ProductTabView.xaml.cs">
+      <DependentUpon>ProductTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Purchasing\PurchasingModule.cs" />
+    <Compile Include="Purchasing\Services\AdjustDebitNoteFormRepository.cs" />
+    <Compile Include="Purchasing\Services\DebitNoteListRepository.cs" />
+    <Compile Include="Purchasing\Services\DebitNoteRepository.cs" />
+    <Compile Include="Purchasing\Services\IAdjustDebitNoteFormRepository.cs" />
+    <Compile Include="Purchasing\Services\IDebitNoteListRepository.cs" />
+    <Compile Include="Purchasing\Services\IDebitNoteRepository.cs" />
+    <Compile Include="Purchasing\Services\IPaymentsToSuppliersRepository.cs" />
+    <Compile Include="Purchasing\Services\IPaymentToSupplierFormRepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseInvoiceBERepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseInvoiceListRepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseInvoicePandSRepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseOrderListRepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseOrderRepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseQuotationListRepository.cs" />
+    <Compile Include="Purchasing\Services\IPurchaseQuotationRepository.cs" />
+    <Compile Include="Purchasing\Services\IRefundFromSupplierRepository.cs" />
+    <Compile Include="Purchasing\Services\IRefundFromSuppliersListRepository.cs" />
+    <Compile Include="Purchasing\Services\ISupplierHistoryRepository.cs" />
+    <Compile Include="Purchasing\Services\ISupplierRepository.cs" />
+    <Compile Include="Purchasing\Services\PaymentsToSuppliersRepository.cs" />
+    <Compile Include="Purchasing\Services\PaymentToSupplierFormRepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseInvoiceBERepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseInvoiceListRepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseInvoicePandSRepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseOrderListRepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseOrderRepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseQuotationListRepository.cs" />
+    <Compile Include="Purchasing\Services\PurchaseQuotationRepository.cs" />
+    <Compile Include="Purchasing\Services\RefundFromSupplierRepository.cs" />
+    <Compile Include="Purchasing\Services\RefundFromSuppliersListRepository.cs" />
+    <Compile Include="Purchasing\Services\SupplierHistoryRepository.cs" />
+    <Compile Include="Purchasing\Services\SupplierRepository.cs" />
+    <Compile Include="Purchasing\ViewModel\AccountDataGridViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\AdjustDebitNoteFormViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\CollectAmountDataGridViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\DataGridViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\DebitNoteListViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\DebitNoteViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PaymentsToSuppliersListViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PaymentToSupplierViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseInvoiceListViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseInvoicePandSViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseOrderListViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseOrderViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseQuotationListViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseQuotationViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\PurchaseTabViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\RefundFromSuppliersListViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\RefundFromSupplierViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\SupplierDetailViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\SupplierHistoryViewModel.cs" />
+    <Compile Include="Purchasing\ViewModel\SupplierTabViewModel.cs" />
+    <Compile Include="Purchasing\View\AdjustDebitNoteFormView.xaml.cs">
+      <DependentUpon>AdjustDebitNoteFormView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\DebitNoteListView.xaml.cs">
+      <DependentUpon>DebitNoteListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\DebitNoteView.xaml.cs">
+      <DependentUpon>DebitNoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PaymentsToSuppliersListView.xaml.cs">
+      <DependentUpon>PaymentsToSuppliersListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PaymentToSupplierView.xaml.cs">
+      <DependentUpon>PaymentToSupplierView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseInvoiceListView.xaml.cs">
+      <DependentUpon>PurchaseInvoiceListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseInvoicePandSView.xaml.cs">
+      <DependentUpon>PurchaseInvoicePandSView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseOrderListView.xaml.cs">
+      <DependentUpon>PurchaseOrderListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseOrderView.xaml.cs">
+      <DependentUpon>PurchaseOrderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseQuotationListView.xaml.cs">
+      <DependentUpon>PurchaseQuotationListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseQuotationView.xaml.cs">
+      <DependentUpon>PurchaseQuotationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\PurchaseTabView.xaml.cs">
+      <DependentUpon>PurchaseTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\RefundFromSuppliersListView.xaml.cs">
+      <DependentUpon>RefundFromSuppliersListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\RefundFromSupplierView.xaml.cs">
+      <DependentUpon>RefundFromSupplierView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\SupplierDetailView.xaml.cs">
+      <DependentUpon>SupplierDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\SupplierHistoryView.xaml.cs">
+      <DependentUpon>SupplierHistoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\View\SupplierTabView.xaml.cs">
+      <DependentUpon>SupplierTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\SalesModule.cs" />
+    <Compile Include="Sales\Services\AdjustCreditNoteFormRepository.cs" />
+    <Compile Include="Sales\Services\CreditNoteListRepository.cs" />
+    <Compile Include="Sales\Services\CreditNoteRepository.cs" />
+    <Compile Include="Sales\Services\CustomerRepository.cs" />
+    <Compile Include="Sales\Services\IAdjustCreditNoteFormRepository.cs" />
+    <Compile Include="Sales\Services\IContactRepository.cs" />
+    <Compile Include="Sales\Services\ICreditNoteListRepository.cs" />
+    <Compile Include="Sales\Services\ICreditNoteRepository.cs" />
+    <Compile Include="Sales\Services\ICustomerRepository.cs" />
+    <Compile Include="Sales\Services\ILocationRepository.cs" />
+    <Compile Include="Sales\Services\IPaymentFromCustomersListRepository.cs" />
+    <Compile Include="Sales\Services\IPaymentFromCustomersRepository.cs" />
+    <Compile Include="Sales\Services\IRefundToCustomersListRepository.cs" />
+    <Compile Include="Sales\Services\IRefundToCustomersRepository.cs" />
+    <Compile Include="Sales\Services\ISalesInvoiceListRepository.cs" />
+    <Compile Include="Sales\Services\ISalesInvoiceRepository.cs" />
+    <Compile Include="Sales\Services\ISalesOrderListRepository.cs" />
+    <Compile Include="Sales\Services\ISalesOrderRepository.cs" />
+    <Compile Include="Sales\Services\ISalesQuotationListRepository.cs" />
+    <Compile Include="Sales\Services\ISalesQuotationRepository.cs" />
+    <Compile Include="Sales\Services\PaymentFromCustomersListRepository.cs" />
+    <Compile Include="Sales\Services\PaymentFromCustomersRepository.cs" />
+    <Compile Include="Sales\Services\RefundToCustomersListRepository.cs" />
+    <Compile Include="Sales\Services\RefundToCustomersRepository.cs" />
+    <Compile Include="Sales\Services\SalesInvoiceListRepository.cs" />
+    <Compile Include="Sales\Services\SalesInvoiceRepository.cs" />
+    <Compile Include="Sales\Services\SalesOrderListRepository.cs" />
+    <Compile Include="Sales\Services\SalesOrderRepository.cs" />
+    <Compile Include="Sales\Services\SalesQuotationListRepository.cs" />
+    <Compile Include="Sales\Services\SalesQuotationRepository.cs" />
+    <Compile Include="Sales\ViewModel\AdjustCreditNoteFormViewModel.cs" />
+    <Compile Include="Sales\ViewModel\CollectSalesAmountDataGridViewModel.cs" />
+    <Compile Include="Sales\ViewModel\ContactViewModel.cs" />
+    <Compile Include="Sales\ViewModel\CreditNoteListViewModel.cs" />
+    <Compile Include="Sales\ViewModel\CreditNoteViewModel.cs" />
+    <Compile Include="Sales\ViewModel\CustomersViewModel.cs" />
+    <Compile Include="Sales\ViewModel\CustomerViewModel.cs" />
+    <Compile Include="Sales\ViewModel\DataGridViewModel.cs" />
+    <Compile Include="Sales\ViewModel\LocationViewModel.cs" />
+    <Compile Include="Sales\ViewModel\PaymentFromCustomersListViewModel.cs" />
+    <Compile Include="Sales\ViewModel\PaymentFromCustomersViewModel.cs" />
+    <Compile Include="Sales\ViewModel\RefundToCustomersListViewModel.cs" />
+    <Compile Include="Sales\ViewModel\RefundToCustomersViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesInvoiceListViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesInvoiceViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesOrderListViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesOrderViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesQuotationListViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesQuotationViewModel.cs" />
+    <Compile Include="Sales\ViewModel\SalesTabViewModel.cs" />
+    <Compile Include="Sales\ViewModel\StoreViewModel.cs" />
+    <Compile Include="Sales\Views\AdjustCreditNoteFormView.xaml.cs">
+      <DependentUpon>AdjustCreditNoteFormView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\ContactView.xaml.cs">
+      <DependentUpon>ContactView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\CreditNoteListView.xaml.cs">
+      <DependentUpon>CreditNoteListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\CreditNoteView.xaml.cs">
+      <DependentUpon>CreditNoteView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\CustomersView.xaml.cs">
+      <DependentUpon>CustomersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\CustomerView.xaml.cs">
+      <DependentUpon>CustomerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\LocationView.xaml.cs">
+      <DependentUpon>LocationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\PaymentFromCustomersListView.xaml.cs">
+      <DependentUpon>PaymentFromCustomersListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\PaymentFromCustomersView.xaml.cs">
+      <DependentUpon>PaymentFromCustomersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\RefundToCustomersListView.xaml.cs">
+      <DependentUpon>RefundToCustomersListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\RefundToCustomerView.xaml.cs">
+      <DependentUpon>RefundToCustomerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesInvoiceListView.xaml.cs">
+      <DependentUpon>SalesInvoiceListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesInvoiceView.xaml.cs">
+      <DependentUpon>SalesInvoiceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesOrderListView.xaml.cs">
+      <DependentUpon>SalesOrderListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesOrderView.xaml.cs">
+      <DependentUpon>SalesOrderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesQuotationListView.xaml.cs">
+      <DependentUpon>SalesQuotationListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesQuotationView.xaml.cs">
+      <DependentUpon>SalesQuotationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\SalesTabView.xaml.cs">
+      <DependentUpon>SalesTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\Views\StoreView.xaml.cs">
+      <DependentUpon>StoreView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Services\CategoryRepository.cs" />
+    <Compile Include="Settings\Services\CompanyDetails.cs" />
+    <Compile Include="Settings\Services\ICategoryRepository.cs" />
+    <Compile Include="Settings\Services\ICompanyDetails.cs" />
+    <Compile Include="Settings\Services\IOptionsService.cs" />
+    <Compile Include="Settings\Services\ITaxCodesAndRatesRepository.cs" />
+    <Compile Include="Settings\Services\IUserSecurityRepository.cs" />
+    <Compile Include="Settings\Services\OptionsService.cs" />
+    <Compile Include="Settings\Services\TaxCodesAndRatesRepository.cs" />
+    <Compile Include="Settings\Services\UserSecurityRepository.cs" />
+    <Compile Include="Settings\SettingsModule.cs" />
+    <Compile Include="Settings\ViewModels\CategoryViewModel.cs" />
+    <Compile Include="Settings\ViewModels\CompanyViewModel.cs" />
+    <Compile Include="Settings\ViewModels\OptionsVewModel.cs" />
+    <Compile Include="Settings\ViewModels\SettingsTabViewModel.cs" />
+    <Compile Include="Settings\ViewModels\TaxCodesAndRatesViewModel.cs" />
+    <Compile Include="Settings\ViewModels\UsersSecurityViewModel.cs" />
+    <Compile Include="Settings\Views\CategoryView.xaml.cs">
+      <DependentUpon>CategoryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\CompanyDetailsView.xaml.cs">
+      <DependentUpon>CompanyDetailsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\CustomerMenuUserControl.xaml.cs">
+      <DependentUpon>CustomerMenuUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\FooterTrial.xaml.cs">
+      <DependentUpon>FooterTrial.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\OptionsView.xaml.cs">
+      <DependentUpon>OptionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\SettingsTabView.xaml.cs">
+      <DependentUpon>SettingsTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\TaxCodesAndRatesView.xaml.cs">
+      <DependentUpon>TaxCodesAndRatesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\UsersSecurityView.xaml.cs">
+      <DependentUpon>UsersSecurityView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Business\SASBAL\SASBAL.csproj">
+      <Project>{98fad5fc-9a4e-4c68-966d-8b310bf1fdc1}</Project>
+      <Name>SASBAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\SDN.Common\SDN.Common.csproj">
+      <Project>{f9920e3e-8140-4db5-ace4-85043e727aad}</Project>
+      <Name>SDN.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataAccess\SASDAL\SASDAL.csproj">
+      <Project>{1ffd08e9-ed3f-4335-ae79-9c2d166b279c}</Project>
+      <Name>SASDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIEntities\SDN.UI.Entities\SDN.UI.Entities.csproj">
+      <Project>{d2de95a2-9053-4f19-870b-97c4487820f9}</Project>
+      <Name>SDN.UI.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Shorting-Arrow-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="CashBank\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CashBank\Views\AccountsDetailsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CashBank\Views\AccountTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CashBank\Views\CashBankDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CashBank\Views\CashBankTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\CustomerHistoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\CustomersHistoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\CustomersStatementView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\CustomersTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\CustomersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\PandSSoldToCustomersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customers\Views\TopCustomersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\DialogBox\PandSDialogBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\CountAndAdjustStockListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\CountAndAdjustStockView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSCodesAndRatesListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSCostPriceListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSDescriptionListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSDetailsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSPurchase.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSSellPriceListView.xaml">
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSSoldView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSStockQuantitiesListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSStockValueListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\PandSSubTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\View\ProductTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\AdjustDebitNoteFormView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\DebitNoteListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\DebitNoteView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PaymentsToSuppliersListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PaymentToSupplierView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseInvoiceListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseInvoicePandSView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseOrderListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseOrderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseQuotationListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseQuotationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\PurchaseTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\RefundFromSuppliersListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\RefundFromSupplierView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\SupplierDetailView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\SupplierHistoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Purchasing\View\SupplierTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\AdjustCreditNoteFormView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\ContactView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\CreditNoteListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\CreditNoteView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\CustomersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\CustomerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\LocationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\PaymentFromCustomersListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\PaymentFromCustomersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\RefundToCustomersListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\RefundToCustomerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesInvoiceListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesInvoiceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesOrderListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesOrderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesQuotationListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesQuotationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\SalesTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sales\Views\StoreView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\CategoryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\CompanyDetailsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\CustomerMenuUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\FooterTrial.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\OptionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\SettingsTabView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\SettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\TaxCodesAndRatesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Settings\Views\UsersSecurityView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

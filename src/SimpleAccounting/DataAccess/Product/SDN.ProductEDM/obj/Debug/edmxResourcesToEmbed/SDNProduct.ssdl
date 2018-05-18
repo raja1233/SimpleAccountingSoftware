@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Categories">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Cat-Code" Type="nvarchar" MaxLength="5" />
+    <Property Name="Content-Type" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="CategoriesContent">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Cat-Id" Type="int" />
+    <Property Name="Content-Limit" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="Cat-Contents" Type="nvarchar" MaxLength="200" />
+    <Property Name="Set-Default" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Predefined" Type="bit" />
+  </EntityType>
+  <EntityType Name="ProductsAndServices">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PandS-Type" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="PandS-Inactive" Type="char" MaxLength="1" />
+    <Property Name="PandS-Code" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="PandS-Name" Type="nvarchar" MaxLength="30" Nullable="false" />
+    <Property Name="PandS-Cat1" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Cat2" Type="nvarchar" MaxLength="10" />
+    <Property Name="PandS-Description" Type="nvarchar(max)" />
+    <Property Name="Income-Account" Type="int" />
+    <Property Name="Cost-Account" Type="int" />
+    <Property Name="Asset-Account" Type="int" />
+    <Property Name="Tax-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Tax-Rate" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Sell-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Sell-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Sell-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Sell-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Sold-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Sold-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Cost-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Std-Cost-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Cost-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Ave-Cost-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Pur-Price-bef-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Last-Pur-Price-aft-GST" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Min-Qty" Type="int" />
+    <Property Name="PandS-Qty-in-stock" Type="int" Nullable="false" />
+    <Property Name="PandS-Qty-for-SO" Type="int" />
+    <Property Name="PandS-Qty-on-PO" Type="int" />
+    <Property Name="PandS-Stock-Value" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="PandS-Stock-Picture" Type="varbinary(max)" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="TaxCodesAndRates">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Tax-Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Tax-Description" Type="nvarchar" MaxLength="100" />
+    <Property Name="Tax-Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Tax-Rate" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Tax-Inactive" Type="char" MaxLength="1" />
+    <Property Name="Tax-Default" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+    <Property Name="Predefined" Type="bit" />
+  </EntityType>
+  <Association Name="FK_CategoriesContent_Categories">
+    <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+    <End Role="CategoriesContent" Type="Self.CategoriesContent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Categories">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CategoriesContent">
+        <PropertyRef Name="Cat-Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="simpleaccountingModelStoreContainer">
+    <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CategoriesContent" EntityType="Self.CategoriesContent" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductsAndServices" EntityType="Self.ProductsAndServices" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TaxCodesAndRates" EntityType="Self.TaxCodesAndRates" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_CategoriesContent_Categories" Association="Self.FK_CategoriesContent_Categories">
+      <End Role="Categories" EntitySet="Categories" />
+      <End Role="CategoriesContent" EntitySet="CategoriesContent" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

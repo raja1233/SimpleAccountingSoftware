@@ -1,0 +1,387 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.DAL
+{
+    using SDN.UI.Entities.Sales;
+    using SDN.Sales.DALInterface;     
+    using Common;
+    using UI.Entities;
+    using SASDAL;
+    public class PaymentFromCustomersDAL: IPaymentFromCustomersDAL
+    {
+        public PaymentFromCustomerForm GetPaymentFromCustomerDetails(string cashChequeNo)
+        {
+            PaymentFromCustomerForm pqf = new PaymentFromCustomerForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.CashAndBankTransactions
+                              where pqs.Cash_Cheque_No == cashChequeNo
+                              select new PaymentFromCustomerEntity
+                              {
+                                  ID = pqs.ID,
+                                  CustomerID = pqs.Cus_Sup_Id,
+                                  Amount = pqs.Amount,
+                                  AccountId = pqs.Acc_Id,
+                                  Remarks = pqs.Remarks,
+                                  Date = pqs.Cash_Cheque_Date,
+                                  IsCheque = pqs.Is_Cheque,
+                                  CashChequeNo = pqs.Cash_Cheque_No,
+                              }).FirstOrDefault();
+
+                    if (pq != null)
+                    {
+                        pq.AmountStr = Convert.ToString(pq.Amount);
+                        pqf.PaymentFromCustomer = pq;
+                    }
+
+
+                    var pqd = (from pqs in entities.CashAndBankTransactions
+                               where pqs.Cash_Cheque_No == cashChequeNo
+                               select new PaymentFromCustomerDetailsEntity
+                               {
+                                   SalesNo = pqs.SO_CN_PO_DN_No,
+                                   SalesDate = pqs.SO_CN_PO_DN_Date,
+                                   SalesAmount = pqs.SO_CN_PO_DN_Amt,
+                                   AmountDue = pqs.Amt_Due,
+                                   Discount = pqs.Discount,
+                                   AmountAdjusted = pqs.Amt_Refunded
+                               }).ToList<PaymentFromCustomerDetailsEntity>();
+
+                    if (pqd != null)
+                    {
+                        pqf.PaymentFromCustomerDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public PaymentFromCustomerForm GetNewPS(int? CustomerID)
+        {
+            PaymentFromCustomerForm pqf = new PaymentFromCustomerForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pqd = entities.Database.SqlQuery<PaymentFromCustomerDetailsEntity>("PRC_GetSalesDataForPaymentFromCustomers @CustomerID={0}", CustomerID).ToList();
+
+                    if (pqd != null)
+                    {
+                        pqf.PaymentFromCustomerDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public int SavePaymentFromCustomer(PaymentFromCustomerForm psForm)
+        {
+            int autoId = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    foreach (var item in psForm.PaymentFromCustomerDetails)
+                    {
+                        //CashAndBankTransaction obj = entities.CashAndBankTransactions.Where(e => e.SO_CN_PO_DN_No == item.SalesNo).SingleOrDefault();
+                        //if(obj!=null)
+                        //{
+                        //    // obj.Acc_Id = psForm.PaymentToSupplier.AccountId;
+                        //    obj.Amount = psForm.PaymentToSupplier.Amount;
+
+                        //    //saving details entity
+                        //    obj.SO_CN_PO_DN_No = item.SalesNo;
+                        //    obj.SO_CN_PO_DN_Date = item.SalesDate;
+                        //    obj.SO_CN_PO_DN_Amt = item.SalesAmount;
+                        //    obj.Amt_Due = item.AmountDue;
+                        //    obj.Amt_Refunded = item.AmountAdjusted;
+                        //    obj.Discount = item.Discount;
+                        //    obj.UpdatedBy = 0;
+                        //    obj.UpdatedDate = DateTime.Now.Date;
+                        //    entities.SaveChanges();
+                        //}
+                        //else
+                        //{
+                        CashAndBankTransaction obj = new CashAndBankTransaction();
+                        obj.Cus_Sup_Id = psForm.PaymentFromCustomer.CustomerID;
+                        obj.Acc_Id = psForm.PaymentFromCustomer.AccountId;
+                        obj.Amount = psForm.PaymentFromCustomer.Amount;
+                        obj.Cash_Cheque_No = psForm.PaymentFromCustomer.CashChequeNo;
+                        obj.Cash_Cheque_Date = psForm.PaymentFromCustomer.Date;
+                        obj.Remarks = psForm.PaymentFromCustomer.Remarks;
+                        obj.Type = "C";
+                        obj.Is_Cheque = psForm.PaymentFromCustomer.IsCheque;
+
+                        //saving details entity
+                        obj.SO_CN_PO_DN_No = item.SalesNo;
+                        obj.SO_CN_PO_DN_Date = item.SalesDate;
+                        obj.SO_CN_PO_DN_Amt = item.SalesAmount;
+                        obj.Amt_Due = item.AmountDue - item.AmountAdjusted;
+                        obj.Amt_Refunded = item.AmountAdjusted;
+                        obj.Discount = item.Discount;
+
+                        obj.UpdatedBy = 0;
+                        obj.UpdatedDate = DateTime.Now.Date;
+
+                        entities.CashAndBankTransactions.Add(obj);
+                        entities.SaveChanges();
+
+                        SalesInvoice invoice = entities.SalesInvoices.Where(e => e.SI_No == item.SalesNo).FirstOrDefault();
+                        SalesOrder order = entities.SalesOrders.Where(e => e.SO_No == item.SalesNo).FirstOrDefault();
+                        if (invoice != null)
+                        {
+                            if ( item.AmountAdjusted == item.SalesAmount)
+                            {
+                                invoice.SI_Status = Convert.ToByte(PI_Status.Paid);
+                                entities.SaveChanges();
+                            }
+                            else
+                            {
+                                invoice.SI_Status = Convert.ToByte(PI_Status.UnPaid);
+                                entities.SaveChanges();
+                            }
+                        }
+                        else if (order != null)
+                        {
+                            order.SO_Status = Convert.ToByte(PO_Status.Collected);
+                            entities.SaveChanges();
+                        }
+
+                    
+
+                    //}
+                }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return autoId;
+        }
+        public bool IsChequeNoPresent(string cashChequeNo)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = entities.CashAndBankTransactions.Where(e => e.Cash_Cheque_No == cashChequeNo && e.Type=="C").ToList();
+                    if (po.Count > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public int UpdatePaymentToSupplier(PaymentFromCustomerForm psForm)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    foreach (var item in psForm.PaymentFromCustomerDetails)
+                    {
+                        CashAndBankTransaction obj = entities.CashAndBankTransactions.Where(e => e.Cash_Cheque_No == psForm.PaymentFromCustomer.CashChequeNo
+                        && e.SO_CN_PO_DN_No == item.SalesNo).SingleOrDefault();
+                        if (obj != null)
+                        {
+                            obj.Acc_Id = psForm.PaymentFromCustomer.AccountId;
+                            obj.Amount = psForm.PaymentFromCustomer.Amount;
+                            obj.Cash_Cheque_No = psForm.PaymentFromCustomer.CashChequeNo;
+                            obj.Cash_Cheque_Date = Convert.ToDateTime(psForm.PaymentFromCustomer.DateStr);
+                            obj.Remarks = psForm.PaymentFromCustomer.Remarks;
+
+                            obj.Is_Cheque = psForm.PaymentFromCustomer.IsCheque;
+
+                            //saving details entity
+                            obj.SO_CN_PO_DN_No = item.SalesNo;
+                            obj.SO_CN_PO_DN_Date = item.SalesDate;
+                            obj.SO_CN_PO_DN_Amt = item.SalesAmount;
+                            obj.Amt_Due = item.AmountDue - item.AmountAdjusted;
+                            obj.Amt_Refunded = item.AmountAdjusted;
+                            obj.Discount = item.Discount;
+
+                            obj.UpdatedBy = 0;
+                            obj.UpdatedDate = DateTime.Now.Date;
+                            entities.SaveChanges();
+
+                            SalesInvoice invoice = entities.SalesInvoices.Where(e => e.SI_No == item.SalesNo).FirstOrDefault();
+                            SalesOrder order = entities.SalesOrders.Where(e => e.SO_No == item.SalesNo).FirstOrDefault();
+                            if (invoice != null)
+                            {
+                                if (item.AmountAdjusted == item.SalesAmount)
+                                {
+                                    invoice.SI_Status = Convert.ToByte(PI_Status.Paid);
+                                    entities.SaveChanges();
+                                }
+                                else
+                                {
+                                    invoice.SI_Status = Convert.ToByte(PI_Status.UnPaid);
+                                    entities.SaveChanges();
+                                }
+                            }
+                            else if (order != null)
+                            {
+                                order.SO_Status = Convert.ToByte(PO_Status.Collected);
+                                entities.SaveChanges();
+                            }
+
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return psForm.PaymentFromCustomer.ID;
+        }
+
+        public string GetLastCashNo()
+        {
+            string cNo = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.CashAndBankTransactions
+                              where pqs.Is_Cheque == false && pqs.Type == "C"
+                              //&& pqs.Type.StartsWith("PC")
+                              orderby pqs.UpdatedDate descending
+                              select new
+                              {
+                                  pqs.UpdatedDate,
+                                  pqs.Cash_Cheque_No,
+                                  pqs.ID,
+                                  pqs.Is_Cheque,
+                                  pqs.Type
+                              }
+
+                               ).ToList();
+                    if (pq.Count > 0)
+                    {
+                        cNo = pq.OrderByDescending(e=>e.ID).Take(1).SingleOrDefault().Cash_Cheque_No;
+                        if (cNo != null)
+                        {
+                            string[] str = cNo.Split('-');
+                            if (str != null)
+                            {
+                                cNo = Convert.ToString(Convert.ToInt64(str[1]) + 1);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        cNo = Convert.ToString(1);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return cNo;
+        }
+        public string GetCountOfPOSuppliers(out List<CustomerEntity> lstCustomers)
+        {
+            byte status = Convert.ToByte(PO_Status.unDeposited);
+            lstCustomers = new List<CustomerEntity>();
+            string POCount = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = (from e in entities.SalesOrders
+                              join p in entities.Customers
+                              on e.Cus_Id equals p.ID
+                              where e.IsDeleted == false
+                              && e.SO_Status== status
+                              select new CustomerEntity
+                              {
+                                  CustomerID = e.Cus_Id,
+                                  FirstName = p.Cus_Name,
+                                  Inactive = p.Cus_Inactive
+                              }
+                         ).Distinct().ToList();
+
+                    if (po != null)
+                    {
+                        lstCustomers= new List<CustomerEntity>(po.ToList());
+                        POCount = Convert.ToString(po.Count);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return POCount;
+        }
+
+
+        public string GetCountOfPISuppliers(out List<CustomerEntity> lstCustomers)
+        {
+            byte status = Convert.ToByte(SI_Status.UnPaid);
+            string PICount = string.Empty;
+            lstCustomers = new List<CustomerEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = (from e in entities.SalesInvoices
+                              join p in entities.Customers
+                              on e.Cus_Id equals p.ID
+                              where e.IsDeleted == false
+                              && e.SI_Status == status
+                              select new CustomerEntity
+                              {
+                                CustomerID =  e.Cus_Id,
+                                FirstName = p.Cus_Name,
+                                Inactive = p.Cus_Inactive
+                              }
+                          ).Distinct().ToList();
+
+                    if (po != null)
+                    {
+                        lstCustomers = new List<CustomerEntity>(po.ToList());
+                        PICount = Convert.ToString(po.Count);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return PICount;
+        }
+    }
+}

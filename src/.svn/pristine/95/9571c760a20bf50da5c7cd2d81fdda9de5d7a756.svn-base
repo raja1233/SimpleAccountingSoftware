@@ -1,0 +1,118 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Purchasings.DAL
+{
+     using SDN.Purchasings.DALInterface;
+    using UI.Entities.Purchase;
+    using SASDAL;
+    public class DebitNoteDAL : IDebitNoteDAL
+    {
+        /// <summary>
+        /// This method is used to get Purchase Invoice details
+        /// </summary>
+        /// <param name="pqId"></param>
+        /// <returns></returns>
+        public DebitNoteForm GetDebitNoteDetails(string dnNo)
+        {
+            DebitNoteForm pqf = new DebitNoteForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.PurchaseInvoices
+                              join dn in entities.DebitNotes on
+                              pqs.ID equals dn.PI_Id
+                              where dn.DN_No == dnNo && (pqs.IsDeleted == false || pqs.IsDeleted == null)
+                              select new DebitNoteEntity
+                              {
+                                  ID = dn.ID,
+                                  SupplierCreditNoteNo = dn.Sup_CN_No,
+                                  SupplierCreditNoteDate = dn.Sup_CN_Date,
+                                  SCNAmount = dn.Sup_CN_Amount,
+                                  SupplierID = pqs.Sup_Id,
+                                  DebitNo = dn.DN_No,
+                                  DebitDate = dn.DN_Date,
+                                  TermsAndConditions = dn.DN_Reason,
+                                  TotalBeforeTax = pqs.PI_Tot_bef_Tax,
+                                  TotalTax = pqs.PI_GST_Amt,
+                                  TotalAfterTax = pqs.PI_Tot_aft_Tax,
+                                  ExcIncGST = pqs.Exc_Inc_GST,
+                                  PurchaseInvoiceNo=pqs.PI_No,
+                                  PurchaseInvoiceID=pqs.ID,
+                                  Status = dn.DN_Status
+
+                              }).SingleOrDefault();
+
+                    if (pq != null)
+                    {
+                        pq.SupplierCreditNoteAmount = Convert.ToString(pq.SCNAmount);
+                        pqf.DebitNote = pq;
+                    }
+
+
+                    var pqd = (from pqds in entities.PurchaseInvoiceDetails
+                               where pqds.PI_ID == pq.PurchaseInvoiceID
+                               select new PurchaseInvoiceDetailEntity
+                               {
+                                   ID = pqds.ID,
+                                   PIID = pqds.PI_ID,
+                                   PINo = pqds.PI_No,
+                                   PandSCode = pqds.PandS_Code,
+                                   PandSName = pqds.PandS_Name,
+                                   PIQty = pqds.PI_Qty,
+                                   Price = pqds.PI_Price,
+                                   PIDiscount = pqds.PI_Discount,
+                                   PIAmount = pqds.PI_Amount,
+                                   GSTRate = pqds.GST_Rate
+                               }).ToList<PurchaseInvoiceDetailEntity>();
+
+                    if (pqd != null)
+                    {
+                        pqf.InvoiceDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateDebitNote(DebitNoteForm debitNote)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    DebitNote obj = entities.DebitNotes.Where(e => e.DN_No == debitNote.DebitNote.DebitNo
+                   ).SingleOrDefault();
+                    if (obj != null)
+                    {
+                        if (!string.IsNullOrEmpty(debitNote.DebitNote.SupplierCreditNoteAmount))
+                        {
+                            debitNote.DebitNote.SCNAmount = Convert.ToDecimal(debitNote.DebitNote.SupplierCreditNoteAmount);
+                        }
+                        obj.DN_Reason = debitNote.DebitNote.TermsAndConditions;
+                        obj.Sup_CN_No = debitNote.DebitNote.SupplierCreditNoteNo;
+                        obj.Sup_CN_Date = debitNote.DebitNote.SupplierCreditNoteDate;
+                        obj.Sup_CN_Amount = debitNote.DebitNote.SCNAmount;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

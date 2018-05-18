@@ -1,0 +1,11 @@
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\SDN.CashBank.BLInterface.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\SDN.CashBank.BLInterface.pdb
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\SDN.UI.Entities.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\SDN.Common.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\Microsoft.Practices.Prism.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\SDN.UI.Entities.pdb
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\bin\Debug\SDN.Common.pdb
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\obj\Debug\SDN.CashBank.BLInterface.dll
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\obj\Debug\SDN.CashBank.BLInterface.pdb
+D:\DayUsers\Ashutosh Dwivedi\official\Projects\SimpleAccounting\Source Code\SVN_Source\SimpleAccounting\Business\CashandBank\SDN.CashBank.BLInterface\obj\Debug\SDN.CashBank.BLInterface.csprojResolveAssemblyReference.cache

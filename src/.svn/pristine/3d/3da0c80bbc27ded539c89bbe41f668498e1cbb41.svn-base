@@ -1,0 +1,376 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.CashBank.Views;
+using SDN.CashBank.ViewModels;
+using SDN.CashBank.Views;
+using SDN.Common;
+using SDN.Purchasing.View;
+using SDN.Sales.Views;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.CloseRequest
+{
+    public class CloseView :ViewModelBase
+    {
+        //public CloseRequestNew()
+        //{
+        //}
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+
+        public CloseView(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+        }
+
+        //private bool? _CashBankStatementTabTrue;
+
+        //public bool? CashBankStatementTabTrue
+        //{
+        //    get
+        //    {
+        //        return _CashBankStatementTabTrue;
+        //    }
+        //    set
+        //    {
+        //        _CashBankStatementTabTrue = value;
+        //        OnPropertyChanged("CashBankStatementTabTrue");
+        //    }
+        //}
+
+
+
+        public void CloseViewRequest(string Filename)
+        {
+            //var mainregion = 0;
+            //CashAndBankTabViewModel obj = new CashAndBankTabViewModel(regionManager, eventAggregator);
+            try
+            {
+                if (!string.IsNullOrEmpty(Filename))
+                {
+                    switch (Filename)
+                    {
+                        case "MainView":
+                            //var view = ServiceLocator.Current.GetInstance<MainView>();
+                            var h = this.regionManager.Regions[RegionNames.MainRegion].Views;
+                            var l = h.First();
+                            //var o = l.GetType().Name;
+                            IRegion regiona = this.regionManager.Regions[RegionNames.MainRegion];
+                            //regiona.Add(l);
+                            if (regiona != null)
+                            {
+                                regiona.Activate(l);
+                            }
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+                            break;
+
+                        case "CashBankStatement":
+                            SharedValues.getValue = "CashBankStatementTab";
+                            var view = ServiceLocator.Current.GetInstance<CashBankStatement>();
+
+                            //var region = this.regionManager.Regions[RegionNames.MainRegion];
+                            //region.Add(view);
+                            //if (region != null)
+                            //{
+                            //    region.Activate(view);
+                            //}
+                            var region = this.regionManager.Regions[RegionNames.MainRegion];
+                            region.Add(view);
+                            if (region != null)
+                            {
+                                region.Activate(view);
+                            }
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Cash & Bank Statement");
+
+                            break;
+
+                        case "PayMoneyListView":
+                            //SharedValues.NewClick = "New";
+                            SharedValues.getValue = "PayMoneyTab";
+                            var tabview1 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion1 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion1.Add(tabview1);
+                            if (tabregion1 != null)
+                            {
+                                tabregion1.Activate(tabview1);
+                            }
+
+                            var view1 = ServiceLocator.Current.GetInstance<PayMoneyListView>();
+                            var region1 = this.regionManager.Regions[RegionNames.MainRegion];
+                            //var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+                            region1.Add(view1);
+                            if (region1 != null)
+                            {
+                                region1.Activate(view1);
+                            }////
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Pay Money List");
+                            break;
+
+                        case "PayMoneyView":
+                            SharedValues.getValue = "PayMoneyTab";
+                            //SharedValues.NewClick = "New";
+
+                            var tabview2 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion2 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion2.Add(tabview2);
+                            if (tabregion2 != null)
+                            {
+                                tabregion2.Activate(tabview2);
+                            }
+
+                            var view2 = ServiceLocator.Current.GetInstance<PayMoneyView>();
+
+                            var region2 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region2.Add(view2);
+                            if (region2 != null)
+                            {
+                                region2.Activate(view2);
+                            }
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+                            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Pay Money");
+                            break;
+
+                        case "ReceiveMoneyListView":
+                            SharedValues.getValue = "ReceiveMoneyTab";
+                            var tabview3 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion3 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion3.Add(tabview3);
+                            if (tabregion3 != null)
+                            {
+                                tabregion3.Activate(tabview3);
+                            }
+
+                            var view3 = ServiceLocator.Current.GetInstance<ReceiveMoneyListView>();
+                            var region3 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region3.Add(view3);
+                            if (region3 != null)
+                            {
+                                region3.Activate(view3);
+                            }////
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Receive Money List");
+                            break;
+                        case "ReceiveMoneyView":
+
+                            SharedValues.getValue = "ReceiveMoneyTab";
+                            var tabview4 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion4 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion4.Add(tabview4);
+                            if (tabregion4 != null)
+                            {
+                                tabregion4.Activate(tabview4);
+                            }
+
+                            var view4 = ServiceLocator.Current.GetInstance<ReceiveMoneyView>();
+
+                            var region4 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region4.Add(view4);
+                            if (region4 != null)
+                            {
+                                region4.Activate(view4);
+                            }////
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Receive Money Form");
+                            break;
+
+                        case "RefundToCustomerView":
+                            SharedValues.getValue = "RefundToCustomerTab";
+
+                            var tabview5 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion5 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion5.Add(tabview5);
+                            if (tabregion5 != null)
+                            {
+                                tabregion5.Activate(tabview5);
+                            }
+
+                            var view5 = ServiceLocator.Current.GetInstance<RefundToCustomerView>();
+                            var region5 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region5.Add(view5);
+                            if (region5 != null)
+                            {
+                                region5.Activate(view5);
+                            }
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+                            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Refund To Customer Form");
+                            break;
+                        case "RefundToCustomersListView":
+                            SharedValues.getValue = "RefundToCustomerTab";
+
+                            var tabview6 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion6 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion6.Add(tabview6);
+                            if (tabregion6 != null)
+                            {
+                                tabregion6.Activate(tabview6);
+                            }
+                            var view6 = ServiceLocator.Current.GetInstance<RefundToCustomersListView>();
+                            var region6 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region6.Add(view6);
+
+                            if (region6 != null)
+                            {
+                                region6.Activate(view6);
+                            }
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+                            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Refund To Customers List");
+                            break;
+                        case "RefundFromSupplierView":
+                            SharedValues.getValue = "RefundFromSupplierTab";
+
+                            var tabview7 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion7 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion7.Add(tabview7);
+                            if (tabregion7 != null)
+                            {
+                                tabregion7.Activate(tabview7);
+                            }
+
+                            var view7 = ServiceLocator.Current.GetInstance<RefundFromSupplierView>();
+                            var region7 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region7.Add(view7);
+                            if (region7 != null)
+                            {
+                                region7.Activate(view7);
+                            }
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+                            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Refund From Supplier Form");
+                            break;
+                        case "RefundFromSuppliersListView":
+                            SharedValues.getValue = "RefundFromSupplierTab";
+
+                            var tabview8 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion8 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion8.Add(tabview8);
+                            if (tabregion8 != null)
+                            {
+                                tabregion8.Activate(tabview8);
+                            }
+
+                            var view8 = ServiceLocator.Current.GetInstance<RefundFromSuppliersListView>();
+                            var region8 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region8.Add(view8);
+                            if (region8 != null)
+                            {
+                                region8.Activate(view8);
+                            }
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+                            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Refund From Suppliers List");
+                            break;
+
+                        case "TransferMoneyListView":
+                            SharedValues.getValue = "TransferMoneyTab";
+                            var tabview10 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion10 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion10.Add(tabview10);
+                            if (tabregion10 != null)
+                            {
+                                tabregion10.Activate(tabview10);
+                            }
+                            var view10 = ServiceLocator.Current.GetInstance<TransferMoneyListView>();
+                            var region10 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region10.Add(view10);
+                            if (region10 != null)
+                            {
+                                region10.Activate(view10);
+                            }////
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Transfer Money List");
+                            break;
+
+                        case "TransferMoneyView":
+
+                            SharedValues.getValue = "TransferMoneyTab";
+                            var tabview11 = ServiceLocator.Current.GetInstance<CashBankTabView>();
+
+                            var tabregion11 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+                            tabregion11.Add(tabview11);
+                            if (tabregion11 != null)
+                            {
+                                tabregion11.Activate(tabview11);
+                            }
+
+                            var view11 = ServiceLocator.Current.GetInstance<TransferMoneyView>();
+
+                            var region11 = this.regionManager.Regions[RegionNames.MainRegion];
+                            region11.Add(view11);
+                            if (region11 != null)
+                            {
+                                region11.Activate(view11);
+                            }////
+                            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+
+                            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Transfer Money Form");
+                            break;
+
+                    }
+                }
+                else
+                {
+
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        private void setdefaultTab()
+        {
+            //if (SharedValues.getValue == "CashBankStatementTab")
+            //{
+            //    this.CashBankStatementTabTrue = true;
+            //}
+            //if (SharedValues.getValue == "RefundFromSupplierTab")
+            //{
+            //    this.RefundFromSupplierTabTrue = true;
+            //}
+            //if (SharedValues.getValue == "RefundToCustomerTab")
+            //{
+            //    this.RefundToCustomerTabTrue = true;
+            //}
+            //if (SharedValues.getValue == "ReceiveMoneyTab")
+            //{
+            //    this.ReceiveMoneyTabTrue = true;
+            //}
+            //if (SharedValues.getValue == "PayMoneyTab")
+            //{
+            //    this.PayMoneyTabTrue = true;
+            //}
+            //if (SharedValues.getValue == "TransferMoneyTab")
+            //{
+            //    this.TransferMoneyTabTrue = true;
+            //}
+
+        }
+    }
+}

@@ -1,0 +1,158 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.Product
+{
+    using Newtonsoft.Json;
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Product;
+    using System.Data.SqlClient;
+
+    public class PandSHistoryDAL: IPandSHistoryDAL
+    {
+        SASEntitiesEDM entities = new SASEntitiesEDM();
+        public List<PandSHistoryEntity> GetAllSalesInvoice()
+        {
+            List<PandSHistoryEntity> InvoiceList = entities.Database.SqlQuery<PandSHistoryEntity>("USP_GetPandSHistory @Year,@Quarter,@IncGST,@IsSales,@PandS",
+                new SqlParameter("Year", 2000),
+                  new SqlParameter("Quarter", 2),
+                   new SqlParameter("IncGST", 0),
+                   new SqlParameter("IsSales", 1),
+                   new SqlParameter("PandS", 1)
+
+                    ).ToList();
+            return InvoiceList;
+            //return null;
+        }
+
+        public List<PandSHistoryEntity> GetAllSalesInvoiceJson(string JsonData, bool? ExcincTax)
+        {
+            string ignored = string.Empty;
+            List<PandSHistoryEntity> InvoiceList = new List<PandSHistoryEntity>();
+            PandSHistoryEntity InvoiceList1 = new PandSHistoryEntity();
+            List<PandSHistoryEntity> InvoiceListReturn = new List<PandSHistoryEntity>();
+            try
+            {
+                if(JsonData==null)
+                {
+                    ignored = JsonConvert.SerializeObject(JsonData,
+                                   Formatting.Indented,
+                                   new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+                    InvoiceList = entities.Database.SqlQuery<PandSHistoryEntity>("USP_GetPandSHistory @year,@Quarter,@IncGST,@IsSales,@PandS",
+                      new SqlParameter("year", Convert.ToInt32(0)),
+                        new SqlParameter("Quarter", Convert.ToInt32(0)),
+                          new SqlParameter("IncGST", ExcincTax),
+                         new SqlParameter("IsSales", Convert.ToBoolean(0)),
+                         new SqlParameter("PandS", Convert.ToInt32(0))
+                         ).ToList();
+
+                }
+                else
+                {
+                    var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(JsonData);
+
+                    InvoiceList = entities.Database.SqlQuery<PandSHistoryEntity>("USP_GetPandSHistory @year,@Quarter,@IncGST,@IsSales,@PandS",
+                        new SqlParameter("year", Convert.ToInt32(objResponse1[0].FieldValue)),
+                          new SqlParameter("Quarter", Convert.ToInt32(objResponse1[1].FieldValue)),
+                            new SqlParameter("IncGST", ExcincTax),
+                           new SqlParameter("IsSales", Convert.ToBoolean(objResponse1[2].FieldValue)),
+                           new SqlParameter("PandS", Convert.ToInt32(objResponse1[3].FieldValue))
+                           ).ToList();
+
+                }
+
+                return InvoiceList;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+           
+        }
+
+        public string CheckConvertTo(bool? ConvertedToPI, bool? ConvertedToPO)
+        {
+            if (ConvertedToPI == true)
+                return "Invoice";
+            else if (ConvertedToPO == true)
+                return "Invoice";
+            else
+                return "";
+        }
+
+        public bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName)
+        {
+            try
+            {
+                var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == ScreenId).FirstOrDefault();
+                if (result != null)
+                {
+                    result.Last_Selection = jsonSearch;
+                    result.Last_Updated = DateTime.Now;
+                    entities.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    LastSelectionHistory lastSelection = new LastSelectionHistory()
+                    {
+                        Screen_Id = ScreenId,
+                        Screen_Name = ScreenName,
+                        Last_Selection = jsonSearch,
+                        Last_Updated = DateTime.Now
+                    };
+                    entities.LastSelectionHistories.Add(lastSelection);
+                    entities.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public string GetLastSelectionData(int ScreenId)
+        {
+            try
+            {
+                var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == ScreenId).FirstOrDefault();
+                if (result != null)
+                    return result.Last_Selection;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string GetDateFormat()
+        {
+            try
+            {
+                var DateFormatResult = entities.Options.FirstOrDefault();
+                string DateFormat = null;
+                if (DateFormatResult != null)
+                {
+                    return DateFormat = DateFormatResult.Date_Format;
+                }
+                else
+                {
+                    return DateFormat = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

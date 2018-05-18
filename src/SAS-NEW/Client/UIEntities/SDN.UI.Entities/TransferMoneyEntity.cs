@@ -1,0 +1,414 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities
+{
+    using SDN.Common;
+    using System.Globalization;
+
+    public class TransferMoneyEntity:ViewModelBase
+    {
+        #region "Private Properties"
+        private int id;
+        private bool? _MustCompare;
+
+        private List<AccountsEntity> transferFromCashAndBankAccountsLst;
+        private List<AccountsEntity> transferTocashAndBankAccountsLst;
+        private List<TaxModel> lstTaxes;
+        private string cashChequeNo;
+        private DateTime? cashChequeDate;
+        private string cashChequeDateStr;
+        private string amountStr;
+        private decimal? amount;
+        private string transferFromBeforeBalanceStr;
+        private decimal? transferFromBeforeBalance;
+        private string transferFromAfterBalanceStr;
+        private decimal? transferFromAfterBalance;
+        private string transferToBeforeBalanceStr;
+        private decimal? transferToBeforeBalance;
+        private string transferToAfterBalanceStr;
+        private decimal? transferToAfterBalance;
+        private string remarks;
+        private int selectedtransferFromCashAndBankAcntID;
+        private int selectedtransferToCashBankAcntID;
+        private int? selectedTaxID;
+        private decimal? gstRate;
+        private bool? isCheque;
+        private string taxName;
+        private string currencyName;
+
+        #endregion
+
+        #region "Public Properties"
+        public int ID
+        {
+            get { return id; }
+            set
+            {
+                id = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public bool? MustCompare
+        {
+            get
+            {
+                return _MustCompare;
+            }
+            set
+            {
+                _MustCompare = value;
+                OnPropertyChanged("MustCompare");
+            }
+        }
+        public List<AccountsEntity> TransferTocashAndBankAccountsLst
+        {
+            get { return transferTocashAndBankAccountsLst; }
+            set
+            {
+                transferTocashAndBankAccountsLst = value;
+                OnPropertyChanged("TransferTocashAndBankAccountsLst");
+            }
+        }
+
+        public List<AccountsEntity> TransferFromCashAndBankAccountsLst
+        {
+            get { return transferFromCashAndBankAccountsLst; }
+            set
+            {
+                transferFromCashAndBankAccountsLst = value;
+                OnPropertyChanged("TransferFromCashAndBankAccountsLst");
+            }
+        }
+
+        public List<TaxModel> LstTaxes
+        {
+            get { return lstTaxes; }
+            set
+            {
+                lstTaxes = value;
+                OnPropertyChanged("LstTaxes");
+            }
+        }
+
+        public string CashChequeNo
+        {
+            get { return cashChequeNo; }
+            set
+            {
+                cashChequeNo = value;
+                OnPropertyChanged("CashChequeNo");
+            }
+        }
+        public DateTime? CashChequeDate
+        {
+            get { return cashChequeDate; }
+            set
+            {
+                cashChequeDate = value;
+                OnPropertyChanged("CashChequeDate");
+            }
+        }
+        public string CashChequeDateStr
+        {
+            get { return cashChequeDateStr; }
+            set
+            {
+                cashChequeDateStr = value;
+                OnPropertyChanged("CashChequeDateStr");
+            }
+        }
+
+        public string AmountStr
+        {
+            get
+            {
+
+                if (amountStr == null)
+                    return this.amountStr;
+                else
+                {
+                    if (amountStr != "")
+                    {
+                        //  var balance = totalBeforeTaxStr.Replace(",", "");
+                        decimal balance = 0;
+                        bool isValid = decimal.TryParse(amountStr.Replace(",", ""), out balance);
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.amountStr;
+                }
+            }
+            set
+            {
+                amountStr = value;
+                OnPropertyChanged("AmountStr");
+            }
+        }
+        public decimal? Amount
+        {
+            get { return amount; }
+            set
+            {
+                amount = value;
+                OnPropertyChanged("Amount");
+            }
+        }
+        public string TransferFromBeforeBalanceStr
+        {
+            get
+            {
+               
+                if (transferFromBeforeBalanceStr == null)
+                    return this.transferFromBeforeBalanceStr;
+                else
+                {
+                    if (transferFromBeforeBalanceStr != "")
+                    {
+                        //  var balance = totalBeforeTaxStr.Replace(",", "");
+                        decimal balance = 0;
+                        bool isValid = decimal.TryParse(transferFromBeforeBalanceStr.Replace(",", ""), out balance);
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.transferFromBeforeBalanceStr;
+                }
+            }
+            set
+            {
+                transferFromBeforeBalanceStr = value;
+                OnPropertyChanged("TransferFromBeforeBalanceStr");
+            }
+        }
+        public decimal? TransferFromBeforeBalance
+        {
+            get { return transferFromBeforeBalance; }
+            set { transferFromBeforeBalance = value;
+                OnPropertyChanged("TransferFromBeforeBalance");
+            }
+        }
+        public string TransferFromAfterBalanceStr
+        {
+            get
+            {
+
+                if (transferFromAfterBalanceStr == null)
+                    return this.transferFromAfterBalanceStr;
+                else
+                {
+                    if (transferFromAfterBalanceStr != "")
+                    {
+                        //  var balance = totalBeforeTaxStr.Replace(",", "");
+                        decimal balance = 0;
+                        bool isValid = decimal.TryParse(transferFromAfterBalanceStr.Replace(",", ""), out balance);
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.transferFromAfterBalanceStr;
+                }
+            }
+            set
+            {
+                transferFromAfterBalanceStr = value;
+                OnPropertyChanged("TransferFromAfterBalanceStr");
+            }
+        }
+        public decimal? TransferFromAfterBalance
+        {
+            get { return transferFromAfterBalance; }
+            set
+            {
+                transferFromAfterBalance = value;
+                OnPropertyChanged("TransferFromAfterBalance");
+            }
+        }
+        public string TransferToBeforeBalanceStr
+        {
+            get
+            {
+
+                if (transferToBeforeBalanceStr == null)
+                    return this.transferToBeforeBalanceStr;
+                else
+                {
+                    if (transferToBeforeBalanceStr != "")
+                    {
+                        //  var balance = totalBeforeTaxStr.Replace(",", "");
+                        decimal balance = 0;
+                        bool isValid = decimal.TryParse(transferToBeforeBalanceStr.Replace(",", ""), out balance);
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.transferToBeforeBalanceStr;
+                }
+            }
+            set
+            {
+                transferToBeforeBalanceStr = value;
+                OnPropertyChanged("TransferToBeforeBalanceStr");
+            }
+        }
+        public decimal? TransferToBeforeBalance
+        {
+            get { return transferToBeforeBalance; }
+            set
+            {
+                transferToBeforeBalance = value;
+                OnPropertyChanged("TransferToBeforeBalance");
+            }
+        }
+        public string TransferToAfterBalanceStr
+        {
+            get
+            {
+
+                if (transferToAfterBalanceStr == null)
+                    return this.transferToAfterBalanceStr;
+                else
+                {
+                    if (transferToAfterBalanceStr != "")
+                    {
+                        //  var balance = totalBeforeTaxStr.Replace(",", "");
+                        decimal balance = 0;
+                        bool isValid = decimal.TryParse(transferToAfterBalanceStr.Replace(",", ""), out balance);
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.transferToAfterBalanceStr;
+                }
+            }
+            set
+            {
+                transferToAfterBalanceStr = value;
+                OnPropertyChanged("TransferToAfterBalanceStr");
+            }
+        }
+        public decimal? TransferToAfterBalance
+        {
+            get { return transferToAfterBalance; }
+            set
+            {
+                transferToAfterBalance = value;
+                OnPropertyChanged("TransferToAfterBalance");
+            }
+        }
+        public string Remarks
+        {
+            get { return remarks; }
+            set
+            {
+                remarks = value;
+                OnPropertyChanged("Remarks");
+            }
+        }
+
+        public int SelectedtransferFromCashAndBankAcntID
+        {
+            get { return selectedtransferFromCashAndBankAcntID; }
+            set
+            {
+                selectedtransferFromCashAndBankAcntID = value;
+                OnPropertyChanged("SelectedtransferFromCashAndBankAcntID");
+            }
+        }
+        public int SelectedtransferToCashBankAcntID
+        {
+            get { return selectedtransferToCashBankAcntID; }
+            set
+            {
+                selectedtransferToCashBankAcntID = value;
+                OnPropertyChanged("SelectedtransferToCashBankAcntID");
+            }
+        }
+        public int? SelectedTaxID
+        {
+            get { return selectedTaxID; }
+            set
+            {
+                selectedTaxID = value;
+                OnPropertyChanged("SelectedTaxID");
+
+            }
+
+        }
+        public decimal? TaxRate
+        {
+            get { return gstRate; }
+            set
+            {
+                gstRate = value;
+                OnPropertyChanged("TaxRate");
+            }
+        }
+
+        public bool? IsCheque
+        {
+            get { return isCheque; }
+            set
+            {
+                isCheque = value;
+                OnPropertyChanged("IsCheque");
+            }
+        }
+
+        public string TaxName
+        {
+            get { return taxName; }
+            set
+            {
+                taxName = value;
+                OnPropertyChanged("TaxName");
+            }
+        }
+        public string CurrencyName
+        {
+            get { return currencyName; }
+            set
+            {
+                currencyName = value;
+                OnPropertyChanged("CurrencyName");
+            }
+        }
+
+        #endregion
+    }
+}

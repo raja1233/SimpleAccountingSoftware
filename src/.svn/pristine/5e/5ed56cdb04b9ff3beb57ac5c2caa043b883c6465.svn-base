@@ -1,0 +1,426 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1FFD08E9-ED3F-4335-AE79-9C2D166B279C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SASDAL</RootNamespace>
+    <AssemblyName>SASDAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Account.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountsTransaction.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountType.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashAndBank.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashAndBankDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashAndBankHistory.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashAndBankStatement.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashAndBankTransaction.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CashBank\AccountDetailDAL.cs" />
+    <Compile Include="CashBank\CashBankDetailDAL.cs" />
+    <Compile Include="CashBank\IAccountDetialsDAL.cs" />
+    <Compile Include="CashBank\ICashBankDetialsDAL.cs" />
+    <Compile Include="CashFlowCalendar.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CategoriesContent.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Category.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CompanyDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Country.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CountryCurrency.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CreditNote.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Customer.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomerDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomersBusinessCard.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomersCreditDaysPaidInDay.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomersHistory.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomersPaymentDueDay.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CustomersStatement.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Customers\CustomerHistoryDAL.cs" />
+    <Compile Include="Customers\CustomersDAL.cs" />
+    <Compile Include="Customers\ICustomerHistoryDAL.cs" />
+    <Compile Include="Customers\ICustomersDAL.cs" />
+    <Compile Include="Customers\IPandSSoldToCustomersDAL.cs" />
+    <Compile Include="Customers\PandSSoldToCustomersDAL.cs" />
+    <Compile Include="DebitNote.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InvoicesCreditNotesPayment.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InvoicesDebitNotesPayment.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LastSelectionHistory.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MasterModule.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Option.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PandSHistory.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PandSPurchase.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PandSPurchasedFromSupplier.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PandSSold.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PandSSoldToCustomer.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductsAndService.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product\CountAndAdjustStockDAL.cs" />
+    <Compile Include="Product\CountAndAdjustStockListDAL.cs" />
+    <Compile Include="Product\ICountAndAdjustStockDAL.cs" />
+    <Compile Include="Product\ICountAndAdjustStockListDAL.cs" />
+    <Compile Include="Product\IPandSCodesAndRatesListDAL.cs" />
+    <Compile Include="Product\IPandSCostPriceListDAL.cs" />
+    <Compile Include="Product\IPandSDescriptionListDAL.cs" />
+    <Compile Include="Product\IPandSDetailsDAL.cs" />
+    <Compile Include="Product\IPandSPurchaseDAL.cs" />
+    <Compile Include="Product\IPandSSellPriceListDAL.cs" />
+    <Compile Include="Product\IPandSSoldDAL.cs" />
+    <Compile Include="Product\IPandSStockQuantitiesListDAL.cs" />
+    <Compile Include="Product\IPandSStockValueListDAL.cs" />
+    <Compile Include="Product\PandSCodesAndRatesListDAL.cs" />
+    <Compile Include="Product\PandSCostPriceListDAL.cs" />
+    <Compile Include="Product\PandSDescriptionListDAL.cs" />
+    <Compile Include="Product\PandSDetailsDAL.cs" />
+    <Compile Include="Product\PandSPurchaseDAL.cs" />
+    <Compile Include="Product\PandSSellPriceListDAL.cs" />
+    <Compile Include="Product\PandSSoldDAL.cs" />
+    <Compile Include="Product\PandSStockQuantitiesListDAL.cs" />
+    <Compile Include="Product\PandSStockValueListDAL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchaseAndSales_Categories.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseAndSales_CategoriesContent.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseInvoice.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseInvoiceDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseOrder.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseOrderDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseQuotation.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PurchaseQuotationDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Purchasing\AdjustDebitNoteDAl.cs" />
+    <Compile Include="Purchasing\DebitNoteDAL.cs" />
+    <Compile Include="Purchasing\DebitNoteListDAL.cs" />
+    <Compile Include="Purchasing\IAdjustDebitNoteDAl.cs" />
+    <Compile Include="Purchasing\IDebitNoteDAL.cs" />
+    <Compile Include="Purchasing\IDebitNoteListDAL.cs" />
+    <Compile Include="Purchasing\IPaymentsToSuppliersListDAL.cs" />
+    <Compile Include="Purchasing\IPaymentToSupplierDAl.cs" />
+    <Compile Include="Purchasing\IPurchaseInvoiceBEDAL.cs" />
+    <Compile Include="Purchasing\IPurchaseInvoiceListDAL.cs" />
+    <Compile Include="Purchasing\IPurchaseInvoicePandSDAL.cs" />
+    <Compile Include="Purchasing\IPurchaseOrderDAL.cs" />
+    <Compile Include="Purchasing\IPurchaseOrderListDAL.cs" />
+    <Compile Include="Purchasing\IPurchaseQuotationDAL.cs" />
+    <Compile Include="Purchasing\IPurchaseQuotationListDAL.cs" />
+    <Compile Include="Purchasing\IRefundFromSupplierDAL.cs" />
+    <Compile Include="Purchasing\IRefundFromSupplierListDAL.cs" />
+    <Compile Include="Purchasing\ISupplierDAL.cs" />
+    <Compile Include="Purchasing\ISupplierHistoryDAL.cs" />
+    <Compile Include="Purchasing\PaymentsToSuppliersListDAL.cs" />
+    <Compile Include="Purchasing\PaymentToSupplierDAl.cs" />
+    <Compile Include="Purchasing\PurchaseInvoiceBEDAL.cs" />
+    <Compile Include="Purchasing\PurchaseInvoiceListDAL.cs" />
+    <Compile Include="Purchasing\PurchaseInvoicePandSDAL.cs" />
+    <Compile Include="Purchasing\PurchaseOrderDAL.cs" />
+    <Compile Include="Purchasing\PurchaseOrderListDAL.cs" />
+    <Compile Include="Purchasing\PurchaseQuotation.cs" />
+    <Compile Include="Purchasing\PurchaseQuotationListDAL.cs" />
+    <Compile Include="Purchasing\RefundFromSupplierDAL.cs" />
+    <Compile Include="Purchasing\RefundFromSuppliersListDAL.cs" />
+    <Compile Include="Purchasing\SupplierDAL.cs" />
+    <Compile Include="Purchasing\SupplierHistoryDAL.cs" />
+    <Compile Include="Role.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesInvoice.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesInvoiceDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesOrder.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesOrderDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesQuotation.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SalesQuotationDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sales\AdjustCreditNoteDAl.cs" />
+    <Compile Include="Sales\CreditNoteDAL.cs" />
+    <Compile Include="Sales\CreditNoteListDAL.cs" />
+    <Compile Include="Sales\IAdjustCreditNoteDAl.cs" />
+    <Compile Include="Sales\ICreditNoteDAL.cs" />
+    <Compile Include="Sales\ICreditNoteListDAL.cs" />
+    <Compile Include="Sales\IPaymentFromCustomersDAL.cs" />
+    <Compile Include="Sales\IPaymentFromCustomersListDAL.cs" />
+    <Compile Include="Sales\IRefundToCustomersDAL.cs" />
+    <Compile Include="Sales\IRefundToCustomersListDAL.cs" />
+    <Compile Include="Sales\ISalesInvoiceDAL.cs" />
+    <Compile Include="Sales\ISalesInvoiceListDAL.cs" />
+    <Compile Include="Sales\ISalesOrderDAL.cs" />
+    <Compile Include="Sales\ISalesOrderListDAL.cs" />
+    <Compile Include="Sales\ISalesQuotationDAL.cs" />
+    <Compile Include="Sales\ISalesQuotationListDAL.cs" />
+    <Compile Include="Sales\PaymentFromCustomersDAL.cs" />
+    <Compile Include="Sales\PaymentFromCustomersListDAL.cs" />
+    <Compile Include="Sales\RefundToCustomersDAL.cs" />
+    <Compile Include="Sales\RefundToCustomersListDAL.cs" />
+    <Compile Include="Sales\SalesInvoiceDAL.cs" />
+    <Compile Include="Sales\SalesInvoiceListDAL.cs" />
+    <Compile Include="Sales\SalesOrderDAL.cs" />
+    <Compile Include="Sales\SalesOrderListDAL.cs" />
+    <Compile Include="Sales\SalesQuotationDAL.cs" />
+    <Compile Include="Sales\SalesQuotationListDAL.cs" />
+    <Compile Include="SASDALEntities.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SASDALEntities.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SASDALEntities.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SASDALEntities.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SASDALEntities.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\CategoriesDAL.cs" />
+    <Compile Include="Settings\CompanyDAL.cs" />
+    <Compile Include="Settings\ICategoriesDAL.cs" />
+    <Compile Include="Settings\ICompanyDAL.cs" />
+    <Compile Include="Settings\IOptionsDAL.cs" />
+    <Compile Include="Settings\ITaxCodesAndRatesDAL.cs" />
+    <Compile Include="Settings\IUserSecurityDAL.cs" />
+    <Compile Include="Settings\OptionsDAL.cs" />
+    <Compile Include="Settings\TaxCodesAndRatesDAL.cs" />
+    <Compile Include="Settings\UserSecurityDAL.cs" />
+    <Compile Include="ShippingAddress.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="State.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StockCount.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StockInOutCard.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Supplier.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SupplierDetail.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SuppliersBusinessCard.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SuppliersCreditDaysPaidInDay.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SuppliersHistory.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SuppliersStatement.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TaxCodesAndRate.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TermsAndCondition.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TopCustomer.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TopPand.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TopSupplier.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransferMoney.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRole.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserSecurity.cs">
+      <DependentUpon>SASDALEntities.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+    <EntityDeploy Include="SASDALEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SASDALEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="SASDALEntities.edmx.diagram">
+      <DependentUpon>SASDALEntities.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Client\UIEntities\SDN.UI.Entities\SDN.UI.Entities.csproj">
+      <Project>{d2de95a2-9053-4f19-870b-97c4487820f9}</Project>
+      <Name>SDN.UI.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\SDN.Common\SDN.Common.csproj">
+      <Project>{f9920e3e-8140-4db5-ace4-85043e727aad}</Project>
+      <Name>SDN.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SASDALEntities.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SASDALEntities.edmx</DependentUpon>
+      <LastGenOutput>SASDALEntities.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="SASDALEntities.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SASDALEntities.edmx</DependentUpon>
+      <LastGenOutput>SASDALEntities.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

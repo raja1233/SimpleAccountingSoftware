@@ -1,0 +1,283 @@
+﻿using SDN.Settings.ViewModels;
+using SDN.Common;
+using System.Data;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows;
+using System.Linq;
+using System.Windows.Media;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+
+namespace SDN.Settings.Views
+{
+    
+    /// <summary>
+    /// Interaction logic for Category.xaml
+    /// </summary>
+    public partial class CategoryView : UserControl
+    {
+          private readonly IEventAggregator eventAggregator;
+        private readonly IRegionManager regionManager;
+        private CategoryViewModel viewmodel;
+        #region "Constructors"
+        public CategoryView(CategoryViewModel model)
+        {
+            InitializeComponent();
+
+            this.DataContext = model;
+            viewmodel = model;
+            CustomGridLines.ItemsSource = DataGridTableCollection.GridLines(1, 50).AsEnumerable();
+            CustomGridLinesCatContent.ItemsSource = DataGridTableCollection.GridLines(4, 50).AsEnumerable();
+           // CustomGridLinesTermsAndConditions.ItemsSource = DataGridTableCollection.GridLines(4, 50).AsEnumerable();
+        }
+        #endregion
+
+
+        #region Private methods"
+        /// <summary>
+        /// This method is used to get select and focus on grid pressing Enter key
+        /// </summary>
+        private void GetFocusOnContentGrid()
+        {
+            if ((grdCategoryContent.Items.Count > 0) &&
+              (grdCategoryContent.Columns.Count > 0))
+            {
+
+                grdCategoryContent.SelectedIndex = 0;
+                DataGridRow row = (DataGridRow)grdCategoryContent.ItemContainerGenerator.ContainerFromIndex(0);
+                row.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+            }
+        }
+
+        private void GetFocusOnCategoryGrid()
+        {
+            if ((grdCategoryContent.Items.Count > 0) &&
+              (grdCategoryContent.Columns.Count > 0))
+            {
+
+                dg1.SelectedIndex = 0;
+                DataGridRow row = (DataGridRow)dg1.ItemContainerGenerator.ContainerFromIndex(0);
+                row.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get select current row and get focus on control i.e txtbox
+        /// </summary>
+        private void GetFocusOnControl()
+        {
+            for (int i = 0; i < ContentsItemControl.Items.Count; i++)
+            {
+
+                ContentPresenter c = (ContentPresenter)ContentsItemControl.ItemContainerGenerator.ContainerFromItem(ContentsItemControl.Items[i]);
+                TextBox tb = c.ContentTemplate.FindName("txtContentName", c) as TextBox;
+                tb.Focus();
+
+            }
+        }
+
+        /// <summary>
+        /// this method is used to get select on enter
+        /// </summary>
+        private void GetFocusOnButton()
+        {
+            btnOk.Focus();
+        }
+
+        /// <summary>
+        /// Find Child Control from ContentPresenter
+        /// </summary>
+        /// <typeparam name="ChildControl"></typeparam>
+        /// <param name="DependencyObj"></param>
+        /// <returns></returns>
+        private ChildControl FindVisualChild<ChildControl>(DependencyObject DependencyObj)
+        where ChildControl : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(DependencyObj); i++)
+            {
+                DependencyObject Child = VisualTreeHelper.GetChild(DependencyObj, i);
+
+                if (Child != null && Child is ChildControl)
+                {
+                    return (ChildControl)Child;
+                }
+                else
+                {
+                    ChildControl ChildOfChild = FindVisualChild<ChildControl>(Child);
+
+                    if (ChildOfChild != null)
+                    {
+                        return ChildOfChild;
+                    }
+                }
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region "Events"
+
+        /// <summary>
+        /// This method is used to get select or focus to Category Grid on Enter key pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dg1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Right )
+            {
+                GetFocusOnContentGrid();
+            }
+            
+        }
+
+        /// <summary>
+        /// This method is used to get select or focus to Category Grid on Enter key pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dg1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Right)
+            {
+                GetFocusOnContentGrid();
+            }
+        }
+
+
+
+        /// <summary>
+        /// This method is used to get select or focus to Category Content Grid on Enter key pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void grdCategoryContent_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Right )
+            {
+
+                GetFocusOnControl();
+            }
+
+            if(e.Key == Key.Left)
+            {
+                GetFocusOnCategoryGrid();
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get select or focus to Category Content Grid on Enter key pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void grdCategoryContent_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Right )
+            {
+
+                GetFocusOnControl();
+            }
+            if(e.Key == Key.Left)
+            {
+                GetFocusOnCategoryGrid();
+            }
+
+        }
+
+        /// <summary>
+        /// This method is used to navigate on content grid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtContentName_KeyDown(object sender, KeyEventArgs e)
+        {
+           
+            if (e.Key == Key.Left)
+            {
+                GetFocusOnContentGrid();
+            }
+
+            if(e.Key==Key.Enter)
+            {
+                GetFocusOnButton();
+            }
+        }
+
+        /// <summary>
+        /// This method is used to navigate on contentgrid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtContentName_KeyUp(object sender, KeyEventArgs e)
+        {
+            
+            if (e.Key == Key.Left)
+            {
+                GetFocusOnContentGrid();
+            }
+
+            if (e.Key == Key.Enter)
+            {
+                GetFocusOnButton();
+            }
+
+        }
+
+        /// <summary>
+        /// This method to navigate on textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNew_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Tab)
+            {
+                GetFocusOnControl();
+            }
+        }
+
+        /// <summary>
+        /// This method to navigate on textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNew_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Tab)
+            {
+                GetFocusOnControl();
+            }
+        }
+
+
+        /// <summary>
+        /// This method to navigate on textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNew_MouseLeave(object sender, MouseEventArgs e)
+        {
+            GetFocusOnControl();
+        }
+
+        private void dg1_Loaded(object sender, RoutedEventArgs e)
+        {
+            dg1.SelectedIndex = 2;
+        }
+
+        private void grdCategoryContent_Loaded(object sender, RoutedEventArgs e)
+        {
+            grdCategoryContent.SelectedIndex = -1;
+           
+        }
+
+
+        #endregion
+
+        
+    }
+}

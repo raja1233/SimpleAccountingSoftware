@@ -1,0 +1,588 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.CashBank.ViewModels
+{
+    using Microsoft.Practices.Prism.Events;
+    using Microsoft.Practices.Prism.Regions;
+    using Microsoft.Practices.ServiceLocation;
+    using SDN.Common;
+    using SDN.Purchasing.Services;
+    using SDN.Sales.Views;
+    using SDN.UI.Entities;
+    using Services;
+    using System.ComponentModel;
+    using System.Windows;
+    using System.Windows.Input;
+
+    public class ReceiveMoneyViewModel: ReceiveMoneyEntity
+    {
+        #region "Private Members"
+        
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private bool? isChequeFalse;
+        private bool? isChequeTrue;
+        private string currencyName;
+        private bool? isCashChequeEnabled;
+        private string dateFormat;
+        private bool? isNew;
+        private string psErrors;
+        private bool? isTextBoxReadOnly;
+       
+        private IReceiveMoneyRepository rmRepository = new ReceiveMoneyRepository();
+        private IPaymentToSupplierFormRepository payRepository = new PaymentToSupplierFormRepository();
+        #endregion
+
+        #region "Properties"
+        public bool? IsCashChequeEnabled
+        {
+            get { return isCashChequeEnabled; }
+            set
+            {
+                isCashChequeEnabled = value;
+                OnPropertyChanged("IsCashChequeEnabled");
+            }
+        }
+        public bool? IsTextBoxReadOnly
+        {
+            get { return isTextBoxReadOnly; }
+            set
+            {
+                isTextBoxReadOnly = value;
+                OnPropertyChanged("IsTextBoxReadOnly");
+            }
+        }
+
+        public bool? IsChequeFalse
+        {
+            get { return isChequeFalse; }
+            set
+            {
+                isChequeFalse = value;
+                OnPropertyChanged("IsChequeFalse");
+                
+            }
+        }
+        public bool? IsChequeTrue
+        {
+            get { return isChequeTrue; }
+            set
+            {
+                isChequeTrue = value;
+                OnPropertyChanged("IsChequeTrue");
+                
+            }
+        }
+       
+        public string PSErrors
+        {
+            get { return psErrors; }
+            set
+            {
+                psErrors = value;
+                OnPropertyChanged("PSErrors");
+            }
+        }
+        
+        public bool? IsNew
+        {
+            get { return isNew; }
+            set
+            {
+                isNew = value;
+                OnPropertyChanged("IsNew");
+            }
+        }
+       
+        public string DateFormat
+        {
+            get { return dateFormat; }
+            set
+            {
+                dateFormat = value;
+                OnPropertyChanged("DateFormat");
+            }
+        }
+        
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurchaseOrderListViewModel"/> class.
+        /// </summary>
+        public ReceiveMoneyViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.LoadSupplierBackground();
+
+         
+            SaveCommand = new RelayCommand(OnSavePS, CanSave);
+            AccountSelectionChangedCommand = new RelayCommand(CheckAccountDetails);
+            SelectChangedCommand = new RelayCommand(OnTaxCodeChange);
+            NewPSCommand = new RelayCommand(GetNewPS);
+            TextChangedCommand = new RelayCommand(OnTextChanged);
+            NavigateToPaymentToCustomer = new RelayCommand(NavigateToPS);
+            if (!String.IsNullOrEmpty(SharedValues.NewClick))
+            {
+                if (SharedValues.NewClick != "New")
+                {
+                    IsCashChequeEnabled = false;
+                    IsTextBoxReadOnly = true;
+                   
+                    GetReceiveMoneyDetails(SharedValues.NewClick);
+                }
+                else if (SharedValues.NewClick == "New")
+                {
+                    IsCashChequeEnabled = true;
+                    IsTextBoxReadOnly = false;
+                   
+                    GetNewPS();
+                }
+            }
+        }
+
+        public ReceiveMoneyViewModel()
+        {
+        }
+        public RelayCommand TextChangedCommand { get; set; }
+        public RelayCommand NewPSCommand { get; set; }
+        public RelayCommand SaveCommand { get; set; }
+        public RelayCommand SelectChangedCommand { get; set; }
+        public RelayCommand AccountSelectionChangedCommand { get; set; }
+        public RelayCommand NavigateToPaymentToCustomer { get; set; }
+
+        #endregion  Constructor
+
+        #region ButtonCommands
+        void refreshcommand(object param)
+        {
+            RefreshData();
+        }
+
+        void GetNewPS(object param)
+        {
+            IsNew = true;
+            // SelectedSupplierID = 0;
+            IsCashChequeEnabled = true;
+            IsTextBoxReadOnly = false;
+            PSErrors = string.Empty;
+            GetNewPS();
+        }
+
+        void OnSavePS(object param)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Confirmation", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                ReceiveMoneyEntity rsEntity = GetDataIntoModel();
+                string msg = ValidateRefundFromSupplier();
+                if (msg != string.Empty)
+                {
+                    PSErrors = msg;
+                    Mouse.OverrideCursor = null;
+                    return;
+                }
+
+                PSErrors = string.Empty;
+
+                if (rsEntity != null)
+                {
+                    if (IsNew == true)
+                    {
+                        int i = rmRepository.SaveReceiveMoney(rsEntity);
+                        IsCashChequeEnabled = false;
+                        IsTextBoxReadOnly = true;
+                        IsNew = false;
+                    }
+                    else
+                    {
+                        int i = rmRepository.UpdateReceiveMoney(rsEntity);
+                        IsNew = false;
+                        IsCashChequeEnabled = false;
+                        IsTextBoxReadOnly = true;
+                    }
+
+                    Mouse.OverrideCursor = null;
+                }
+            }
+        }
+
+        private void OnTextChanged(object param)
+        {
+            decimal isdec = 0;
+            if(TotalBeforeTaxStr!=string.Empty || TotalBeforeTaxStr!=null)
+            {
+                bool isDecimal = Decimal.TryParse(TotalBeforeTaxStr, out isdec);
+                if(isDecimal)
+                {
+                    TotalBeforeTax = Convert.ToDecimal(isdec);
+                    if (TaxRate != null)
+                    {
+                        TotalTax = (TotalBeforeTax * TaxRate) / 100;
+                    }
+                    else
+                    {
+                        TotalTax = 0;
+                    }
+                    TotalAfterTax = TotalBeforeTax + TotalTax;
+                    TotalTaxStr = Convert.ToString(TotalTax);
+                    TotalAfterTaxStr = Convert.ToString(TotalAfterTax);
+                }
+            }
+        }
+        private void OnTaxCodeChange(object param)
+        {
+            if(SelectedTaxID!=0 || SelectedTaxID!=null)
+            {
+                var tax = LstTaxes.SingleOrDefault(e => e.TaxID == SelectedTaxID);
+                if(tax!=null)
+                {
+                    TaxRate = tax.TaxRate;
+                    OnTextChanged(null);
+                }
+            }
+        }
+
+        public bool CanSave(object param)
+        {
+            if ( (SelectedCashBankAcntID != null || SelectedLinkedAcntID != 0)
+               && !(string.IsNullOrEmpty(TotalBeforeTaxStr)) && !(string.IsNullOrEmpty(CashChequeNo))
+              && CashChequeDate != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        void NavigateToPS(object param)
+        {
+            SharedValues.getValue = "PaymentFromCustomerTab";
+            string obj = param.ToString();
+            SharedValues.NewClick = obj;
+            var mainview = ServiceLocator.Current.GetInstance<PaymentFromCustomersView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            var tabview = ServiceLocator.Current.GetInstance<SalesTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Payment From Customer Form");
+        }
+        
+
+        #endregion
+
+        #region "Private methods"
+
+        public void CheckAccountDetails(object param)
+        {
+            if(IsNew==true)
+            {
+                if (SelectedCashBankAcntID != 0 || SelectedCashBankAcntID != null)
+                {
+                    var actType = CashAndBankAccountsLst.SingleOrDefault(e => e.AccountID == SelectedCashBankAcntID);
+                    if (actType != null)
+                    {
+                        if (actType.AccountType == Convert.ToByte(Account_Type.Cash) && actType.IsLinked == true)
+                        {
+                            IsChequeTrue = false;
+                            IsChequeFalse = true;
+                            IsTextBoxReadOnly = true;
+                            CashChequeNo = "RM-" + rmRepository.GetLastCashNo();
+                            IsCheque = false;
+                        }
+                        else
+                        {
+                            IsChequeTrue = true;
+                            IsChequeFalse = false;
+                            IsTextBoxReadOnly = false;
+                            CashChequeNo = string.Empty;
+                            IsCheque = true;
+                        }
+                    }
+                }
+            }
+        }
+        public ReceiveMoneyEntity GetDataIntoModel()
+        {
+            ReceiveMoneyEntity model = new ReceiveMoneyEntity();
+            model.SelectedLinkedAcntID = this.SelectedLinkedAcntID;
+            model.SelectedCashBankAcntID = this.SelectedCashBankAcntID;
+            model.CashChequeDate = this.CashChequeDate;
+            model.CashChequeNo = this.CashChequeNo;
+            model.TotalBeforeTaxStr = TotalBeforeTaxStr;
+            model.TotalBeforeTax = Convert.ToDecimal(TotalBeforeTaxStr);
+            model.TotalTaxStr = this.TotalTaxStr;
+            model.TotalTax = Convert.ToDecimal(TotalTaxStr);
+            model.TotalAfterTaxStr = this.TotalAfterTaxStr;
+            model.TotalAfterTax = Convert.ToDecimal(TotalAfterTaxStr);
+            model.SelectedTaxID = this.SelectedTaxID;
+            model.TaxRate = this.TaxRate;
+            model.Remarks = this.Remarks;
+            model.IsCheque = this.IsCheque;
+            
+            return model;
+        }
+
+
+        private void OnCashChecked(object param)
+        {
+            IsTextBoxReadOnly = true;
+            CashChequeNo = "RM-" + rmRepository.GetLastCashNo();
+        }
+
+        private void OnChequeChecked(object param)
+        {
+            IsTextBoxReadOnly = false;
+            CashChequeNo = string.Empty;
+        }
+
+        private string ValidateRefundFromSupplier()
+        {
+            string msg = string.Empty;
+           
+            return msg;
+        }
+
+        private void GetNewPS()
+        {
+            SelectedLinkedAcntID = 0;
+            SelectedCashBankAcntID = 0;
+            SelectedTaxID = 0;
+            this.TotalBeforeTaxStr = string.Empty;
+            this.TotalTaxStr = string.Empty;
+            this.TotalAfterTaxStr = string.Empty;
+            this.CashChequeNo = string.Empty;
+            this.Remarks = string.Empty;
+            IsChequeFalse = true;
+            IsChequeTrue = false;
+            IsCheque = true;
+            CashChequeDate = DateTime.Now.Date;
+            IsNew = true;
+            CashChequeNo = "RM-" + rmRepository.GetLastCashNo();
+            IsTextBoxReadOnly = true;
+            
+        }
+
+        private void GetModelData(ReceiveMoneyEntity rmf)
+        {
+            if (IsNew == false)
+            {
+                this.SelectedLinkedAcntID = rmf.SelectedLinkedAcntID;
+                this.SelectedCashBankAcntID = rmf.SelectedCashBankAcntID;
+                this.CashChequeDate = rmf.CashChequeDate;
+                this.CashChequeNo = rmf.CashChequeNo;
+                this.IsCheque = rmf.IsCheque;
+                this.SelectedTaxID = rmf.SelectedTaxID;
+                this.TotalBeforeTaxStr = Convert.ToString(rmf.TotalBeforeTax);
+                this.TotalTaxStr = Convert.ToString(rmf.TotalTax);
+                this.TotalAfterTaxStr = Convert.ToString(rmf.TotalAfterTax);
+                this.Remarks = rmf.Remarks;
+            }
+        }
+
+        private void GetReceiveMoneyDetails(string cashChequeNo)
+        {
+            IsNew = false;
+            IsTextBoxReadOnly = true;
+            IsCashChequeEnabled = false;
+            ReceiveMoneyEntity pqf = rmRepository.GetReceiveMoneyDetails(cashChequeNo);
+            GetModelData(pqf);
+
+        }
+       
+        #endregion
+
+        #region BackgroundWorked
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        List<PurchaseOrderListEntity> DefaultList = new List<PurchaseOrderListEntity>();
+        List<PurchaseOrderListEntity> FullPQList = new List<PurchaseOrderListEntity>();
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        { 
+           
+        }
+        
+        private void RefreshData()
+        {
+            try
+            {
+                GetOptionsandTaxValues();
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        void GetOptionsandTaxValues()
+        {
+            OptionsEntity oData = new OptionsEntity();
+            IPurchaseOrderListRepository purchaseRepository = new PurchaseOrderListRepository();
+            oData = purchaseRepository.GetOptionSettings();
+            if (oData != null)
+            {
+                CurrencyName = oData.CurrencyCode;
+                DateFormat = oData.DateFormat;
+                if (!string.IsNullOrWhiteSpace(oData.DefCashBankAcc))
+                {
+                    this.SelectedCashBankAcntID = Convert.ToInt32(oData.DefCashBankAcc);
+                    CheckAccountDetails(null);
+                }
+            }
+           
+           }
+
+        string changedateformat(DateTime? datetoConvert)
+        {
+            string convertedDate = string.Empty;
+            string date = this.DateFormat as string;
+            var tempdate = Convert.ToDateTime(datetoConvert).ToString(date);
+            convertedDate = tempdate.Replace('-', '/');
+            return convertedDate;
+        }
+       
+
+        protected override void OnPropertyChanged(string name)
+        {
+            base.OnPropertyChanged(name);
+        }
+
+        private void GetListData()
+        {
+            IPurchaseOrderListRepository purchaseRepository = new PurchaseOrderListRepository();
+
+            var linkedAcnts = rmRepository.GetAccountDetails().Where(t => t.AccountType == Convert.ToByte(Account_Type.Income) 
+               || t.AccountType == Convert.ToByte(Account_Type.CurrentAssets) || t.AccountType == Convert.ToByte(Account_Type.FixedAssets)
+               || t.AccountType == Convert.ToByte(Account_Type.CurrentLiabilities) || t.AccountType == Convert.ToByte(Account_Type.LongTermLiabilities)
+             && 
+             (t.AccountType != Convert.ToByte(Account_Type.Capital) || t.AccountType != Convert.ToByte(Account_Type.Costs) || t.AccountType != Convert.ToByte(Account_Type.Expenses)
+             || t.AccountType != Convert.ToByte(Account_Type.Cash) || t.AccountType != Convert.ToByte(Account_Type.Bank))
+             ).ToList();
+
+            if (linkedAcnts != null)
+            {
+                //LinkedAccountsLst = (from a in linkedAcnts
+                //                     select new AccountsEntity
+                //                     {
+                //                         AccountID=a.AccountID,
+                //                         AccountType=a.AccountType,
+                //                         AccountName= a.AccountType + " : " + a.AccountName,
+                //                         AccuntTypeCode=a.AccuntTypeCode,
+                //                         IsInactive=a.IsInactive,
+
+                //                     }).ToList();
+                LinkedAccountsLst = linkedAcnts.ToList();
+            }
+
+            var cashBankAcnts = rmRepository.GetAccountDetails().Where(t => t.AccountType == Convert.ToByte(Account_Type.Cash) ||
+              t.AccountType == Convert.ToByte(Account_Type.Bank) || t.AccountType == Convert.ToByte(Account_Type.CreditCard)).ToList();
+            if (cashBankAcnts != null)
+            {
+                CashAndBankAccountsLst = cashBankAcnts.ToList();
+            }
+
+            var taxes = purchaseRepository.GetDefaultTaxes().ToList();
+            if (taxes != null)
+            {
+                LstTaxes = taxes.ToList();
+
+                var tax = taxes.FirstOrDefault();
+                if (tax != null)
+                {
+                    TaxName = tax.TaxName;
+                }
+                else
+                {
+                    TaxName = "GST";
+                }
+
+                TaxModel objDefaultTax = new TaxModel();
+                objDefaultTax=taxes.Where(e => e.IsDefault == true).FirstOrDefault();
+                if (objDefaultTax != null)
+                {
+                    SelectedTaxID = objDefaultTax.TaxID;
+                    TaxRate = objDefaultTax.TaxRate;
+                }
+                else
+                {
+                    SelectedTaxID = 0;
+                    TaxRate = 0;
+                }
+            }
+
+        }
+
+
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            GetListData();
+            RefreshData();
+      
+            Mouse.OverrideCursor = null;
+
+        }
+
+        #endregion
+    }
+}

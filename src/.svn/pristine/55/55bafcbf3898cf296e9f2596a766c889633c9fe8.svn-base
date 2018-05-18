@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3730916D-C587-4B28-9D16-61BD70181373}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SDN.SimpleAccounting</RootNamespace>
+    <AssemblyName>SDN.SimpleAccounting</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.4.3.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.4.3\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\ReferenceLibrary\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.Interactivity">
+      <HintPath>..\ReferenceLibrary\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.MefExtensions">
+      <HintPath>..\ReferenceLibrary\Microsoft.Practices.Prism.MefExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.UnityExtensions">
+      <HintPath>..\ReferenceLibrary\Microsoft.Practices.Prism.UnityExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ReferenceLibrary\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\ReferenceLibrary\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Infragistics.Themes.MetroLight.Wpf.1.0.0\lib\net40\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Infragistics.Themes.MetroLight.Wpf.1.0.0\lib\net40\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.4.3\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Infragistics.Themes.MetroLight.Wpf.1.0.0\lib\net40\WPFToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SDNBootStrapper.cs" />
+    <Compile Include="SimpleAccounting.xaml.cs">
+      <DependentUpon>SimpleAccounting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SimpleAccountingViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resources\CustomStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Images\ImageSource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SimpleAccounting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\BureauBlack.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\BureauBlue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ExpressionDark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ExpressionLight.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Metro\Metro.MSControls.Core.Implicit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Metro\Metro.MSControls.Toolkit.Implicit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Metro\Styles.Shared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Metro\Styles.WPF.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Metro\Theme.Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ShinyBlue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ShinyRed.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\WhistlerBlue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Header.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Manufacturing.png" />
+    <Resource Include="Resources\Images\Product.png" />
+    <Resource Include="Resources\Images\Purchasing.png" />
+    <Resource Include="Resources\Images\Sales.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Business\Sales\Sales.BLInterface\SDN.Sales.BLInterface.csproj">
+      <Project>{1A520453-1836-49A4-B3AD-BC01DE973E3D}</Project>
+      <Name>SDN.Sales.BLInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Business\Sales\Sales.BL\SDN.Sales.BL.csproj">
+      <Project>{368794BB-8288-4E0F-8A26-71ABE7A15A2B}</Project>
+      <Name>SDN.Sales.BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\CashBank\SDN.CashBank\SDN.CashBank.csproj">
+      <Project>{955538c3-26cc-4277-b7b9-d96c41684c0d}</Project>
+      <Name>SDN.CashBank</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\Sales\SDN.Sales\SDN.Sales.csproj">
+      <Project>{9b0d895b-c6e3-46a4-a640-cd94836a62df}</Project>
+      <Name>SDN.Sales</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\SDN.Navigation\SDN.Navigation.csproj">
+      <Project>{BC4F26C2-A2EA-4BCB-BFA5-4FA78CF95121}</Project>
+      <Name>SDN.Navigation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\Manufacturing\SDN.Manufacturing\SDN.Manufacturing.csproj">
+      <Project>{0BED825C-6CC9-44FF-BA01-18B592F832AC}</Project>
+      <Name>SDN.Manufacturing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\Product\SDN.Product\SDN.Product.csproj">
+      <Project>{637C685C-2D9B-49A0-88EC-AA428757CC5C}</Project>
+      <Name>SDN.Product</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\Purchasing\SDN.Purchasing\SDN.Purchasing.csproj">
+      <Project>{AF7BAF79-4CFC-41D4-AECC-737F6EBFBDA1}</Project>
+      <Name>SDN.Purchasing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Client\Settings\SDN.Settings\SDN.Settings.csproj">
+      <Project>{998ff985-de18-4f93-b2d4-322ccda81020}</Project>
+      <Name>SDN.Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\SDN.Common\SDN.Common.csproj">
+      <Project>{F9920E3E-8140-4DB5-ACE4-85043E727AAD}</Project>
+      <Name>SDN.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Home.png" />
+    <Resource Include="Resources\Images\Info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Metro\HowToApplyTheme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Customers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Accounts.png" />
+    <Resource Include="Resources\Images\Adjusted.png" />
+    <Resource Include="Resources\Images\Cancelled.png" />
+    <Resource Include="Resources\Images\CashandBank.png" />
+    <Resource Include="Resources\Images\Paid.png" />
+    <Resource Include="Resources\Images\Product1.png" />
+    <Resource Include="Resources\Images\Purchasing-old.png" />
+    <Resource Include="Resources\Images\Refunded.png" />
+    <Resource Include="Resources\Images\Settings-old.png" />
+    <Resource Include="Resources\Images\Sold.png" />
+    <Resource Include="Resources\Images\Suppliers.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\files.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\PurchasingOrderList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\PurchasingQuotationList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\PurchasingInvoiceList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\DebitNoteList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\PaymentToSupplier.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\SalesQuotationList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\SalesOrderList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\SalesInvoiceList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\DefaultImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DefaultImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="DefaultImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Shorting-Arrow-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\CreditNoteList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\PaymentFromCustomer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Accounts History.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Accounts Transactions.png" />
+    <Resource Include="Resources\HomePageImages\Accounts.png" />
+    <Resource Include="Resources\HomePageImages\addResult.png" />
+    <Resource Include="Resources\HomePageImages\Adjust Stock copy.png" />
+    <Resource Include="Resources\HomePageImages\Adjust Stock.png" />
+    <Resource Include="Resources\HomePageImages\Backup Data.png" />
+    <Resource Include="Resources\HomePageImages\Balance Sheet.png" />
+    <Resource Include="Resources\HomePageImages\Cash and Bank Statement.png" />
+    <Resource Include="Resources\HomePageImages\Categories.png" />
+    <Resource Include="Resources\HomePageImages\Company Details.png" />
+    <Resource Include="Resources\HomePageImages\Count and.png" />
+    <Resource Include="Resources\HomePageImages\Credit.png" />
+    <Resource Include="Resources\HomePageImages\Customer.png" />
+    <Resource Include="Resources\HomePageImages\Customers History.png" />
+    <Resource Include="Resources\HomePageImages\Customers Statement.png" />
+    <Resource Include="Resources\HomePageImages\Customers.png" />
+    <Resource Include="Resources\HomePageImages\Debit.png" />
+    <Resource Include="Resources\HomePageImages\Details copy.png" />
+    <Resource Include="Resources\HomePageImages\Details-1.png" />
+    <Resource Include="Resources\HomePageImages\Details.png" />
+    <Resource Include="Resources\HomePageImages\Details1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Export Data.png" />
+    <Resource Include="Resources\HomePageImages\from Customer.png" />
+    <Resource Include="Resources\HomePageImages\GST_VAT Codes Rates.png" />
+    <Resource Include="Resources\HomePageImages\GST_VAT Reports.png" />
+    <Resource Include="Resources\HomePageImages\Import Data.png" />
+    <Resource Include="Resources\HomePageImages\Invoice copy.png" />
+    <Resource Include="Resources\HomePageImages\Invoice.png" />
+    <Resource Include="Resources\HomePageImages\Journal.png" />
+    <Resource Include="Resources\HomePageImages\Ledger.png" />
+    <Resource Include="Resources\HomePageImages\Money-1.png" />
+    <Resource Include="Resources\HomePageImages\Money-2.png" />
+    <Resource Include="Resources\HomePageImages\Money.png" />
+    <Resource Include="Resources\HomePageImages\Money1.png" />
+    <Resource Include="Resources\HomePageImages\Money2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Note copy.png" />
+    <Resource Include="Resources\HomePageImages\Note.png" />
+    <Resource Include="Resources\HomePageImages\Open Company File.png" />
+    <Resource Include="Resources\HomePageImages\Options.png" />
+    <Resource Include="Resources\HomePageImages\Order copy.png" />
+    <Resource Include="Resources\HomePageImages\Order.png" />
+    <Resource Include="Resources\HomePageImages\P and S History.png" />
+    <Resource Include="Resources\HomePageImages\P &amp; S Purchased-1.png" />
+    <Resource Include="Resources\HomePageImages\P and S Purchased.png" />
+    <Resource Include="Resources\HomePageImages\P &amp; S Purchased1.png" />
+    <Resource Include="Resources\HomePageImages\P &amp; S Sold-1.png" />
+    <Resource Include="Resources\HomePageImages\P and S Sold.png" />
+    <Resource Include="Resources\HomePageImages\P &amp; S Sold1.png" />
+    <Resource Include="Resources\HomePageImages\P and S.png" />
+    <Resource Include="Resources\HomePageImages\Pay.png" />
+    <Resource Include="Resources\HomePageImages\Payment copy.png" />
+    <Resource Include="Resources\HomePageImages\Payment.png" />
+    <Resource Include="Resources\HomePageImages\Profit andLoss Statement.png" />
+    <Resource Include="Resources\HomePageImages\Purchase-1.png" />
+    <Resource Include="Resources\HomePageImages\Purchase-2.png" />
+    <Resource Include="Resources\HomePageImages\Purchase.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Purchase1.png" />
+    <Resource Include="Resources\HomePageImages\Purchase2.png" />
+    <Resource Include="Resources\HomePageImages\Quotation copy 2.png" />
+    <Resource Include="Resources\HomePageImages\Quotation copy.png" />
+    <Resource Include="Resources\HomePageImages\Quotation.png" />
+    <Resource Include="Resources\HomePageImages\Receive.png" />
+    <Resource Include="Resources\HomePageImages\Refund from.png" />
+    <Resource Include="Resources\HomePageImages\Refund to.png" />
+    <Resource Include="Resources\HomePageImages\Restore Data.png" />
+    <Resource Include="Resources\HomePageImages\Sales copy.png" />
+    <Resource Include="Resources\HomePageImages\Sales-1.png" />
+    <Resource Include="Resources\HomePageImages\Sales-2.png" />
+    <Resource Include="Resources\HomePageImages\Sales.png" />
+    <Resource Include="Resources\HomePageImages\Sales1.png" />
+    <Resource Include="Resources\HomePageImages\Sales2.png" />
+    <Resource Include="Resources\HomePageImages\Stock in_out Card.png" />
+    <Resource Include="Resources\HomePageImages\Supplier.png" />
+    <Resource Include="Resources\HomePageImages\Suppliers History.png" />
+    <Resource Include="Resources\HomePageImages\Suppliers Statement.png" />
+    <Resource Include="Resources\HomePageImages\Supplier_1.png" />
+    <Resource Include="Resources\HomePageImages\to Customer.png" />
+    <Resource Include="Resources\HomePageImages\to Suppliers .png" />
+    <Resource Include="Resources\HomePageImages\Top Customers.png" />
+    <Resource Include="Resources\HomePageImages\Top P and S.png" />
+    <Resource Include="Resources\HomePageImages\Top Suppliers.png" />
+    <Resource Include="Resources\HomePageImages\Transfer.png" />
+    <Resource Include="Resources\HomePageImages\Trial Balance.png" />
+    <Resource Include="Resources\HomePageImages\Users and Security.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Blank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HomePageImages\Supplier_2.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

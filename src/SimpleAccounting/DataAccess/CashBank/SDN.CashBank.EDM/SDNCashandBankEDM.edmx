@@ -1,0 +1,596 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Acc-Type" Type="int" />
+          <Property Name="Acc-Open-Bal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Acc-Cur-Bal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Acc-Year-to-date" Type="datetime" />
+          <Property Name="Acc-Inactive" Type="char" MaxLength="1" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="AccountsTransactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Trans-Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Trans-Date" Type="datetime" />
+          <Property Name="Trans-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Year-to-Date" Type="datetime" />
+          <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Closing-Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="In-Active" Type="char" MaxLength="1" />
+          <Property Name="Invoice-Type" Type="nvarchar" MaxLength="5" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="AccountType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Type-Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Acc-Type-Code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="CashAndBank">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Current-Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Year-to-Date" Type="date" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="CashAndBankDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cus-Id" Type="int" Nullable="false" />
+          <Property Name="Cus-Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Year" Type="tinyint" />
+          <Property Name="Quarter" Type="tinyint" />
+          <Property Name="Month" Type="tinyint" />
+          <Property Name="Start-Date" Type="date" />
+          <Property Name="End-Date" Type="date" />
+          <Property Name="Cash-Cheq-No" Type="nvarchar" MaxLength="20" />
+          <Property Name="Cash-Cheq-Date" Type="date" />
+          <Property Name="Cash-Cheq-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="SO-SI-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="SO-SI-Date" Type="date" />
+          <Property Name="SO-SI-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="CashAndBankHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Year1" Type="tinyint" />
+          <Property Name="Year2" Type="tinyint" />
+          <Property Name="Quater" Type="tinyint" />
+          <Property Name="Col1-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Col2-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Col3-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Total" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="CashAndBankStatement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Year" Type="tinyint" />
+          <Property Name="Quarter" Type="tinyint" />
+          <Property Name="Month" Type="tinyint" />
+          <Property Name="Start-Date" Type="date" />
+          <Property Name="End-Date" Type="date" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Cash-Cheq-No" Type="nvarchar" MaxLength="20" />
+          <Property Name="Cash-Cheq-Date" Type="date" />
+          <Property Name="Deposit" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Withdrawal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="CashAndBankTransactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cus-Sup-Id" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Type" Type="nchar" MaxLength="1" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Is-Cheque" Type="bit" />
+          <Property Name="Cash-Cheque-No" Type="nvarchar" MaxLength="20" />
+          <Property Name="Cash-Cheque-Date" Type="date" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="200" />
+          <Property Name="Cheque-Photo" Type="varchar(max)" />
+          <Property Name="SO-CN-PO-DN-No" Type="nvarchar" MaxLength="50" />
+          <Property Name="SO-CN-PO-DN-Date" Type="datetime" />
+          <Property Name="SO-CN-PO-DN-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Due" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Refunded" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="CashFlowCalendar">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Year1" Type="tinyint" />
+          <Property Name="Year2" Type="tinyint" />
+          <Property Name="Cash-Flow-Month" Type="tinyint" />
+          <Property Name="Amt-Mon" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Tue" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Wed" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Thu" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Fri" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Sat" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Amt-Sun" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Row-Type" Type="nchar" MaxLength="3" />
+          <Property Name="View-Type" Type="nchar" MaxLength="2" Nullable="false" />
+          <Property Name="Payment-To-Cus" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Payment-To-Sup" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="LV-Net-Amt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <Association Name="FK_Accounts_AccountType">
+          <End Role="AccountType" Type="Self.AccountType" Multiplicity="0..1" />
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Accounts">
+              <PropertyRef Name="Acc-Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="simpleaccountingModelStoreContainer">
+          <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AccountsTransactions" EntityType="Self.AccountsTransactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AccountType" EntityType="Self.AccountType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashAndBank" EntityType="Self.CashAndBank" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashAndBankDetails" EntityType="Self.CashAndBankDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashAndBankHistory" EntityType="Self.CashAndBankHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashAndBankStatement" EntityType="Self.CashAndBankStatement" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashAndBankTransactions" EntityType="Self.CashAndBankTransactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CashFlowCalendar" EntityType="Self.CashFlowCalendar" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Accounts_AccountType" Association="Self.FK_Accounts_AccountType">
+            <End Role="AccountType" EntitySet="AccountType" />
+            <End Role="Accounts" EntitySet="Accounts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Acc_Type" Type="Int32" />
+          <Property Name="Acc_Open_Bal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Acc_Cur_Bal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Acc_Year_to_date" Type="DateTime" Precision="3" />
+          <Property Name="Acc_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="AccountType" Relationship="Self.FK_Accounts_AccountType" FromRole="Accounts" ToRole="AccountType" />
+        </EntityType>
+        <EntityType Name="AccountsTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Trans_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Trans_Date" Type="DateTime" Precision="3" />
+          <Property Name="Trans_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Year_to_Date" Type="DateTime" Precision="3" />
+          <Property Name="Opening_Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Closing_Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="In_Active" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Invoice_Type" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="AccountType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Type_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Acc_Type_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Accounts" Relationship="Self.FK_Accounts_AccountType" FromRole="AccountType" ToRole="Accounts" />
+        </EntityType>
+        <EntityType Name="CashAndBank">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Opening_Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Current_Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Year_to_Date" Type="DateTime" Precision="0" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CashAndBankDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cus_Id" Type="Int32" Nullable="false" />
+          <Property Name="Cus_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Year" Type="Byte" />
+          <Property Name="Quarter" Type="Byte" />
+          <Property Name="Month" Type="Byte" />
+          <Property Name="Start_Date" Type="DateTime" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Cash_Cheq_No" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Cash_Cheq_Date" Type="DateTime" Precision="0" />
+          <Property Name="Cash_Cheq_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="SO_SI_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SO_SI_Date" Type="DateTime" Precision="0" />
+          <Property Name="SO_SI_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CashAndBankHistory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Year1" Type="Byte" />
+          <Property Name="Year2" Type="Byte" />
+          <Property Name="Quater" Type="Byte" />
+          <Property Name="Col1_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Col2_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Col3_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CashAndBankStatement">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Year" Type="Byte" />
+          <Property Name="Quarter" Type="Byte" />
+          <Property Name="Month" Type="Byte" />
+          <Property Name="Start_Date" Type="DateTime" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Cash_Cheq_No" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Cash_Cheq_Date" Type="DateTime" Precision="0" />
+          <Property Name="Deposit" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Withdrawal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CashAndBankTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cus_Sup_Id" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Is_Cheque" Type="Boolean" />
+          <Property Name="Cash_Cheque_No" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Cash_Cheque_Date" Type="DateTime" Precision="0" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Cheque_Photo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SO_CN_PO_DN_No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SO_CN_PO_DN_Date" Type="DateTime" Precision="3" />
+          <Property Name="SO_CN_PO_DN_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Due" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Discount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Refunded" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CashFlowCalendar">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Year1" Type="Byte" />
+          <Property Name="Year2" Type="Byte" />
+          <Property Name="Cash_Flow_Month" Type="Byte" />
+          <Property Name="Amt_Mon" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Tue" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Wed" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Thu" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Fri" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Sat" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Amt_Sun" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Row_Type" Type="String" MaxLength="3" FixedLength="true" Unicode="true" />
+          <Property Name="View_Type" Type="String" MaxLength="2" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Payment_To_Cus" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Payment_To_Sup" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="LV_Net_Amt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_Accounts_AccountType">
+          <End Role="AccountType" Type="Self.AccountType" Multiplicity="0..1" />
+          <End Role="Accounts" Type="Self.Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Accounts">
+              <PropertyRef Name="Acc_Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SDNCashandBankEDM" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="AccountsTransactions" EntityType="Self.AccountsTransaction" />
+          <EntitySet Name="AccountTypes" EntityType="Self.AccountType" />
+          <EntitySet Name="CashAndBanks" EntityType="Self.CashAndBank" />
+          <EntitySet Name="CashAndBankDetails" EntityType="Self.CashAndBankDetail" />
+          <EntitySet Name="CashAndBankHistories" EntityType="Self.CashAndBankHistory" />
+          <EntitySet Name="CashAndBankStatements" EntityType="Self.CashAndBankStatement" />
+          <EntitySet Name="CashAndBankTransactions" EntityType="Self.CashAndBankTransaction" />
+          <EntitySet Name="CashFlowCalendars" EntityType="Self.CashFlowCalendar" />
+          <AssociationSet Name="FK_Accounts_AccountType" Association="Self.FK_Accounts_AccountType">
+            <End Role="AccountType" EntitySet="AccountTypes" />
+            <End Role="Accounts" EntitySet="Accounts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="simpleaccountingModelStoreContainer" CdmEntityContainer="SDNCashandBankEDM">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Account">
+              <MappingFragment StoreEntitySet="Accounts">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+                <ScalarProperty Name="Acc_Type" ColumnName="Acc-Type" />
+                <ScalarProperty Name="Acc_Open_Bal" ColumnName="Acc-Open-Bal" />
+                <ScalarProperty Name="Acc_Cur_Bal" ColumnName="Acc-Cur-Bal" />
+                <ScalarProperty Name="Acc_Year_to_date" ColumnName="Acc-Year-to-date" />
+                <ScalarProperty Name="Acc_Inactive" ColumnName="Acc-Inactive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccountsTransactions">
+            <EntityTypeMapping TypeName="simpleaccountingModel.AccountsTransaction">
+              <MappingFragment StoreEntitySet="AccountsTransactions">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="Trans_Type" ColumnName="Trans-Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="No" ColumnName="No" />
+                <ScalarProperty Name="Trans_Date" ColumnName="Trans-Date" />
+                <ScalarProperty Name="Trans_Amount" ColumnName="Trans-Amount" />
+                <ScalarProperty Name="Year_to_Date" ColumnName="Year-to-Date" />
+                <ScalarProperty Name="Opening_Balance" ColumnName="Opening-Balance" />
+                <ScalarProperty Name="Closing_Balance" ColumnName="Closing-Balance" />
+                <ScalarProperty Name="In_Active" ColumnName="In-Active" />
+                <ScalarProperty Name="Invoice_Type" ColumnName="Invoice-Type" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccountTypes">
+            <EntityTypeMapping TypeName="simpleaccountingModel.AccountType">
+              <MappingFragment StoreEntitySet="AccountType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Type_Name" ColumnName="Acc-Type-Name" />
+                <ScalarProperty Name="Acc_Type_Code" ColumnName="Acc-Type-Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashAndBanks">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashAndBank">
+              <MappingFragment StoreEntitySet="CashAndBank">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+                <ScalarProperty Name="Opening_Balance" ColumnName="Opening-Balance" />
+                <ScalarProperty Name="Current_Balance" ColumnName="Current-Balance" />
+                <ScalarProperty Name="Year_to_Date" ColumnName="Year-to-Date" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashAndBankDetails">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashAndBankDetail">
+              <MappingFragment StoreEntitySet="CashAndBankDetails">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cus_Id" ColumnName="Cus-Id" />
+                <ScalarProperty Name="Cus_Name" ColumnName="Cus-Name" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="Quarter" ColumnName="Quarter" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start-Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End-Date" />
+                <ScalarProperty Name="Cash_Cheq_No" ColumnName="Cash-Cheq-No" />
+                <ScalarProperty Name="Cash_Cheq_Date" ColumnName="Cash-Cheq-Date" />
+                <ScalarProperty Name="Cash_Cheq_Amount" ColumnName="Cash-Cheq-Amount" />
+                <ScalarProperty Name="SO_SI_No" ColumnName="SO-SI-No" />
+                <ScalarProperty Name="SO_SI_Date" ColumnName="SO-SI-Date" />
+                <ScalarProperty Name="SO_SI_Amount" ColumnName="SO-SI-Amount" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashAndBankHistories">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashAndBankHistory">
+              <MappingFragment StoreEntitySet="CashAndBankHistory">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+                <ScalarProperty Name="Year1" ColumnName="Year1" />
+                <ScalarProperty Name="Year2" ColumnName="Year2" />
+                <ScalarProperty Name="Quater" ColumnName="Quater" />
+                <ScalarProperty Name="Col1_Amt" ColumnName="Col1-Amt" />
+                <ScalarProperty Name="Col2_Amt" ColumnName="Col2-Amt" />
+                <ScalarProperty Name="Col3_Amt" ColumnName="Col3-Amt" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashAndBankStatements">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashAndBankStatement">
+              <MappingFragment StoreEntitySet="CashAndBankStatement">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="Quarter" ColumnName="Quarter" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start-Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End-Date" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Cash_Cheq_No" ColumnName="Cash-Cheq-No" />
+                <ScalarProperty Name="Cash_Cheq_Date" ColumnName="Cash-Cheq-Date" />
+                <ScalarProperty Name="Deposit" ColumnName="Deposit" />
+                <ScalarProperty Name="Withdrawal" ColumnName="Withdrawal" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashAndBankTransactions">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashAndBankTransaction">
+              <MappingFragment StoreEntitySet="CashAndBankTransactions">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cus_Sup_Id" ColumnName="Cus-Sup-Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="Is_Cheque" ColumnName="Is-Cheque" />
+                <ScalarProperty Name="Cash_Cheque_No" ColumnName="Cash-Cheque-No" />
+                <ScalarProperty Name="Cash_Cheque_Date" ColumnName="Cash-Cheque-Date" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Cheque_Photo" ColumnName="Cheque-Photo" />
+                <ScalarProperty Name="SO_CN_PO_DN_No" ColumnName="SO-CN-PO-DN-No" />
+                <ScalarProperty Name="SO_CN_PO_DN_Date" ColumnName="SO-CN-PO-DN-Date" />
+                <ScalarProperty Name="SO_CN_PO_DN_Amt" ColumnName="SO-CN-PO-DN-Amt" />
+                <ScalarProperty Name="Amt_Due" ColumnName="Amt-Due" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="Amt_Refunded" ColumnName="Amt-Refunded" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashFlowCalendars">
+            <EntityTypeMapping TypeName="simpleaccountingModel.CashFlowCalendar">
+              <MappingFragment StoreEntitySet="CashFlowCalendar">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Year1" ColumnName="Year1" />
+                <ScalarProperty Name="Year2" ColumnName="Year2" />
+                <ScalarProperty Name="Cash_Flow_Month" ColumnName="Cash-Flow-Month" />
+                <ScalarProperty Name="Amt_Mon" ColumnName="Amt-Mon" />
+                <ScalarProperty Name="Amt_Tue" ColumnName="Amt-Tue" />
+                <ScalarProperty Name="Amt_Wed" ColumnName="Amt-Wed" />
+                <ScalarProperty Name="Amt_Thu" ColumnName="Amt-Thu" />
+                <ScalarProperty Name="Amt_Fri" ColumnName="Amt-Fri" />
+                <ScalarProperty Name="Amt_Sat" ColumnName="Amt-Sat" />
+                <ScalarProperty Name="Amt_Sun" ColumnName="Amt-Sun" />
+                <ScalarProperty Name="Row_Type" ColumnName="Row-Type" />
+                <ScalarProperty Name="View_Type" ColumnName="View-Type" />
+                <ScalarProperty Name="Payment_To_Cus" ColumnName="Payment-To-Cus" />
+                <ScalarProperty Name="Payment_To_Sup" ColumnName="Payment-To-Sup" />
+                <ScalarProperty Name="LV_Net_Amt" ColumnName="LV-Net-Amt" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

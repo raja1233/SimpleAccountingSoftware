@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Accounts">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Acc-Type" Type="int" />
+          <Property Name="Acc-Open-Bal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Acc-Cur-Bal" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Acc-Year-to-date" Type="datetime" />
+          <Property Name="Acc-Inactive" Type="char" MaxLength="1" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="AccountsTransactions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Acc-Id" Type="int" />
+          <Property Name="Trans-Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="No" Type="nvarchar" MaxLength="50" />
+          <Property Name="Trans-Date" Type="datetime" />
+          <Property Name="Trans-Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Year-to-Date" Type="datetime" />
+          <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Closing-Balance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="In-Active" Type="char" MaxLength="1" />
+          <Property Name="Invoice-Type" Type="nvarchar" MaxLength="5" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="AccountType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Acc-Type-Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Acc-Type-Code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <Association Name="FK_Accounts_AccountType">
+          <End Role="AccountType" Type="Self.AccountType" Multiplicity="0..1" />
+          <End Role="Accounts" Type="Self.Accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Accounts">
+              <PropertyRef Name="Acc-Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="simpleaccountingModelStoreContainer">
+          <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AccountsTransactions" EntityType="Self.AccountsTransactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AccountType" EntityType="Self.AccountType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Accounts_AccountType" Association="Self.FK_Accounts_AccountType">
+            <End Role="AccountType" EntitySet="AccountType" />
+            <End Role="Accounts" EntitySet="Accounts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="simpleaccountingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Acc_Type" Type="Int32" />
+          <Property Name="Acc_Open_Bal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Acc_Cur_Bal" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Acc_Year_to_date" Type="DateTime" Precision="3" />
+          <Property Name="Acc_Inactive" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <NavigationProperty Name="AccountType" Relationship="simpleaccountingModel.FK_Accounts_AccountType" FromRole="Account" ToRole="AccountType" />
+        </EntityType>
+        <EntityContainer Name="simpleaccountingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="AccountTypes" EntityType="simpleaccountingModel.AccountType" />
+          <AssociationSet Name="FK_Accounts_AccountType" Association="simpleaccountingModel.FK_Accounts_AccountType">
+            <End Role="AccountType" EntitySet="AccountTypes" />
+            <End Role="Account" EntitySet="Accounts" />
+          </AssociationSet>
+          <EntitySet Name="AccountsTransactions" EntityType="simpleaccountingModel.AccountsTransaction" />
+        </EntityContainer>
+        <EntityType Name="AccountType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Acc_Type_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Acc_Type_Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Accounts" Relationship="simpleaccountingModel.FK_Accounts_AccountType" FromRole="AccountType" ToRole="Account" />
+        </EntityType>
+        <Association Name="FK_Accounts_AccountType">
+          <End Type="simpleaccountingModel.AccountType" Role="AccountType" Multiplicity="0..1" />
+          <End Type="simpleaccountingModel.Account" Role="Account" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccountType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Account">
+              <PropertyRef Name="Acc_Type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AccountsTransaction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Acc_Id" Type="Int32" />
+          <Property Name="Trans_Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="No" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Trans_Date" Type="DateTime" Precision="3" />
+          <Property Name="Trans_Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Year_to_Date" Type="DateTime" Precision="3" />
+          <Property Name="Opening_Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Closing_Balance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="In_Active" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="Invoice_Type" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="simpleaccountingModelStoreContainer" CdmEntityContainer="simpleaccountingEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="simpleaccountingModel.Account">
+              <MappingFragment StoreEntitySet="Accounts">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Acc_Name" ColumnName="Acc-Name" />
+                <ScalarProperty Name="Acc_Type" ColumnName="Acc-Type" />
+                <ScalarProperty Name="Acc_Open_Bal" ColumnName="Acc-Open-Bal" />
+                <ScalarProperty Name="Acc_Cur_Bal" ColumnName="Acc-Cur-Bal" />
+                <ScalarProperty Name="Acc_Year_to_date" ColumnName="Acc-Year-to-date" />
+                <ScalarProperty Name="Acc_Inactive" ColumnName="Acc-Inactive" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccountTypes">
+            <EntityTypeMapping TypeName="simpleaccountingModel.AccountType">
+              <MappingFragment StoreEntitySet="AccountType">
+                <ScalarProperty Name="Acc_Type_Code" ColumnName="Acc-Type-Code" />
+                <ScalarProperty Name="Acc_Type_Name" ColumnName="Acc-Type-Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccountsTransactions">
+            <EntityTypeMapping TypeName="simpleaccountingModel.AccountsTransaction">
+              <MappingFragment StoreEntitySet="AccountsTransactions">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="Invoice_Type" ColumnName="Invoice-Type" />
+                <ScalarProperty Name="In_Active" ColumnName="In-Active" />
+                <ScalarProperty Name="Closing_Balance" ColumnName="Closing-Balance" />
+                <ScalarProperty Name="Opening_Balance" ColumnName="Opening-Balance" />
+                <ScalarProperty Name="Year_to_Date" ColumnName="Year-to-Date" />
+                <ScalarProperty Name="Trans_Amount" ColumnName="Trans-Amount" />
+                <ScalarProperty Name="Trans_Date" ColumnName="Trans-Date" />
+                <ScalarProperty Name="No" ColumnName="No" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Trans_Type" ColumnName="Trans-Type" />
+                <ScalarProperty Name="Acc_Id" ColumnName="Acc-Id" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

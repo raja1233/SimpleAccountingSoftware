@@ -1,0 +1,643 @@
+﻿using SDN.Common;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities.HomeScreen
+{
+    public class TodoUnpaidDetailEntity : ViewModelBase
+    {
+        #region "Private members"
+        private int _ID;
+        private string _Name;
+        private string _currencyName;
+        private string _currencyCode;
+        private string _currencyFormat;
+        private decimal? _decimalPlaces;
+        private string _TaxName;
+        private int? _GridHeight;
+        private string _SelectedSearchName;
+        private string _SelectedInvoiceNo;
+        private List<TodoUnpaidDetailEntity> _ListDueDays;
+        private List<TodoUnpaidDetailEntity> _TodoSummary;
+        private List<TodoUnpaidDetailEntity> _ListDueDayscmbSup;
+        private List<TodoUnpaidDetailEntity> _ListDueDayscmbInv;
+        private string _Type;
+        private int? _InvType;
+        private string _InvoiceNo;
+        private decimal? _AmountDue;
+        private string _AmountDueStr;
+        private DateTime? _InvoiceDate;
+        private string _InvoiceDateStr;
+        private DateTime? _PaymentDueDate;
+        private string _PaymentDueDateStr;
+        private int? _CreditDueDays;
+        private int? _OverDueDays;
+        private DateTime? _PromisedDate;
+        private string _PromisedDateStr;
+        private bool? _UnpaidSalesTrue;
+        private bool? _UnpaidPurchaseTrue;
+        private bool? _UnpaidPurSalesTrue;
+        private bool? _UnpaidSummaryTrue;
+        private string _DateFormat;
+        private decimal? _NetAmount;
+        private string _NetAmountStr;
+        private bool? _ShowDetailTrue;
+        private bool? _ShowSummaryTrue;
+        private decimal? _UnpaidPurchaseInvoice;
+        private string _UnpaidPurchaseInvoiceStr;
+        private decimal? _UnpaidSalesInvoice;
+        private string _UnpaidSalesInvoiceStr;
+        private int _SIGridHeight;
+        private string _TotalSalesInvoice;
+        private string _TotalPurchaseInvoiceNo;
+        private string _TotalNetAmount;
+        private string _TotalAmountDue;
+        private int? _ShowSelectedCount;
+        private string _DateformatStr;
+
+        #endregion
+
+        public string DateformatStr
+        {
+            get
+            {
+                return _DateformatStr;
+            }
+            set
+            {
+                _DateformatStr = value;
+                OnPropertyChanged("DateformatStr");
+            }
+        }
+        public int? ShowSelectedCount
+        {
+            get
+            {
+                return _ShowSelectedCount;
+            }
+            set
+            {
+                _ShowSelectedCount = value;
+                OnPropertyChanged("ShowSelectedCount");
+            }
+        }
+
+
+        #region "Public members"
+        public int ID
+        {
+            get { return _ID; }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public string Name
+        {
+            get { return _Name; }
+            set
+            {
+                _Name = value;
+                OnPropertyChanged("Name");
+            }
+        }     
+
+
+
+        public string CurrencyName
+        {
+            get
+            {
+                return _currencyName;
+            }
+            set
+            {
+
+                if (_currencyName != value)
+                {
+                    _currencyName = value;
+                    OnPropertyChanged("CurrencyName");
+                }
+            }
+        }
+
+
+
+
+        public string TotalAmountDue
+        {
+            get
+            {
+               
+                if (_TotalAmountDue == null)
+                    return this._TotalPurchaseInvoiceNo;
+                else
+                {
+                    if (_TotalAmountDue != "")
+                    {
+                        var balance = _TotalAmountDue.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this._TotalAmountDue;
+                }
+            }
+            set
+            {
+                _TotalAmountDue = value;
+                OnPropertyChanged("TotalAmountDue");
+            }
+        }
+
+        public string TotalNetAmount
+        {
+            get
+            {
+                // return _TotalAmount;
+                if (_TotalNetAmount == null)
+                    return this._TotalPurchaseInvoiceNo;
+                else
+                {
+                    if (_TotalNetAmount != "")
+                    {
+                        var balance = _TotalNetAmount.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this._TotalNetAmount;
+                }
+            }
+            set
+            {
+                _TotalNetAmount = value;
+                OnPropertyChanged("TotalNetAmount");
+            }
+        }
+        public string TotalPurchaseInvoiceNo
+        {
+            get
+            {
+                // return _TotalAmount;
+                if (_TotalPurchaseInvoiceNo == null)
+                    return this._TotalPurchaseInvoiceNo;
+                else
+                {
+                    if (_TotalPurchaseInvoiceNo != "")
+                    {
+                        var balance = _TotalPurchaseInvoiceNo.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this._TotalPurchaseInvoiceNo;
+                }
+            }
+            set
+            {
+                _TotalPurchaseInvoiceNo = value;
+                OnPropertyChanged("TotalPurchaseInvoiceNo");
+            }
+        }
+        public string TotalSalesInvoice
+        {
+            get
+            {
+                // return _TotalAmount;
+                if (_TotalSalesInvoice == null)
+                    return this._TotalSalesInvoice;
+                else
+                {
+                    if (_TotalSalesInvoice != "")
+                    {
+                        var balance = _TotalSalesInvoice.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this._TotalSalesInvoice;
+                }
+            }
+            set
+            {
+                _TotalSalesInvoice = value;
+                OnPropertyChanged("TotalSalesInvoice");
+            }
+        }
+        public string CurrencyCode
+        {
+            get { return _currencyCode; }
+
+            set
+            {
+                if (_currencyCode != value)
+                {
+                    _currencyCode = value;
+                    OnPropertyChanged("CurrencyCode");
+                }
+            }
+        }
+        public decimal? UnpaidPurchaseInvoice
+        {
+            get
+            {
+                return _UnpaidPurchaseInvoice;
+            }
+            set
+            {
+                _UnpaidPurchaseInvoice = value;
+                OnPropertyChanged("UnpaidPurchaseInvoice");
+            }
+        }
+        public decimal? UnpaidSalesInvoice
+        {
+            get
+            {
+                return _UnpaidSalesInvoice;
+            }
+            set
+            {
+                _UnpaidSalesInvoice = value;
+                OnPropertyChanged("UnpaidSalesInvoice");
+            }
+        }
+        public string UnpaidPurchaseInvoiceStr
+        {
+            get
+            {
+                return _UnpaidPurchaseInvoiceStr;
+            }
+            set
+            {
+                _UnpaidPurchaseInvoiceStr = value;
+                OnPropertyChanged("UnpaidPurchaseInvoiceStr");
+            }
+        }
+        public int SIGridHeight
+        {
+            get
+            {
+                return _SIGridHeight;
+            }
+            set
+            {
+                _SIGridHeight = value;
+                OnPropertyChanged("SIGridHeight");
+            }
+        }
+        public string UnpaidSalesInvoiceStr
+        {
+            get
+            {
+                return _UnpaidSalesInvoiceStr;
+            }
+            set
+            {
+                _UnpaidSalesInvoiceStr = value;
+                OnPropertyChanged("UnpaidSalesInvoiceStr");
+            }
+        }
+        public string CurrencyFormat
+        {
+            get { return _currencyFormat; }
+
+            set
+            {
+                if (_currencyFormat != value)
+                {
+                    _currencyFormat = value;
+                    OnPropertyChanged("CurrencyFormat");
+                }
+            }
+        }
+        public decimal? DecimalPlaces
+        {
+            get { return _decimalPlaces; }
+
+            set
+            {
+                if (_decimalPlaces != value)
+                {
+                    _decimalPlaces = value;
+                    OnPropertyChanged("DecimalPlaces");
+                }
+            }
+        }
+        public string TaxName
+        {
+            get
+            {
+                return _TaxName;
+            }
+            set
+            {
+                _TaxName = value;
+                OnPropertyChanged("TaxName");
+            }
+        }
+        public int? GridHeight
+        {
+            get
+            {
+                return _GridHeight;
+            }
+            set
+            {
+                _GridHeight = value;
+                OnPropertyChanged("GridHeight");
+            }
+        }
+        public string SelectedSearchName
+        {
+            get
+            {
+                return _SelectedSearchName;
+            }
+            set
+            {
+                _SelectedSearchName = value;
+                OnPropertyChanged("SelectedSearchName");
+            }
+        }
+        public string SelectedInvoiceNo
+        {
+            get
+            {
+                return _SelectedInvoiceNo;
+            }
+            set
+            {
+                _SelectedInvoiceNo = value;
+                OnPropertyChanged("SelectedInvoiceNo");
+            }
+        }
+        public List<TodoUnpaidDetailEntity> ListDueDays
+        {
+            get { return _ListDueDays; }
+            set
+            {
+                _ListDueDays = value;
+                OnPropertyChanged("ListDueDays");
+            }
+        }
+        public List<TodoUnpaidDetailEntity> TodoSummary
+        {
+            get { return _TodoSummary; }
+            set
+            {
+                _TodoSummary = value;
+                OnPropertyChanged("TodoSummary");
+            }
+        }
+        public List<TodoUnpaidDetailEntity> ListDueDayscmbSup
+        {
+            get { return _ListDueDayscmbSup; }
+            set
+            {
+                _ListDueDayscmbSup = value;
+                OnPropertyChanged("ListDueDayscmbSup");
+            }
+        }
+        public List<TodoUnpaidDetailEntity> ListDueDayscmbInv
+        {
+            get { return _ListDueDayscmbInv; }
+            set
+            {
+                _ListDueDayscmbInv = value;
+                OnPropertyChanged("ListDueDayscmbInv");
+            }
+        }
+        public int? InvType
+        {
+            get
+            {
+                return _InvType;
+            }
+            set
+            {
+                _InvType = value;
+                OnPropertyChanged("InvType");
+            }
+        }
+        public string Type
+        {
+            get { return _Type; }
+            set
+            {
+                _Type = value;
+                OnPropertyChanged("Type");
+            }
+        }
+        public string InvoiceNo
+        {
+            get { return _InvoiceNo; }
+            set
+            {
+                _InvoiceNo = value;
+                OnPropertyChanged("InvoiceNo");
+            }
+        }
+        public decimal? AmountDue
+        {
+            get { return _AmountDue; }
+            set
+            {
+                _AmountDue = value;
+                OnPropertyChanged("AmountDue");
+            }
+        }
+        public string AmountDueStr
+        {
+            get { return _AmountDueStr; }
+            set
+            {
+                _AmountDueStr = value;
+                OnPropertyChanged("AmountDueStr");
+            }
+        }
+        public DateTime? InvoiceDate
+        {
+            get { return _InvoiceDate; }
+            set
+            {
+                _InvoiceDate = value;
+                OnPropertyChanged("InvoiceDate");
+            }
+        }
+        public string InvoiceDateStr
+        {
+            get { return _InvoiceDateStr; }
+            set
+            {
+                _InvoiceDateStr = value;
+                OnPropertyChanged("InvoiceDateStr");
+            }
+        }
+        public DateTime? PaymentDueDate
+        {
+            get { return _PaymentDueDate; }
+            set
+            {
+                _PaymentDueDate = value;
+                OnPropertyChanged("PaymentDueDate");
+            }
+        }
+        public string PaymentDueDateStr
+        {
+            get { return _PaymentDueDateStr; }
+            set
+            {
+                _PaymentDueDateStr = value;
+                OnPropertyChanged("PaymentDueDateStr");
+            }
+        }
+        public int? CreditDueDays
+        {
+            get { return _CreditDueDays; }
+            set
+            {
+                _CreditDueDays = value;
+                OnPropertyChanged("CreditDueDays");
+            }
+        }
+        public int? OverDueDays
+        {
+            get { return _OverDueDays; }
+            set
+            {
+                _OverDueDays = value;
+                OnPropertyChanged("OverDueDays");
+            }
+        }
+        public DateTime? PromisedDate
+        {
+            get { return _PromisedDate; }
+            set
+            {
+                _PromisedDate = value;
+                OnPropertyChanged("PromisedDate");
+            }
+        }
+        public string PromisedDateStr
+        {
+            get { return _PromisedDateStr; }
+            set
+            {
+                _PromisedDateStr = value;
+                OnPropertyChanged("PromisedDateStr");
+            }
+        }
+        public bool? UnpaidSalesTrue
+        {
+            get { return _UnpaidSalesTrue; }
+            set
+            {
+                _UnpaidSalesTrue = value;
+                OnPropertyChanged("UnpaidSalesTrue");
+            }
+        }
+        public bool? UnpaidPurchaseTrue
+        {
+            get { return _UnpaidPurchaseTrue; }
+            set
+            {
+                _UnpaidPurchaseTrue = value;
+                OnPropertyChanged("UnpaidPurchaseTrue");
+            }
+        }
+        public bool? UnpaidPurSalesTrue
+        {
+            get { return _UnpaidPurSalesTrue; }
+            set
+            {
+                _UnpaidPurSalesTrue = value;
+                OnPropertyChanged("UnpaidPurSalesTrue");
+            }
+        }
+        public bool? UnpaidSummaryTrue
+        {
+            get { return _UnpaidSummaryTrue; }
+            set
+            {
+                _UnpaidSummaryTrue = value;
+                OnPropertyChanged("UnpaidSummaryTrue");
+            }
+        }
+        public string DateFormat
+        {
+            get { return _DateFormat; }
+            set
+            {
+                _DateFormat = value;
+                OnPropertyChanged("DateFormat");
+            }
+        }
+        public decimal? NetAmount
+        {
+            get { return _NetAmount; }
+            set
+            {
+                _NetAmount = value;
+                OnPropertyChanged("NetAmount");
+            }
+        }
+        public string NetAmountStr
+        {
+            get { return _NetAmountStr; }
+            set
+            {
+                _NetAmountStr = value;
+                OnPropertyChanged("NetAmountStr");
+            }
+        }
+        public bool? ShowDetailTrue
+        {
+            get { return _ShowDetailTrue; }
+            set
+            {
+                _ShowDetailTrue = value;
+                OnPropertyChanged("ShowDetailTrue");
+            }
+        }
+        public bool? ShowSummaryTrue
+        {
+            get { return _ShowSummaryTrue; }
+            set
+            {
+                _ShowSummaryTrue = value;
+                OnPropertyChanged("ShowSummaryTrue");
+            }
+        }
+        #endregion
+    }
+}

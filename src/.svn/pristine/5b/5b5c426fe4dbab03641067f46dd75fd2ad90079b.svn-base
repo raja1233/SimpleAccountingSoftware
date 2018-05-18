@@ -1,0 +1,38 @@
+﻿using SDN.Common;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace SASClient.CloseRequest
+{
+    public class StackList
+    {
+        static List<string> list = new List<string>();
+        Stack st = new Stack();
+        
+        public void AddToList()
+        {
+            if (list.Contains(SharedValues.ViewName))
+            {
+                //list.Add(SharedValues.getValue);
+                int idx = list.IndexOf(SharedValues.ViewName);
+                list.RemoveAt(idx);
+                list.Add(SharedValues.ViewName);
+
+            }
+            else
+            {
+                list.Add(SharedValues.ViewName);
+            }
+            list.ToString();
+            Application.Current.Resources["views"] = list;
+            var f = Application.Current.Resources["views"];
+            
+        } 
+
+    }
+}

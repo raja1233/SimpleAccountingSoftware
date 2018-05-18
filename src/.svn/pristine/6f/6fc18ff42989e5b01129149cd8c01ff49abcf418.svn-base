@@ -1,0 +1,241 @@
+﻿using Microsoft.Reporting.WinForms;
+using Newtonsoft.Json;
+using SASClient.Customers.Services;
+using SASClient.Customers.ViewModel;
+using SDN.Common;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Customers;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.EntityClient;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace SASClient.Reports.ReportsPage
+{
+    /// <summary>
+    /// Interaction logic for SalesInvoiceCreditPayementReportViewer.xaml
+    /// </summary>
+    public partial class SalesInvoiceCreditPayementReportViewer : UserControl
+    {
+        private InvoiceCreditPaymentsViewModel _viewModel;
+        string connectionstring = ConfigurationManager.ConnectionStrings["SASEntitiesEDM"].ConnectionString;
+
+        public SalesInvoiceCreditPayementReportViewer()
+        {
+            InitializeComponent();
+            Type type = typeof(InvoiceCreditPaymentsViewModel);
+            object obj = System.Runtime.Serialization.FormatterServices
+           .GetUninitializedObject(type);
+            _viewModel = (InvoiceCreditPaymentsViewModel)obj;
+            this.DataContext = obj;
+            if (connectionstring.ToLower().StartsWith("metadata="))
+            {
+                EntityConnectionStringBuilder efBuilder = new EntityConnectionStringBuilder(connectionstring);
+                connectionstring = efBuilder.ProviderConnectionString;
+            }
+        }
+        public SalesInvoiceCreditPayementReportViewer(InvoiceCreditPaymentsViewModel model) : this()
+        {
+            InitializeComponent();
+            this.DataContext = _viewModel;
+            _viewModel = model;
+        }
+        private void UserControl_LoadedSalesInvoiceCreditPayment(object sender, RoutedEventArgs e)
+        {
+
+            ////end of binding table
+            reportViewer8.LocalReport.DataSources.Clear();
+            string exefolder = System.Windows.Forms.Application.StartupPath;
+            string reportPath = System.IO.Path.Combine(exefolder, @"SalesInvoiceCreditPayment.rdlc");
+            reportViewer8.LocalReport.ReportPath = reportPath;           
+            reportViewer8.LocalReport.DataSources.Add(new ReportDataSource("CombinedDataSet", Combineddetails()));
+            reportViewer8.LocalReport.DataSources.Add(new ReportDataSource("CompanyDetailsDataSet", Companydetails()));
+
+
+            reportViewer8.RefreshReport();
+            
+            // this.reportViewer1.Width = 75;
+        }
+        private void reportViewer_RenderingComplete(object sender, Microsoft.Reporting.WinForms.RenderingCompleteEventArgs e)
+        {
+
+        }
+
+
+        public DataTable Combineddetails()
+        {
+            DateTime date = new DateTime();
+            int quarterNumber = (date.Month - 1) / 3 + 1;
+            var validdate = SharedValues.JsonDataValues;
+            var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(validdate);
+            var Year = Convert.ToInt16(objResponse1[0].FieldValue);
+            var Quarter = Convert.ToInt16(objResponse1[1].FieldValue);
+            var Month = Convert.ToInt16(objResponse1[2].FieldValue);
+            
+            
+            //var sqf = _viewModel.PrintSalesInvoiceCreditPayment();
+            SqlDataReader rdr = null;
+            DataSet Set = new DataSet();
+            DataTable table = new DataTable();
+            table.Columns.Add("MyId", typeof(System.Int32));
+            // table.Columns.Add("CustId", typeof(System.Int32));
+            table.Columns.Add(new DataColumn("CustomerName", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerBillAddress1", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerBillAddress2", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerBillAddressCity", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerBillAddressState", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerBillAddressCountary", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerBillPostCode", typeof(string)));
+            table.Columns.Add(new DataColumn("CustomerTelephone", typeof(string)));
+            table.Columns.Add(new DataColumn("CurrencyCode", typeof(string)));
+            table.Columns.Add(new DataColumn("FromDate", typeof(string)));
+            table.Columns.Add(new DataColumn("ToDate", typeof(string)));
+
+            foreach (var id in SharedValues.CustomersID)
+            {  
+                using (var con = new SqlConnection(connectionstring))
+                using (var cmd = new SqlCommand("USP_CustomerStatementInvCNPayment", con))
+                using (var da = new SqlDataAdapter(cmd))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID", id);
+                    cmd.Parameters.AddWithValue("@year", Convert.ToInt16(objResponse1[0].FieldValue));
+                    cmd.Parameters.AddWithValue("@Quarter", Convert.ToInt16(objResponse1[1].FieldValue));
+                    cmd.Parameters.AddWithValue("@Month", Convert.ToInt16(objResponse1[2].FieldValue));
+
+                    da.Fill(table);
+                    foreach (DataRow row in table.Rows)
+                    {
+                        string FromDate = row["FromDate"].ToString();
+                        string ToDate = row["ToDate"].ToString();
+                        string customerid = row["MyId"].ToString();
+                        //need to set value to NewColumn column
+                        if (customerid == "" && FromDate == "" && ToDate == "")
+                        {
+                            row["MyId"] = id;
+                            if (Month == 0)
+                            {
+                                DateTime firstDayOfQuarter = new DateTime(Year, (Quarter - 1) * 3 + 1, 1);
+                                DateTime lastDayOfQuarter = firstDayOfQuarter.AddMonths(3).AddDays(-1);
+                                var FirstQuarterDay = firstDayOfQuarter.ToString("dd/MM/yyyy");
+                                var LastQuarterDay = lastDayOfQuarter.ToString("dd/MM/yyyy");
+                                row["FromDate"] = FirstQuarterDay;
+                                row["ToDate"] = LastQuarterDay;
+                            }
+                            else
+                            {
+                                var firstDayOfMonth = new DateTime(Year, Month, 1);
+                                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                                var FirstMonthDay = firstDayOfMonth.ToString("dd/MM/yyyy");
+                                var LastMonthDay = lastDayOfMonth.ToString("dd/MM/yyyy");
+                                row["FromDate"] = FirstMonthDay;
+                                row["ToDate"] = LastMonthDay;
+                            }
+                       
+                        }
+                    }
+
+                    using (var cmd1 = new SqlCommand("USP_CustomerDetails", con))
+                    using (var da1 = new SqlDataAdapter(cmd1))
+                    {
+                        cmd1.CommandType = CommandType.StoredProcedure;
+                        cmd1.Parameters.AddWithValue("@CustomerID", id);
+                        //da.Fill(table);
+
+                        foreach (DataRow row in table.Rows)
+                        {
+                            con.Open();
+                            rdr = cmd1.ExecuteReader();
+                            while (rdr.Read())
+                            {
+                                string CustomerName = row["CustomerName"].ToString();
+                                string CustomerBillAddress1 = row["CustomerBillAddress1"].ToString();
+                                string CustomerBillAddress2 = row["CustomerBillAddress2"].ToString();
+                                string CustomerBillAddressCity = row["CustomerBillAddressCity"].ToString();
+                                string CustomerBillAddressState = row["CustomerBillAddressState"].ToString();
+                                string CustomerBillAddressCountary = row["CustomerBillAddressCountary"].ToString();
+                                string CustomerBillPostCode = row["CustomerBillPostCode"].ToString();
+                                string CustomerTelephone = row["CustomerTelephone"].ToString();
+
+                                var customername = row.ItemArray[1].ToString();
+                                if (customername == "" || customername == null)
+                                {
+                                    row["CustomerName"] = (string)rdr["CustomerName"].ToString();
+                                    row["CustomerBillAddress1"] = (string)rdr["CustomerBillAddress1"].ToString();
+                                    row["CustomerBillAddress2"] = (string)rdr["CustomerBillAddress2"].ToString();
+                                    row["CustomerBillAddressCity"] = (string)rdr["CustomerBillAddressCity"].ToString();
+                                    row["CustomerBillAddressState"] = (string)rdr["CustomerBillAddressState"].ToString();
+                                    row["CustomerBillAddressCountary"] = (string)rdr["CustomerBillAddressCountary"].ToString();
+                                    row["CustomerBillPostCode"] = (string)rdr["CustomerBillPostCode"].ToString();
+                                    row["CustomerTelephone"] = (string)rdr["CustomerTelephone"].ToString();
+
+                                }
+
+                            }
+                            con.Close();
+
+
+                        }
+                    }
+                   
+                    using (var cmd2 = new SqlCommand("USP_OptionDetails", con))
+                    using (var da2 = new SqlDataAdapter(cmd2))
+                    {
+                        cmd2.CommandType = CommandType.StoredProcedure;
+                        foreach (DataRow row in table.Rows)
+                        {
+                            con.Open();
+                            rdr = cmd2.ExecuteReader();
+                            while (rdr.Read())
+                            {
+                                string CurrencyCode = row["CurrencyCode"].ToString();
+                                if (CurrencyCode == "")
+                                {
+                                    row["CurrencyCode"] = (string)rdr["CurrencyCode"].ToString();
+
+                                }
+
+
+                            }
+                            con.Close();
+
+
+                        }
+                    }
+                }
+            }
+                return table;
+            }
+      
+ 
+        public DataTable Companydetails()
+        {
+            DataTable table = new DataTable();
+            using (var con = new SqlConnection(connectionstring))
+            using (var cmd = new SqlCommand("USP_CompanyDetails", con))
+            using (var da = new SqlDataAdapter(cmd))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                da.Fill(table);
+            }
+            return table;
+        }
+
+    }
+}

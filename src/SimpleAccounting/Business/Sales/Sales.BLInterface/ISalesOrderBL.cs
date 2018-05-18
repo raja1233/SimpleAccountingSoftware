@@ -1,0 +1,26 @@
+﻿using SDN.UI.Entities;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.BLInterface
+{
+    public interface ISalesOrderBL
+    {
+        int AddUpdateOrder(SalesOrderForm quotationData);
+        bool DeleteOrder(int purchaseQuotID);
+        bool CanDeleteOrder(int pqID);
+        int UpdationOrder(SalesOrderForm quotationData);
+        int GetLatestOrderNo();
+        int ConvertToSalesInvoice(SalesOrderForm quotationData);
+
+        string GetCategoryContent(string catType);
+        int ConvertToSalesOrder(SalesOrderForm pqForm);
+        SalesOrderForm GetSalesOrder(string pqNo);
+
+        List<SalesOrderEntity> GetAllSalesOrders();
+    }
+}

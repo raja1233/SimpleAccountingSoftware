@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b43b2e6b9556460da3b4929ee43a42ac" Name="Diagram1" ZoomLevel="61">
+        <EntityTypeShape EntityType="simpleaccountingModel.Account" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Category" Width="1.5" PointX="0.75" PointY="1.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CategoriesContent" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CompanyDetail" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Country" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CountryCurrency" Width="1.5" PointX="4.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Option" Width="1.5" PointX="6.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.State" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.TaxCodesAndRate" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <AssociationConnector Association="simpleaccountingModel.FK_CategoriesContent_Categories" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="simpleaccountingModel.PurchaseAndSales_Categories" Width="1.5" PointX="9.375" PointY="10.375" />
+        <EntityTypeShape EntityType="simpleaccountingModel.PurchaseAndSales_CategoriesContent" Width="1.5" PointX="11.625" PointY="10" />
+        <AssociationConnector Association="simpleaccountingModel.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" />
+        <EntityTypeShape EntityType="simpleaccountingModel.MasterModule" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.User" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.UserSecurity" Width="1.5" PointX="11.375" PointY="3.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,228 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.Purchasing
+{
+    using Newtonsoft.Json;
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Suppliers;
+    using System.Data.SqlClient;
+
+    public class InvoiceDebitPaymentsDAL: IInvoiceDebitPaymentsDAL
+    {
+        SASEntitiesEDM entities = new SASEntitiesEDM();
+        public List<InvoiceDebitPaymentsEntity> GetSuppliersList(string json)
+        {
+            string ignored = string.Empty;
+
+          
+            List<InvoiceDebitPaymentsEntity> lstInvoiceDetails = new List<InvoiceDebitPaymentsEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    if(json!=null)
+                    {
+                        var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(json);
+                        lstInvoiceDetails = entities.Database.SqlQuery<InvoiceDebitPaymentsEntity>("USP_InvCNPayment_Suppliers @year,@Quarter,@Month",
+                        new SqlParameter("year", Convert.ToInt64(objResponse1[0].FieldValue)),
+                         new SqlParameter("Quarter", Convert.ToInt64(objResponse1[1].FieldValue)),
+                          new SqlParameter("Month", Convert.ToInt64(objResponse1[2].FieldValue))).ToList();
+                    }
+                    else
+                    {
+                        ignored = JsonConvert.SerializeObject(json,
+                              Formatting.Indented,
+                              new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                        lstInvoiceDetails = entities.Database.SqlQuery<InvoiceDebitPaymentsEntity>("USP_InvCNPayment_Suppliers @year,@Quarter,@Month",
+                        new SqlParameter("year", Convert.ToInt64(0)),
+                         new SqlParameter("Quarter", Convert.ToInt64(0)),
+                          new SqlParameter("Month", Convert.ToInt64(0))).ToList();
+                    }
+                    
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return lstInvoiceDetails;
+        }
+        public List<InvDebitPaymentsDetailsEntity> GetUnPaidInvoices(int supplierID,string json)
+        {
+            var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(json);
+            List<InvDebitPaymentsDetailsEntity> lstInvoiceDetails = new List<InvDebitPaymentsDetailsEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                   lstInvoiceDetails = entities.Database.SqlQuery<InvDebitPaymentsDetailsEntity>("USP_SupplierStatementInvCNPayment @ID, @year,@Quarter,@Month",
+                       new SqlParameter("ID", supplierID),
+                        new SqlParameter("year", Convert.ToInt16(objResponse1[0].FieldValue)),
+                         new SqlParameter("Quarter", Convert.ToInt16(objResponse1[1].FieldValue)),
+                          new SqlParameter("Month", Convert.ToInt16(objResponse1[2].FieldValue))).ToList();
+                }
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return lstInvoiceDetails;
+         }
+        public bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == ScreenId).FirstOrDefault();
+                    if (result != null)
+                    {
+                        result.Last_Selection = jsonSearch;
+                        result.Last_Updated = DateTime.Now;
+                        entities.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        LastSelectionHistory lastSelection = new LastSelectionHistory()
+                        {
+                            Screen_Id = ScreenId,
+                            Screen_Name = ScreenName,
+                            Last_Selection = jsonSearch,
+                            Last_Updated = DateTime.Now
+                        };
+                        entities.LastSelectionHistories.Add(lastSelection);
+                        entities.SaveChanges();
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public string GetLastSelectionData(int ScreenId)
+        {
+            try
+            {
+                DateTime dateTime = DateTime.UtcNow.Date;
+                var month = dateTime.Month;
+
+                var lastMonth = month - 1;
+                if (lastMonth == 0)
+                {
+                    lastMonth = 1;
+                }
+                var result = entities.LastSelectionHistories.Where(x => x.Screen_Id == ScreenId).FirstOrDefault();
+                if (result != null)
+                {
+                    var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(result.Last_Selection);
+                    objResponse1[0].FieldValue = DateTime.UtcNow.Year.ToString();
+                    objResponse1[1].FieldValue = "0";
+                    objResponse1[2].FieldValue = lastMonth.ToString();
+                    var finalresult = JsonConvert.SerializeObject(objResponse1);
+                    return finalresult;
+                }
+
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public InvoiceDebitPaymentsEntity GetPrintPurchaseInvoiceDebitPayment(int supplierID, string json)
+        {
+            InvoiceDebitPaymentsEntity entity = new InvoiceDebitPaymentsEntity();
+            List<InvDebitPaymentsDetailsEntity> InvoiceDebitPay = new List<InvDebitPaymentsDetailsEntity>();
+            var objResponse1 = JsonConvert.DeserializeObject<List<SearchEntity>>(json);
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    InvoiceDebitPay = entities.Database.SqlQuery<InvDebitPaymentsDetailsEntity>("USP_SupplierStatementInvCNPayment @ID, @year,@Quarter,@Month",
+                       new SqlParameter("ID", supplierID),
+                        new SqlParameter("year", Convert.ToInt16(objResponse1[0].FieldValue)),
+                         new SqlParameter("Quarter", Convert.ToInt16(objResponse1[1].FieldValue)),
+                          new SqlParameter("Month", Convert.ToInt16(objResponse1[2].FieldValue))).ToList();
+
+
+                    var Supplier = (from sup in entities.Suppliers
+                                    where sup.ID == supplierID && (sup.IsDeleted == false || sup.IsDeleted == null)
+                                    select new InvoiceDebitPaymentsEntity
+                                    {
+                                        SupplierName = sup.Sup_Name,
+                                        SupplierBillAddress1 = sup.Sup_Bill_to_line1,
+                                        SupplierBillAddress2 = sup.Sup_Bill_to_line2,
+                                        SupplierBillAddressCity = sup.Sup_Bill_to_city,
+                                        SupplierBillAddressState = sup.Sup_Bill_to_state,
+                                        SupplierBillAddressCountary = sup.Sup_Bill_to_country,
+                                        SupplierBillPostCode = sup.Sup_Bill_to_post_code,
+                                        SupplierTelephone = sup.Sup_Telephone
+                                    }).SingleOrDefault();
+                    if (Supplier != null)
+                    {
+                        entity.InvoiceDebitPayement = Supplier;
+                    }
+
+                    var optiondata = (from option in entities.Options
+                                      select new InvoiceDebitPaymentsEntity
+                                      {
+                                          CurrencyCode = option.Currency_Code
+                                      }).SingleOrDefault();
+                    if (optiondata != null)
+                    {
+                        entity.InvoiceDebitPayement.CurrencyCode = optiondata.CurrencyCode;
+                    }
+                    var company = (from com in entities.CompanyDetails
+                                   where (com.IsDeleted == false || com.IsDeleted == null)
+                                   select new InvoiceDebitPaymentsEntity
+                                   {
+                                       CompanyName = com.Comp_Name,
+                                       CompanyLogo = com.Comp_Logo,
+                                       CompanyRegNumber = com.Comp_Reg_No,
+                                       CompanyGstNumber = com.Comp_GST_Reg_No,
+                                       CompanyBillToAddressLine1 = com.Comp_Bill_to_line1,
+                                       CompanyBillToAddressLine2 = com.Comp_Bill_to_line2,
+                                       CompanyBillToCity = com.Comp_Bill_to_city,
+                                       CompanyBillToState = com.Comp_Bill_to_state,
+                                       CompanyBillToCountary = com.Comp_Bill_to_country,
+                                       CompanyBillToPostCode = com.Comp_Bill_to_post_code,
+                                       CompanyEmail = com.Comp_Email,
+                                       CompanyFax = com.Comp_Fax
+                                   }).SingleOrDefault();
+                    if (company != null)
+                    {
+                        //entity.InvoiceDebitPayement = company;
+                        entity.InvoiceDebitPayement.CompanyName = company.CompanyName;
+                        entity.InvoiceDebitPayement.CompanyLogo = company.CompanyLogo;
+                        entity.InvoiceDebitPayement.CompanyRegNumber = company.CompanyRegNumber;
+                        entity.InvoiceDebitPayement.CompanyGstNumber = company.CompanyGstNumber;
+                        entity.InvoiceDebitPayement.CompanyBillToAddressLine1 = company.CompanyBillToAddressLine1;
+                        entity.InvoiceDebitPayement.CompanyBillToAddressLine2 = company.CompanyBillToAddressLine2;
+                        entity.InvoiceDebitPayement.CompanyBillToCity = company.CompanyBillToCity;
+                        entity.InvoiceDebitPayement.CompanyBillToState = company.CompanyBillToState;
+                        entity.InvoiceDebitPayement.CompanyBillToCountary = company.CompanyBillToCountary;
+                        entity.InvoiceDebitPayement.CompanyBillToPostCode = company.CompanyBillToPostCode;
+                    }
+                }
+                entity.LstInvoiceDetails = InvoiceDebitPay;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+            return entity;
+        }
+    }
+}

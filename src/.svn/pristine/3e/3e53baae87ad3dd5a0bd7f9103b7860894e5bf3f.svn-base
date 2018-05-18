@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="simpleaccountingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Accounts">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="Acc-Type" Type="int" />
+    <Property Name="Acc-Open-Bal" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Acc-Cur-Bal" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Acc-Year-to-date" Type="datetime" />
+    <Property Name="Acc-Inactive" Type="char" MaxLength="1" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="IsDeleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="AccountsTransactions">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Acc-Id" Type="int" />
+    <Property Name="Trans-Type" Type="nvarchar" MaxLength="50" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" />
+    <Property Name="No" Type="nvarchar" MaxLength="50" />
+    <Property Name="Trans-Date" Type="datetime" />
+    <Property Name="Trans-Amount" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Year-to-Date" Type="datetime" />
+    <Property Name="Opening-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="Closing-Balance" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="In-Active" Type="char" MaxLength="1" />
+    <Property Name="Invoice-Type" Type="nvarchar" MaxLength="5" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="AccountType">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Acc-Type-Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="Acc-Type-Code" Type="nvarchar" MaxLength="10" />
+  </EntityType>
+  <Association Name="FK_Accounts_AccountType">
+    <End Role="AccountType" Type="Self.AccountType" Multiplicity="0..1" />
+    <End Role="Accounts" Type="Self.Accounts" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AccountType">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Accounts">
+        <PropertyRef Name="Acc-Type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="simpleaccountingModelStoreContainer">
+    <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AccountsTransactions" EntityType="Self.AccountsTransactions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="AccountType" EntityType="Self.AccountType" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Accounts_AccountType" Association="Self.FK_Accounts_AccountType">
+      <End Role="AccountType" EntitySet="AccountType" />
+      <End Role="Accounts" EntitySet="Accounts" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

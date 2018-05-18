@@ -1,0 +1,15 @@
+﻿using SDN.UI.Entities.Customers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASBAL.Customers
+{
+    public interface ICustomersUnPaidInvoicesBL
+    {
+        List<CustomersUnpaidInvoicesEntity> GetCustomersList(string statementDate);
+        CustomersStatementEntity GetAllUnPaidInvoice(int supplierID, string statementDate);
+    }
+}

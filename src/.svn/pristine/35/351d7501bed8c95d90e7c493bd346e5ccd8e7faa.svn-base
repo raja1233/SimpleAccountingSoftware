@@ -1,0 +1,241 @@
+﻿using Microsoft.Reporting.WinForms;
+using SDN.Sales.ViewModel;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace SASClient.Reports.ReportsPage
+{
+    /// <summary>
+    /// Interaction logic for SalesInvoicesReportViewer.xaml
+    /// </summary>
+    public partial class SalesInvoicesReportViewer : UserControl
+    {
+        private SalesInvoiceViewModel _viewModelSales; 
+        public SalesInvoicesReportViewer()
+        {
+            InitializeComponent();
+            Type type = typeof(SalesInvoiceViewModel);
+
+            //SalesInvoiceViewModel instance = (SalesInvoiceViewModel)Activator.CreateInstance(type);
+            object obj = System.Runtime.Serialization.FormatterServices
+             .GetUninitializedObject(type);
+            _viewModelSales = (SalesInvoiceViewModel)obj;
+
+            this.DataContext = obj;
+        }
+        public SalesInvoicesReportViewer(SalesInvoiceViewModel model) : this()
+        {
+            InitializeComponent();
+            this.DataContext = _viewModelSales;
+            _viewModelSales = model;
+
+        }
+        //public System.Drawing.Image byteArrayToImage(byte[] bytesArr)
+        //{
+        //    using (var ms = new MemoryStream(bytesArr))
+        //    {
+        //        return System.Drawing.Image.FromStream(ms);
+        //    }
+        //}
+
+        private void UserControl_LoadedSalesInvoices(object sender, RoutedEventArgs e)
+        {
+            //var a = _viewModel.PrintSalesQuotation();
+            SalesInvoiceForm sqf = _viewModelSales.PrintSalesInvoice();
+
+            // System.Drawing.Image newImage = byteArrayToImage(sqf.Quotation.CompanyLogo);
+            // System.Drawing.Image x = (Bitmap)((new ImageConverter()).ConvertFrom(sqf.Quotation.CompanyLogo));
+
+
+            //this is for table grid
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("PandSCode", typeof(string)));
+            dt.Columns.Add(new DataColumn("PandSName", typeof(string)));
+            dt.Columns.Add(new DataColumn("Qty", typeof(string)));
+            dt.Columns.Add(new DataColumn("Price", typeof(string)));
+            dt.Columns.Add(new DataColumn("Discount", typeof(string)));
+            dt.Columns.Add(new DataColumn("Amount", typeof(string)));
+            dt.Columns.Add(new DataColumn("Rate", typeof(string)));
+
+            //ReportingDataset ds = new ReportingDataset();
+
+
+            foreach (var item in sqf.InvoiceDetails)
+            {
+                DataRow dr = dt.NewRow();
+                dr["PandSCode"] = item.PandSCode;
+                dr["PandSName"] = item.PandSName;
+                dr["Qty"] = item.SIQty;
+                dr["Price"] = item.Price.ToString();
+                dr["Discount"] = item.SIDiscount;
+                dr["Amount"] = item.SIAmount.ToString();
+                dr["Rate"] = item.GSTRate.ToString();
+                dt.Rows.Add(dr);
+            }
+
+
+
+            ReportDataSource reportDataSource = new ReportDataSource();
+            reportDataSource.Name = "SalesInvoicesDataSet"; // Name of the DataSet we set in .rdlc
+            reportDataSource.Value = dt;
+            // end of product grid code
+            DataTable dt4 = new DataTable();
+            //for other than table
+            dt4.Columns.Add(new DataColumn("TAndCondition", typeof(string)));
+            dt4.Columns.Add(new DataColumn("TotalBeforeTaxStr", typeof(string)));
+            dt4.Columns.Add(new DataColumn("TotalTax", typeof(string)));
+            dt4.Columns.Add(new DataColumn("TotalAfterTaxStr", typeof(string)));
+            dt4.Columns.Add(new DataColumn("SINo", typeof(string)));
+            dt4.Columns.Add(new DataColumn("SIDate", typeof(string)));
+            dt4.Columns.Add(new DataColumn("PaymentDueDate", typeof(string)));
+            dt4.Columns.Add(new DataColumn("CustomerPONo", typeof(string)));
+
+            DataRow dr4 = dt4.NewRow();
+            dr4["TAndCondition"] = sqf.Invoice.TermsAndConditions;
+            dr4["TotalBeforeTaxStr"] = sqf.Invoice.TotalAfterTax;
+            dr4["TotalTax"] = sqf.Invoice.TotalTax.ToString();
+            dr4["TotalAfterTaxStr"] = sqf.Invoice.TotalAfterTax.ToString();
+            dr4["SINo"] = sqf.Invoice.InvoiceNo;
+            dr4["SIDate"] = sqf.Invoice.InvoiceDate.Date.ToString("dd/M/yyyy");
+            dr4["PaymentDueDate"] = sqf.Invoice.PaymentDueDate;
+            dr4["CustomerPONo"] = sqf.Invoice.CusPoNo;
+            dt4.Rows.Add(dr4);
+
+            ReportDataSource reportDataSource4 = new ReportDataSource();
+            reportDataSource4.Name = "SalesInvoicesUniqueRecordDataSet"; // Name of the DataSet we set in .rdlc
+            reportDataSource4.Value = dt4;
+            // company details
+            /*****Define column*****/
+            DataTable dt1 = new DataTable();
+            dt1.Columns.Add(new DataColumn("CompanyName", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyLogo", typeof(byte[])));
+            dt1.Columns.Add(new DataColumn("CompanyRegNumber", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyGstNumber", typeof(string)));
+            dt1.Columns.Add(new DataColumn("Telephone", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyFax", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyEmail", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyBillToAddressLine1", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyBillToAddressLine2", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyBillToCity", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyBillToState", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyBillToCountary", typeof(string)));
+            dt1.Columns.Add(new DataColumn("CompanyBillToPostCode", typeof(string)));
+            /*****End  column*****/
+            /*****data part*******/
+
+            DataRow dr1 = dt1.NewRow();
+            dr1["CompanyName"] = sqf.Invoice.CompanyName;
+            dr1["CompanyLogo"] = sqf.Invoice.CompanyLogo;
+            dr1["CompanyRegNumber"] = sqf.Invoice.CompanyRegNumber;
+            dr1["CompanyGstNumber"] = sqf.Invoice.CompanyGstNumber;
+            dr1["Telephone"] = sqf.Invoice.Telephone;
+            dr1["CompanyFax"] = sqf.Invoice.CompanyFax;
+            dr1["CompanyEmail"] = sqf.Invoice.CompanyEmail;
+            dr1["CompanyBillToAddressLine1"] = sqf.Invoice.CompanyBillToAddressLine1;
+            dr1["CompanyBillToAddressLine2"] = sqf.Invoice.CompanyBillToAddressLine2;
+            dr1["CompanyBillToCity"] = sqf.Invoice.CompanyBillToCity;
+            dr1["CompanyBillToState"] = sqf.Invoice.CompanyBillToState;
+            dr1["CompanyBillToCountary"] = sqf.Invoice.CompanyBillToCountary;
+            dr1["CompanyBillToPostCode"] = sqf.Invoice.CompanyBillToPostCode;
+
+            dt1.Rows.Add(dr1);
+            /*****data part*******/
+            ReportDataSource reportDataSource1 = new ReportDataSource();
+            reportDataSource1.Name = "CompanyDetailsDataSet"; // Name of the DataSet we set in .rdlc
+            reportDataSource1.Value = dt1;
+            // end of company details
+
+            //Customer Details
+            /****column defn**/
+            DataTable dt2 = new DataTable();
+            dt2.Columns.Add(new DataColumn("CustomerName", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerBillAddress1", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerBillAddress2", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerBillAddressCity", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerBillAddressState", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerBillAddressCountary", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerBillPostCode", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerShipAddress1", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerShipAddress2", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerShipAddressCity", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerShipAddressState", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerShipAddressCountary", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerShipPostCode", typeof(string)));
+            dt2.Columns.Add(new DataColumn("CustomerTelephone", typeof(string)));
+            /****end column defn**/
+            /**data****/
+            DataRow dr2 = dt2.NewRow();
+            dr2["CustomerName"] = sqf.Invoice.CustomerName;
+            dr2["CustomerBillAddress1"] = sqf.Invoice.CustomerBillAddress1;
+            dr2["CustomerBillAddress2"] = sqf.Invoice.CustomerBillAddress2;
+            dr2["CustomerBillAddressCity"] = sqf.Invoice.CustomerBillAddressCity;
+            dr2["CustomerBillAddressState"] = sqf.Invoice.CustomerBillAddressState;
+            dr2["CustomerBillAddressCountary"] = sqf.Invoice.CustomerBillAddressCountary;
+            dr2["CustomerBillPostCode"] = sqf.Invoice.CustomerBillPostCode;
+            dr2["CustomerShipAddress1"] = sqf.Invoice.CustomerShipAddress1;
+            dr2["CustomerShipAddress2"] = sqf.Invoice.CustomerShipAddress2;
+            dr2["CustomerShipAddressCity"] = sqf.Invoice.CustomerShipAddressCity;
+            dr2["CustomerShipAddressState"] = sqf.Invoice.CustomerShipAddressState;
+            dr2["CustomerShipAddressCountary"] = sqf.Invoice.CustomerShipAddressCountary;
+            dr2["CustomerShipPostCode"] = sqf.Invoice.CustomerShipPostCode;
+            dr2["CustomerTelephone"] = sqf.Invoice.CustomerTelephone;
+            
+            /**end data****/
+            dt2.Rows.Add(dr2);
+            ReportDataSource reportDataSource2 = new ReportDataSource();
+            reportDataSource2.Name = "CustomerDetailsDataSet"; // Name of the DataSet we set in .rdlc
+            reportDataSource2.Value = dt2;
+            //End Customer Details 
+
+            //option 
+            DataTable dt3 = new DataTable();
+            dt3.Columns.Add(new DataColumn("CurrencyCode", typeof(string)));
+            dt3.Columns.Add(new DataColumn("NameToPrintSalesInvoice", typeof(string)));
+
+            DataRow dr3 = dt3.NewRow();
+            dr3["CurrencyCode"] = sqf.Invoice.CurrencyCode;
+            dr3["NameToPrintSalesInvoice"] = sqf.Invoice.NameToPrintSalesInvoice;
+            dt3.Rows.Add(dr3);
+
+            ReportDataSource reportDataSource3 = new ReportDataSource();
+            reportDataSource3.Name = "OptionsDataSet"; // Name of the DataSet we set in .rdlc
+            reportDataSource3.Value = dt3;
+            //end options
+            string exefolder = System.Windows.Forms.Application.StartupPath;
+            string reportPath = System.IO.Path.Combine(exefolder, @"SalesInvoices.rdlc");
+           
+            reportViewer3.LocalReport.ReportPath = reportPath;
+            //D:\DayUser\src\SAS - NEW\Client\SASClient\Reports\ReportsRdlc
+            reportViewer3.LocalReport.DataSources.Clear();
+            reportViewer3.LocalReport.DataSources.Add(reportDataSource);
+            reportViewer3.LocalReport.DataSources.Add(reportDataSource1);
+            reportViewer3.LocalReport.DataSources.Add(reportDataSource2);
+            reportViewer3.LocalReport.DataSources.Add(reportDataSource3);
+            reportViewer3.LocalReport.DataSources.Add(reportDataSource4);
+            reportViewer3.RefreshReport();
+            
+            // this.reportViewer1.Width = 75;
+        }
+        private void reportViewer_RenderingComplete(object sender, Microsoft.Reporting.WinForms.RenderingCompleteEventArgs e)
+        {
+
+        }
+    }
+}

@@ -1,0 +1,93 @@
+﻿using SDN.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities
+{
+    public class CustomerTabEntity : ViewModelBase
+    {
+        #region Private Properties
+        private bool? _CustomerDetailTabTrue;
+        private bool? _CustomerHistoryTrue;
+        private bool? _InvoiceTabTrue;
+        private bool? _PandSSoldToCustomersTabTrue;
+        private bool? _PaymentTabTrue;
+        private bool? _TopCustomersTabTrue;
+        #endregion
+        #region Public Properties
+        public bool? CustomerDetailTabTrue
+        {
+            get
+            {
+                return _CustomerDetailTabTrue;
+            }
+            set
+            {
+                _CustomerDetailTabTrue = value;
+                OnPropertyChanged("CustomerDetailTabTrue");
+            }
+        }
+        public bool? CustomerHistoryTrue
+        {
+            get
+            {
+                return _CustomerHistoryTrue;
+            }
+            set
+            {
+                _CustomerHistoryTrue = value;
+                OnPropertyChanged("CustomerHistoryTrue");
+            }
+        }
+        public bool? InvoiceTabTrue
+        {
+            get
+            {
+                return _InvoiceTabTrue;
+            }
+            set
+            {
+                _InvoiceTabTrue = value;
+                OnPropertyChanged("InvoiceTabTrue");
+            }
+        }
+        public bool? PandSSoldToCustomersTabTrue
+        {
+            get
+            {
+                return _PandSSoldToCustomersTabTrue;
+            }
+            set
+            {
+                _PandSSoldToCustomersTabTrue = value;
+                OnPropertyChanged("PandSSoldToCustomersTabTrue");
+            }
+        }
+        public bool? PaymentTabTrue
+        {
+            get
+            {
+                return _PaymentTabTrue;
+            }
+            set
+            {
+                _PaymentTabTrue = value;
+                OnPropertyChanged("PaymentTabTrue");
+            }
+        }
+
+        public bool? TopCustomersTabTrue
+        {
+            get { return _TopCustomersTabTrue; }
+            set
+            {
+                _TopCustomersTabTrue = value;
+                OnPropertyChanged("TopCustomersTabTrue");
+            }
+        }
+        #endregion
+    }
+}

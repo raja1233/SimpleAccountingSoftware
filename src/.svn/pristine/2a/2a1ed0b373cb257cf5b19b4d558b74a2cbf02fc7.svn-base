@@ -1,0 +1,316 @@
+﻿using SDN.Common;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using System.ComponentModel;
+using SASClient.File.Services;
+
+
+namespace SASClient.File.ViewModel
+{
+    public class ImportDataViewModel : ViewModelBase
+    {
+        #region Private Properties
+        private int _ImportGridHeight;
+        private bool isDefult;
+        private bool isReject;
+        private bool isUpdate;
+        private IImportDataRepository ImportRepository = new ImportDataRepository();
+        #endregion
+        #region public property
+        private ObservableCollection<ImportEntity> _ImportDatalist = new ObservableCollection<ImportEntity>();
+        private ObservableCollection<ImportEntity> _ImportDataListItem = new ObservableCollection<ImportEntity>();
+
+
+        public ObservableCollection<ImportEntity> ImportDataList
+        {
+            get
+            {
+                return _ImportDatalist;
+            }
+            set
+            {
+                _ImportDatalist = value;
+                OnPropertyChanged("Transactionlist");
+            }
+        }
+        public ObservableCollection<ImportEntity> ImportDataListItem
+        {
+            get
+            {
+                return _ImportDataListItem;
+            }
+            set
+            {
+                _ImportDataListItem = value;
+                OnPropertyChanged("ImportDtaListItem");
+            }
+        }
+
+
+        public int ImportGridHeight
+        {
+            get
+            {
+                return _ImportGridHeight;
+            }
+            set
+            {
+                _ImportGridHeight = value;
+                OnPropertyChanged("ImportGridHeight");
+            }
+        }
+        public string Name
+        {
+            get; set;
+        }
+        public bool IsDefult
+        {
+            get
+            {
+                return isDefult;
+            }
+            set
+            {
+                isDefult = value;
+                OnPropertyChanged("isDefult");
+            }
+        }
+        public bool IsReject
+        {
+            get
+            {
+                return this.isReject;
+            }
+            set
+            {
+                this.isReject = true;
+                OnPropertyChanged("isReject");
+            }
+        }
+        public bool IsUpdate
+        {
+            get
+            {
+                return isUpdate;
+            }
+            set
+            {
+                isUpdate = value;
+                OnPropertyChanged("isUpdate");
+            }
+        }
+        private bool _radio1IsCheck;
+        public bool Radio1IsCheck
+        {
+            get { return this._radio1IsCheck; }
+            set
+            {
+                this._radio1IsCheck = true;
+                this.OnPropertyChanged("Radio1IsCheck");
+
+            }
+        }
+        private bool _radio2IsCheck;
+        public bool Radio2IsCheck
+        {
+            get { return this._radio2IsCheck; }
+            set
+            {
+                this._radio2IsCheck = value;
+                this.OnPropertyChanged("Radio2IsCheck");
+
+            }
+        }
+        private bool _radio3IsCheck;
+        public bool Radio3IsCheck
+        {
+            get { return this._radio3IsCheck; }
+            set
+            {
+                this._radio3IsCheck = true;
+                this.OnPropertyChanged("Radio3IsCheck");
+
+            }
+        }
+        private bool _radio4IsCheck;
+        public bool Radio4IsCheck
+        {
+            get { return this._radio4IsCheck; }
+            set
+            {
+                this._radio4IsCheck = value;
+                this.OnPropertyChanged("Radio4IsCheck");
+
+            }
+        }
+        //private bool? _RadCheckUpdate;
+        //public bool? RadCheckUpdate
+        //{
+        //    get { return this._RadCheckUpdate; }
+        //    set
+        //    {
+        //        if (this.Radio3IsCheck == true)
+        //            this._RadCheckUpdate = true;
+        //        else
+        //            this._RadCheckUpdate = false;
+        //        this.OnPropertyChanged("RadCheckUpdate");
+
+        //    }
+        //}
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportDataEntity"/> class.
+        /// </summary>
+        public ImportDataViewModel()
+            : base()
+        {
+            CheckIsActive = new RelayCommand(checkisactive);
+            ImportCommand = new RelayCommand(ImportCommands);
+
+            ImportData();
+            ImportDataRadio();
+
+            this.LoadBackground();
+        }
+        public RelayCommand ImportCommand { get; set; }
+
+
+        public void ImportData()
+        {
+            _ImportDatalist.Add(new ImportEntity { ID = 1, MasterName = "Customers Details", IsChecked = true });
+            _ImportDatalist.Add(new ImportEntity { ID = 2, MasterName = "Suppliers Details", IsChecked = false });
+            _ImportDatalist.Add(new ImportEntity { ID = 3, MasterName = "Products and Services Details", IsChecked = false });
+            _ImportDatalist.Add(new ImportEntity { ID = 4, MasterName = "GST/VAT Codes & Rates", IsChecked = false });
+
+        }
+        public void ImportDataRadio()
+        {
+            _ImportDataListItem.Add(new ImportEntity { ID = 1, Name = "Customers Details", IsDefault = true });
+            _ImportDataListItem.Add(new ImportEntity { ID = 2, Name = "Suppliers Details", IsDefault = false });
+            _ImportDataListItem.Add(new ImportEntity { ID = 3, Name = "Products and Services Details", IsDefault = false });
+            _ImportDataListItem.Add(new ImportEntity { ID = 4, Name = "GST/VAT Codes & Rates", IsDefault = false });
+
+        }
+        public void ImportCommands(object parms)
+        {
+            Microsoft.Win32.SaveFileDialog saveCheckedFile = new Microsoft.Win32.SaveFileDialog();
+            Microsoft.Win32.OpenFileDialog ImportDialogueBox = new Microsoft.Win32.OpenFileDialog();
+            saveCheckedFile.Filter = "excel file (*.xlsx)|*.xlxs|excel file (*.xls)|*.xls";
+            ImportDialogueBox.Filter = "excel file (*.xlsx)|*.xlxs|excel file (*.xls)|*.xls";
+            if (Radio1IsCheck == true)
+            {
+                if (saveCheckedFile.ShowDialog() == true)
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    var abc = ImportRepository.ImportData(ImportDataList, saveCheckedFile.FileName);
+                    //var filename= saveCheckedFile.FileName;
+                    Mouse.OverrideCursor = null;
+                }
+            }
+            else
+            {
+                if (Radio2IsCheck == true)
+                {
+                    if (ImportDialogueBox.ShowDialog() == true)
+                    {
+                        Mouse.OverrideCursor = Cursors.Wait;
+                        var filename = ImportDialogueBox.FileName;
+                        foreach (var item in ImportDataListItem)
+                        {
+                            if (item.IsDefault == true)
+                            {
+                                if(this.Radio3IsCheck == true)
+                                ImportRepository.DataTableToList(item.ID, filename, true);
+                                else
+                                    ImportRepository.DataTableToList(item.ID, filename, false);
+                            }
+                        }
+                        var x = ImportRepository.ExcelToDataTable(filename);
+                        Mouse.OverrideCursor = null;
+                    }
+                }
+               
+            }
+        }
+
+
+
+        private void LoadBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+            //worker.DoWork += (s, e) =>
+            //{
+            //    Thread.Sleep(2000);
+            //};
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadUserSecurityBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadUserSecurityBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+
+
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadUserSecurityBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        private void LoadUserSecurityBackground(object sender, DoWorkEventArgs e)
+        {
+            int minHeight = 300;
+            int headerRows = 180;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 250;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.ImportGridHeight = minHeight;
+        }
+        private void LoadUserSecurityBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+        }
+        private void LoadUserSecurityBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        public RelayCommand CheckIsActive { get; set; }
+        public RelayCommand Demo { get; set; }
+
+        void checkisactive(object param)
+        {
+            if (param.ToString() == "True")
+            {
+                foreach (var item in ImportDataList)
+                {
+                    item.IsChecked = true;
+                }
+            }
+            else
+            {
+                foreach (var item in ImportDataList)
+                {
+                    item.IsChecked = false;
+                }
+            }
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,675 @@
+﻿using SDN.Common;
+using SDN.Product.Services;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.ViewModel
+{
+    public class DataGridViewModel : ViewModelBase
+    {
+        //private ObservableCollection<PandSDetailsModel> productAndServices;
+
+        //public ObservableCollection<PandSDetailsModel> ProductAndServices
+        //{
+        //    get
+        //    {
+        //        return productAndServices;
+        //    }
+        //    set
+        //    {
+        //        if (productAndServices != value)
+        //        {
+        //            productAndServices = value;
+        //            OnPropertyChanged("ProductAndServices");
+        //        }
+        //    }
+        //}
+        private ObservableCollection<PandSListModel> productAndServices;
+        public ObservableCollection<PandSListModel> ProductAndServices
+        {
+            get
+            {
+                return productAndServices;
+            }
+            set
+            {
+                if (productAndServices != value)
+                {
+                    productAndServices = value;
+                    OnPropertyChanged("ProductAndServices");
+                }
+            }
+        }
+        public IPandSDetailsRepository pandsRepository = new PandSDetailsRepository();
+
+
+        //public DataGridViewModel(IEnumerable<PandSDetailsModel> ProductList)
+        //{
+        //    if (ProductList == null)
+        //    {
+        //        ProductList = pandsRepository.GetAllPandS();
+        //    }
+        //    ProductAndServices = new ObservableCollection<PandSDetailsModel>(ProductList);
+        //    var data = pandsRepository.GetTaxes().Where(t => t.IsDefault == true).FirstOrDefault();
+        //    if (data != null)
+        //    {
+        //        GSTRate = data.TaxRate;
+        //    }
+
+
+        //}
+        public DataGridViewModel(IEnumerable<PandSListModel> ProductList)
+        {
+            if (ProductList == null)
+            {
+                ProductList = pandsRepository.GetPandSComboList();
+            }
+            ProductAndServices = new ObservableCollection<PandSListModel>(ProductList);            
+
+        }
+
+        private int id;
+        private int sqID;
+        private string sqNo;
+        private string pandSCode;
+        private string pandSName;
+        private int? sqQty;
+        private string sqPrice;
+        private decimal? sqAmount;
+        private decimal? sqDiscount;
+        private string gstCode;
+        private decimal? gstRate;
+        private string selectedPSID;
+        private string selectedPSName;
+        private string taxName;
+        private decimal? amountBeforeTax;       
+        private decimal? taxAmount;
+        private decimal? priceExcTax;
+        private decimal? priceIncTax;
+        private bool excludingTax;
+        private bool? isAllowEditDiscount;
+        private bool? isAllowEditPrice;
+        private bool? isHideDisc;
+        private int decimalPlaces;
+        private string gstRateStr;
+
+
+        public string GSTRateStr
+        {
+            get
+            {
+                return gstRateStr;
+                 
+            }
+            set
+            {
+                if (gstRateStr != value)
+                {
+                    gstRateStr = value;
+                    OnPropertyChanged("GSTRateStr");
+                }
+            }
+        }
+        public int ID
+        {
+
+            get { return id; }
+
+            set
+            {
+                if (id != value)
+                {
+                    id = value;
+                    OnPropertyChanged("ID");
+                }
+            }
+        }
+        public int SQID
+        {
+            get
+            {
+                return sqID;
+            }
+            set
+            {
+                if (sqID != value)
+                {
+                    sqID = value;
+                    OnPropertyChanged("SQID");
+                }
+            }
+        }
+        public string SQNo
+        {
+            get
+            {
+                return sqNo;
+            }
+            set
+            {
+                if (sqNo != value)
+                {
+                    sqNo = value;
+                    OnPropertyChanged("SQNo");
+                }
+            }
+        }
+        public string PandSCode
+        {
+            get
+            {
+                return pandSCode;
+            }
+            set
+            {
+                if (pandSCode != value)
+                {
+                    pandSCode = value;
+                    OnPropertyChanged("PandSCode");
+                }
+            }
+        }
+        public string PandSName
+        {
+            get
+            {
+                return pandSName;
+            }
+            set
+            {
+                if (pandSName != value)
+                {
+                    pandSName = value;
+                    OnPropertyChanged("PandSName");
+                }
+            }
+        }
+
+        public string TaxName
+        {
+            get
+            {
+                return taxName;
+            }
+            set
+            {
+                if (taxName != value)
+                {
+                    taxName = value;
+                    OnPropertyChanged("TaxName");
+                }
+            }
+        }
+
+        public bool ExcludingTax
+        {
+            get
+            {
+                return excludingTax;
+            }
+            set
+            {
+                if (excludingTax != value)
+                {
+                    excludingTax = value;
+                    OnPropertyChanged("ExcludingTax");
+                }
+            }
+        }
+
+        public int DecimalPlaces
+        {
+            get
+            {
+                return decimalPlaces;
+            }
+            set
+            {
+                if (decimalPlaces != value)
+                {
+                    decimalPlaces = value;
+                    OnPropertyChanged("DecimalPlaces");
+                }
+            }
+        }
+
+        public bool? IsHideDisc
+        {
+            get
+            {
+                return isHideDisc;
+            }
+            set
+            {
+                if (isHideDisc != value)
+                {
+                    isHideDisc = value;
+                    OnPropertyChanged("IsHideDisc");
+                }
+            }
+        }
+
+        public bool? IsAllowEditDiscount
+        {
+            get
+            {
+                return isAllowEditDiscount;
+            }
+            set
+            {
+                if (isAllowEditDiscount != value)
+                {
+                    isAllowEditDiscount = value;
+                    OnPropertyChanged("IsAllowEditDiscount");
+                }
+            }
+        }
+        public bool? IsAllowEditPrice
+        {
+            get
+            {
+                return isAllowEditPrice;
+            }
+            set
+            {
+                if (isAllowEditPrice != value)
+                {
+                    isAllowEditPrice = value;
+                    OnPropertyChanged("IsAllowEditPrice");
+                }
+            }
+        }
+        public int? SQQty
+        {
+            get
+            {
+                return sqQty;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    sqQty = value;
+                    OnPropertyChanged("SQQty");
+                    //OnQuantityChangeCalculatePrice();
+                    OnQtyChangeTotalAmt(SharedValues.IsIncludeTax);
+                }
+            }
+        }
+
+        public void OnQuantityChangeCalculatePrice()
+         {
+            if (SQQty != null && SQPrice != null)
+            {
+                this.SQAmount = SQQty * Convert.ToDecimal(SQPrice);
+
+                if (SQDiscount != null)
+                {
+                    SQAmount =Convert.ToDecimal(SQAmount - Convert.ToDecimal((SQAmount * SQDiscount) / 100));
+                }
+                //Calculate Tax amount
+
+                decimal? amtBeforeTax = 0;
+                amtBeforeTax = SQQty * PriceExcTax;
+                TaxAmount = ((amtBeforeTax * GSTRate) / 100);
+                AmountBeforeTax = amtBeforeTax;
+
+
+                SQAmountStr = Convert.ToString(SQAmount);
+            }
+        }
+        public void OnQtyChangeTotalAmt(bool _excludeTax)
+        {
+            if (SQQty != null && SQPrice != null)
+            {
+                this.SQAmount = SQQty * Convert.ToDecimal(SQPrice);               
+                //Calculate Tax amount
+                if (SharedValues.IsIncludeTax==false)
+                {                   
+                    //TaxAmount = 0;
+                    AmountBeforeTax = SQAmount;
+                    TaxAmount= ((AmountBeforeTax * GSTRate) / 100);
+                }
+                else
+                {
+                    decimal? mDevisor = 1;
+                    decimal? mPriceExcTax = 0;
+                    mDevisor = (GSTRate / 100) + 1;
+                    mPriceExcTax = Math.Round(Convert.ToDecimal(SQPrice) / Convert.ToDecimal(mDevisor));
+                    TaxAmount = Convert.ToDecimal(SQAmount)- Convert.ToDecimal(mPriceExcTax)* SQQty;
+                    AmountBeforeTax= Convert.ToDecimal(mPriceExcTax) * SQQty;
+                }
+                if (SQDiscount != null)
+                {
+                    SQAmount = Convert.ToDecimal(SQAmount - Convert.ToDecimal((SQAmount * SQDiscount) / 100));
+                    AmountBeforeTax = Convert.ToDecimal(AmountBeforeTax - (AmountBeforeTax * SQDiscount) / 100);
+                    TaxAmount= Convert.ToDecimal(TaxAmount - Convert.ToDecimal((TaxAmount * SQDiscount) / 100));
+                }
+                else
+                {
+                    SQAmount = Convert.ToDecimal(SQAmount);
+                    AmountBeforeTax = Convert.ToDecimal(AmountBeforeTax);
+                    TaxAmount=Convert.ToDecimal(TaxAmount);
+                }
+
+                SQAmountStr = Convert.ToString(SQAmount);
+            }
+        }
+        public string SQPrice
+        {
+            
+            get
+            {
+                if (sqPrice == null)
+                    return this.sqPrice;
+                else
+                {
+                    if (sqPrice != "")
+                    {
+                        var balance = sqPrice.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.sqPrice;
+                }
+            }
+            set
+            {
+                if (value != null)
+                {
+                    sqPrice = value;
+                    //if (ExcludingTax == true)
+                   if(SharedValues.IsIncludeTax==false)
+                    {
+                        var balance = value.Replace(",", "");
+                        var diff =  Convert.ToDecimal(balance)- PriceExcTax;
+                        if (diff >= 1)
+                        {
+                            PriceIncTax =Convert.ToDecimal(balance) + (Convert.ToDecimal(balance) * (Convert.ToDecimal(GSTRate) / 100));
+                            PriceExcTax = Convert.ToDecimal(balance);
+                        }
+                    }
+                    else
+                    {
+                        var balance = value.Replace(",", "");
+                        var diff =  Convert.ToDecimal(balance)- PriceIncTax;
+                        if (diff >= 1)
+                        {
+                            decimal? mDevisor = 1;                           
+                            mDevisor =  (GSTRate/100)+1;
+                            PriceExcTax = Convert.ToDecimal(balance)/ Convert.ToDecimal(mDevisor);                            
+                            PriceIncTax = Convert.ToDecimal(balance);
+                        }
+                    }
+                   
+                    OnPropertyChanged("SQPrice");
+                    OnQtyChangeTotalAmt(SharedValues.IsIncludeTax);
+                    //  OnQuantityChangeCalculatePrice();
+
+                }
+            }
+
+        }
+        public decimal? SQAmount
+        {
+            get
+            {
+                return sqAmount;
+            }
+            set
+            {
+                if (sqAmount != value)
+                {
+                    sqAmount = value;
+                    OnPropertyChanged("SQAmount");
+                }
+            }
+        }
+        private string sqAmountStr;
+        public string SQAmountStr
+        {
+            get
+            {
+                if (sqAmountStr == null)
+                    return this.sqAmountStr;
+                else
+                {
+                    if (sqAmountStr != "")
+                    {
+                        var balance = sqAmountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.sqAmountStr;
+                }
+            }
+            set
+            {
+                sqAmountStr = value;
+                OnPropertyChanged("SQAmountStr");
+            }
+
+        }
+
+        public decimal? AmountBeforeTax
+        {
+            get
+            {
+                return amountBeforeTax;
+            }
+            set
+            {
+                if (amountBeforeTax != value)
+                {
+                    amountBeforeTax = value;
+                    OnPropertyChanged("AmountBeforeTax");
+                }
+            }
+        }
+      
+        //
+        public decimal? TaxAmount
+        {
+            get
+            {
+                return taxAmount;
+            }
+            set
+            {
+                if (taxAmount != value)
+                {
+                    taxAmount = value;
+                    OnPropertyChanged("TaxAmount");
+                }
+            }
+        }
+        public decimal? PriceExcTax
+        {
+            get
+            {
+                return priceExcTax;
+            }
+            set
+            {
+                if (priceExcTax != value)
+                {
+                    priceExcTax = value;
+                    OnPropertyChanged("PriceExcTax");
+                }
+            }
+        }
+        public decimal? PriceIncTax
+        {
+            get
+            {
+                return priceIncTax;
+            }
+            set
+            {
+                if (priceIncTax != value)
+                {
+                    priceIncTax = value;
+                    OnPropertyChanged("PriceIncTax");
+                }
+            }
+        }
+        public decimal? SQDiscount
+        {
+            get
+            {
+                
+                if (sqDiscount != null)
+                {
+                    sqDiscount = Math.Round((decimal)sqDiscount, 0);
+                }
+                else
+                {
+                    sqDiscount = null;
+                }
+                return sqDiscount;
+            }
+            set
+            {
+                if (sqDiscount != value)
+                {
+                    sqDiscount = value;
+                    OnPropertyChanged("SQDiscount");
+                    // OnQuantityChangeCalculatePrice();
+                    OnQtyChangeTotalAmt(SharedValues.IsIncludeTax);
+                }
+            }
+        }
+        public string GSTCode
+        {
+            get
+            {
+                return gstCode;
+            }
+            set
+            {
+                if (gstCode != value)
+                {
+                    gstCode = value;
+                    OnPropertyChanged("GSTCode");
+                }
+            }
+        }
+        public decimal? GSTRate
+        {
+            get
+            {
+                if (gstRate != null)
+                {
+                    gstRate = Math.Round((decimal)gstRate, 2);
+                }
+                else
+                {
+                    gstRate = 0;
+                }
+                return gstRate;
+            }
+            set
+            {
+                if (gstRate != value)
+                {
+                    gstRate = value;
+
+                    OnPropertyChanged("GSTRate");
+                }
+            }
+        }
+
+        public string SelectedPSID
+        {
+            get
+            {
+                return selectedPSID;
+            }
+            set
+            {
+                if (selectedPSID != value)
+                {
+                    selectedPSID = value;
+                    OnPropertyChanged("SelectedPSID");
+                    OnSelectionChanged();
+                }
+            }
+        }
+
+        public string SelectedPSName
+        {
+            get
+            {
+                return selectedPSName;
+            }
+            set
+            {
+                if (selectedPSName != value)
+                {
+                    selectedPSName = value;
+                    OnPropertyChanged("SelectedPSName");
+                    OnSelectionChanged();
+                }
+            }
+        }       
+
+        private void OnSelectionChanged()
+        {
+            if (ProductAndServices != null && this.SelectedPSID != null)
+            {
+                var sqDetails = ProductAndServices.Where(p => p.ID == Convert.ToInt32(this.SelectedPSID)).SingleOrDefault();
+                if (sqDetails != null)
+                {
+                    PandSCode = sqDetails.PSCode;
+                    PandSName = sqDetails.PSName;
+                    GSTRate = sqDetails.TaxRate;
+                    PriceIncTax = sqDetails.SellPriceIncludingTaxBackup;
+                    PriceExcTax = sqDetails.SellPriceExcludingTaxBackup;
+               
+                    if (SharedValues.IsIncludeTax == false)
+                    {
+                        SQPrice = Convert.ToString(Convert.ToDecimal(sqDetails.SellPriceExcludingTax));
+                        
+                    }
+                    else
+                    {
+                        SQPrice = Convert.ToString(Convert.ToDecimal(sqDetails.SellPriceIncludingTax));
+                    }
+                    SQQty = 1;
+                   // SQDiscount = 0;
+                   if(SharedValues.CustomerDiscount!=null)
+                    {
+                        SQDiscount = SharedValues.CustomerDiscount;
+                    }
+                   
+                    GSTRateStr = Convert.ToString(GSTRate) + "%";
+                    
+                   // OnQtyChangeTotalAmt(ExcludingTax); 
+                }
+            }
+        }
+
+       
+    }
+
+}

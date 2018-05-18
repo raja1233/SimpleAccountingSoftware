@@ -1,0 +1,31 @@
+﻿using SASBAL.Accounts;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Accounts.Services
+{
+    public class UndeliveredPurchaseOrdersDepositsRepository : IUndeliveredPurchaseOrdersDepositsRepository
+    {
+        public List<UndeliveredPurchaseOrdersDepositsEntity> getSupplierList()
+        {
+            IUndeliveredPurchaseOrdersDepositsBL obj = new UndeliveredPurchaseOrdersDepositsBL();
+            return obj.getSupplierList();
+        }
+
+        public string IsChequeNoPresent()
+        {
+            IUndeliveredPurchaseOrdersDepositsBL obj = new UndeliveredPurchaseOrdersDepositsBL();
+            return obj.IsChequeNoPresent();
+        }
+
+        public int SaveUndeliveredPurchaseOrdersDepositsData(UndeliveredPurchaseOrdersDepositsModel JForm)
+        {
+            IUndeliveredPurchaseOrdersDepositsBL obj = new UndeliveredPurchaseOrdersDepositsBL();
+            return obj.SaveUndeliveredPurchaseOrdersDepositsData(JForm);
+        }
+    }
+}

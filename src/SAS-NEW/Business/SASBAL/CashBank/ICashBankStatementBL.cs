@@ -1,0 +1,32 @@
+﻿using SDN.UI.Entities.CashandBank;
+using SDN.UI.Entities.Export;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASBAL.CashBank
+{
+    public  interface ICashBankStatementBL
+    {
+        /// <summary>
+        /// GetBankAccountList
+        /// </summary>
+        /// <returns></returns>
+        List<CashBankStatementEntity> GetBankAccountList();
+
+        List<Cash_and_Bank_Statement> GetExportDataList(int CashBankStatementID, string jsondata,string FileName);
+
+        /// <summary>
+        /// GetAccountDetailList
+        /// </summary>
+        /// <param name="CashBankStatementID"></param>
+        /// <param name="jsondata"></param>
+        /// <returns></returns>
+        List<CashBankStatementEntity> GetAccountDetailList(int CashBankStatementID, string jsondata);
+        bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName);
+        string GetLastSelectionData(int ScreenId);
+    }
+}

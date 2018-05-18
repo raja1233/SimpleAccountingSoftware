@@ -1,0 +1,226 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SDN.UI.Entities.Accounts;
+using System.Data.Entity;
+
+namespace SASDAL.Accounts
+{
+    public class JournalFormDAL : IJournalFormDAL
+    {
+        public IEnumerable<JournalFormEntity> GetAccountsListComboList()
+        {
+            List<JournalFormEntity> AccountName = new List<JournalFormEntity>();
+            using (SASEntitiesEDM objEntities = new SASEntitiesEDM())
+            {
+                try
+                {
+                    AccountName = objEntities.Database.SqlQuery<JournalFormEntity>("JournalFormList").ToList();
+                    var _getlist = AccountName.Where(x => x.AccountName != "Suspense Account").ToList();
+                    return AccountName=_getlist;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        public JournalForm GetJournalDetails(string JNo)
+        {
+            JournalForm JSform = new JournalForm();
+            try
+            {
+
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.Journals
+                              where pqs.J_No == JNo
+                              select new JournalFormEntity
+                              {
+                                  JournalNo = pqs.J_No,
+                                  JournalDate = pqs.J_Date,  
+                              }).FirstOrDefault();
+
+                    if (pq != null)
+                    {
+
+                        JSform.JournalData = pq;
+                    }
+
+
+                    var pqd = (from pqs in entities.JournalDetails
+                               where pqs.JO_No == JNo
+                               select new JournalFormEntity
+                               {
+                                   ID = pqs.Acc_ID,
+                                   JournalDate = pqs.JO_Date,
+                                   JournalNo = pqs.JO_No,
+                                   Credit = pqs.JO_Credit_,
+                                   Debit = pqs.JO_Debit_,
+                                  
+                               }).ToList<JournalFormEntity>();
+
+                    if (pqd != null)
+                    {
+                        JSform.JournalaDataDetails = pqd;
+                    }
+
+                    return JSform;
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public string GetLatestInvoiceNo()
+        {
+            string sNo = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.Journals
+                              orderby pqs.J_CreatedDate descending
+                              select new
+                              {
+                                  pqs.ID, 
+                                  pqs.J_No,
+                                  pqs.J_Date
+                              }
+
+                             ).ToList();
+                    if (pq.Count > 0)
+                    {
+                        sNo = pq.Take(1).SingleOrDefault().J_No;
+                        if (sNo != null)
+                        {
+                            string[] str = sNo.Split('-');
+                            if (str != null)
+                            {
+                                sNo = Convert.ToString(Convert.ToInt64(str[1]) + 1);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        sNo = Convert.ToString(1);
+                    }
+                }
+                return sNo;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool IsChequeNoPresent(string JNumber)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = entities.Journals.Where(e => e.J_No == JNumber).ToList();
+                    if (po.Count > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public int SaveJournalData(JournalForm JForm)
+        {
+            int autoId = 0;
+            Journal obj = new Journal();
+            obj.J_No = JForm.JournalData.JournalNo;
+            obj.J_Date = JForm.JournalData.JournalDate;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    if (entities.Journals.AsNoTracking().FirstOrDefault(x => x.ID == JForm.JournalData.ID) == null)
+                    {
+                        //obj.CreatedBy = invoiceData.SIModel.CreatedBy;
+                        obj.J_CreatedDate = DateTime.Now;
+                        entities.Journals.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = invoiceData.SIModel.ModifiedBy;
+                        obj.J_ModifiedDate= DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    JForm.JournalData.ID = autoId;
+
+                  if (autoId > 0)
+                    {
+                        JournalDetail obj1;
+                        if(JForm.JournalaDataDetails!=null)
+                        {
+                            foreach (JournalFormEntity JEntity  in JForm.JournalaDataDetails)
+                            {
+                                //save entity value
+                                obj1 = new JournalDetail();
+                                obj1.Acc_ID = JEntity.ID;
+                                obj1.JO_ID_ = autoId;
+                                obj1.JO_No = JForm.JournalData.JournalNo;
+                                obj1.JO_Date = JForm.JournalData.JournalDate;
+                                obj1.JO_Debit_ = JEntity.Debit;
+                                obj1.JO_Credit_ = JEntity.Credit;
+
+                                if (entities.JournalDetails.AsNoTracking().FirstOrDefault(x => x.ID == JEntity.ID) == null)
+                                {
+                                    entities.JournalDetails.Add(obj1);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(obj1).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                               
+
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                    }
+
+
+                    
+
+                }
+                return autoId;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                throw ex;
+            }
+           
+            //return 1;
+        }
+
+      
+
+
+    }
+}

@@ -1,0 +1,194 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.Accounts.Views;
+using SASClient.CloseRequest;
+using SDN.Common;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class GstAndVatSubTabViewModel : GstAndVatSummaryEntity
+    {
+
+        #region "Private members"
+
+        StackList listitem = new StackList();
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+
+        public GstAndVatSubTabViewModel(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+
+        }
+        public GstAndVatSubTabViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.setdefaultTab();
+            //inInitializer();
+        }
+
+        /// <summary>
+        /// The Companydetails click command
+        /// </summary>
+        private readonly DelegateCommand showTaxSummaryCommand = null;
+        private readonly DelegateCommand showTaxCollectedCommand = null;
+        private readonly DelegateCommand showTaxPaidDetailsCommand = null;
+
+
+
+
+
+        #endregion
+
+        #region "Public properties"
+
+        /// <summary>
+        /// Gets the Company details click command.
+        /// </summary>
+        /// <value>
+        /// The Companydetails click command.
+        /// </value>
+
+        public DelegateCommand ShowTaxSummaryCommand
+        {
+            get
+            {
+                return (this.showTaxSummaryCommand ?? new DelegateCommand(this.ShowSummaryView));
+            }
+        }
+        public DelegateCommand ShowTaxCollectedCommand
+        {
+            get
+            {
+                return (this.showTaxCollectedCommand ?? new DelegateCommand(this.ShowTaxCollectedView));
+            }
+        }
+        public DelegateCommand ShowTaxPaidDetailsCommand
+        {
+            get
+            {
+                return (this.showTaxPaidDetailsCommand ?? new DelegateCommand(this.ShowTaxpaidView));
+            }
+        }
+
+
+
+        #endregion
+
+        #region "Private Methods"
+
+        private void ShowSummaryView()
+        {
+            SharedValues.ScreenCheckName = "GST Reports";
+            SharedValues.ViewName = "Gst/Vat Summary";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                SharedValues.getValue = "GstSummarytabTrue";
+                var view = ServiceLocator.Current.GetInstance<GstAndVatSummaryView>();
+
+
+                var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+                region.Add(view);
+                if (region != null)
+                {
+                    region.Activate(view);
+                }
+                eventAggregator.GetEvent<TitleChangedEvent>().Publish("Gst/Vat Reports");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.\n"+ "@ Simple Accounting Software Pte Ltd");
+            }
+        }
+        private void ShowTaxCollectedView()
+        {
+
+            SharedValues.ScreenCheckName = "GST Reports";
+            SharedValues.ViewName = "Gst/Vat Collected";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                SharedValues.getValue = "GstCollectedtabTrue";
+
+                var view = ServiceLocator.Current.GetInstance<GstVatCollectedView>();
+
+
+                var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+                region.Add(view);
+                if (region != null)
+                {
+                    region.Activate(view);
+                }
+                eventAggregator.GetEvent<TitleChangedEvent>().Publish("Gst/Vat Reports");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.\n"+ "@ Simple Accounting Software Pte Ltd");
+            }
+        }
+
+        private void ShowTaxpaidView()
+        {
+            SharedValues.ScreenCheckName = "Customers Statement";
+            SharedValues.ViewName = "Customer Credit Paid Days";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                SharedValues.getValue = "GstPaidtabTrue";
+                var view = ServiceLocator.Current.GetInstance<GstVatPaidView>();
+
+
+                var region = this.regionManager.Regions[RegionNames.MainRegion];
+
+                region.Add(view);
+                if (region != null)
+                {
+                    region.Activate(view);
+                }
+                eventAggregator.GetEvent<TitleChangedEvent>().Publish("Gst/Vat Reports");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.\n"+ "@ Simple Accounting Software Pte Ltd");
+            }
+        }
+
+
+
+        #endregion
+        private void setdefaultTab()
+        {
+
+            if (SharedValues.getValue == "GstSummarytabTrue" || SharedValues.getValue=="GSTAndVatTab")
+            {
+                this.GstSummarytabTrue = true;
+            }
+            else if (SharedValues.getValue == "GstCollectedtabTrue")
+            {
+                this.GstCollectedtabTrue = true;
+            }
+            else if (SharedValues.getValue == "GstPaidtabTrue")
+            {
+                this.GstPaidtabTrue = true;
+            }
+           
+        }
+    }
+}

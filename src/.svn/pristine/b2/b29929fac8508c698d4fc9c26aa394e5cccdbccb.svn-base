@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="SASClient.Accounts.Views.AccountsTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SASClient.Accounts.Views"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" Width="1024"
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Grid  HorizontalAlignment="Left" Height="auto" Margin="0 5 10 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <RadioButton IsChecked="{Binding AccountsDetailsTabTrue}"  Content="Accounts Details" Margin="10,0,0,0" Style="{DynamicResource TabMenuButtonStyle}" Grid.Column="0" 
+                             Command="{Binding AccountsDetailsClickCommand}" />
+
+            <RadioButton IsChecked="{Binding AccountsHistoryTabTrue}" Content="Profit &amp; Loss Statement"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="1"  Margin="10,0,0,0"
+                    Command="{Binding AccountsHistoryClickCommand}"/>
+                <RadioButton  IsChecked="{Binding AccountsTransactionsTabTrue}" Content="Accounts Transactions"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="2"  Margin="10,0,0,0"
+                    Command="{Binding AccountsTransactionsClickCommand}"/>
+                <RadioButton IsChecked="{Binding JournalTabTrue}" Content="Journal"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="3" Margin="10,0,0,0"
+                    Command="{Binding JournalClickCommand}" />
+                <RadioButton IsChecked="{Binding LedgerTabTrue}" Content="Ledger"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="4" Margin="10,0,0,0"
+                    Command="{Binding LedgerClickCommand}"/>
+            <RadioButton IsChecked="{Binding TrailBalanceTabTrue}" Content="Trial Balance"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="5" Margin="10,0,0,0"
+                    Command="{Binding TrailBalanceClickCommand}"  KeyboardNavigation.AcceptsReturn="True" />
+                <!--<RadioButton IsChecked="{Binding ProfitAndLosStatementTabTrue}" Content="Profit &amp; Loss Statement "  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="6" Margin="10,0,0,0"
+                    Command="{Binding ProfitAndLosStatementClickCommand}"/>-->
+                <RadioButton IsChecked="{Binding BalanceSheetTabTrue}" Content="Balance Sheet"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="7" Margin="10,0,0,0"
+                    Command="{Binding BalanceSheetClickCommand}"/>
+                <RadioButton IsChecked="{Binding GSTAndVatTabTrue}" Content="GST/VAT Reports"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="8" Margin="10,0,0,0"
+                    Command="{Binding GSTAndVatClickCommand}"/>
+            </Grid>
+
+        </ScrollViewer>
+   
+</UserControl>

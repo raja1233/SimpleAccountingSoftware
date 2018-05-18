@@ -1,0 +1,179 @@
+﻿
+using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.Accounts.ViewModel;
+using SASClient.Accounts.Views;
+using SASClient.CashBank.Services;
+using SDN.Common;
+using SDN.UI.Entities.CashandBank;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace SASClient.CashBank.ViewModels
+{
+    public class AccountsDetailsListViewModel : ViewModelBase
+    {
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private List<AccountsDetailsListEntity> accountsDetailsList;
+        private List<AccountsDetailsListEntity> accountsDetailsListCopy;
+        //private DelegateCommand previousYearAccountOpeningBalance = null;
+        private string currentFilter;
+
+        public RelayCommand NavigateToAccountDetailCommand { get; set; }
+        public RelayCommand FilterAccountDetailsListClick { get; set; }
+
+        public RelayCommand RefreshCommand { get; set; }
+
+        public RelayCommand NewCommand { get; set; }
+
+        public RelayCommand ClickSaveCommand { get; set; }
+        public RelayCommand DataGridLeftClick { get; set; }
+        public RelayCommand PreviousAccountingSystemClosingBalance { get; set; }
+        //public DelegateCommand PreviousYearAccountOpeningBalance
+        //{
+        //    get
+        //    {
+        //        return (this.previousYearAccountOpeningBalance ?? new DelegateCommand(this.PreviousYearAccountOpeningBalanceview));
+        //    }
+        //}
+
+        public List<AccountsDetailsListEntity> AccountsDetailsList
+        {
+            get { return accountsDetailsList; }
+            set
+            {
+                accountsDetailsList = value;
+                OnPropertyChanged(() => AccountsDetailsList);
+            }
+        }
+        
+        public List<AccountsDetailsListEntity> AccountsDetailsListCopy
+        {
+            get { return accountsDetailsListCopy; }
+            set
+            {
+                accountsDetailsListCopy = value;
+            }
+        }
+        public AccountsDetailsListViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            NavigateToAccountDetailCommand = new RelayCommand(OnAccountNameClick);
+            FilterAccountDetailsListClick = new RelayCommand(OnFilterClick);
+            //RefreshCommand = new RelayCommand(RefreshData);
+            NewCommand = new RelayCommand(OnNewClick);
+            currentFilter = "All";
+            GetAllAccountsDetailsList();
+            DataGridLeftClick = new RelayCommand(LeftClick);
+            PreviousAccountingSystemClosingBalance = new RelayCommand(PreviousAccountingSystemClosingBalanceview);
+
+        }
+        public void LeftClick(object param)
+        {
+
+        }
+        public void PreviousAccountingSystemClosingBalanceview(object param)
+        {
+        
+            SharedValues.getValue = "abc";
+            var tabview = ServiceLocator.Current.GetInstance<AccountsDetailsTabView>();
+
+            var region = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            region.Add(tabview);
+            if (region != null)
+            {
+                region.Activate(tabview);
+            }
+
+            var view = ServiceLocator.Current.GetInstance<UnpaidSalesInvoiceView>();
+
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(view);
+            if (mainregion != null)
+            {
+                mainregion.Activate(view);
+            }
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            //eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Previous Accounting System Closing Balance");
+    }
+        private void GetAllAccountsDetailsList()
+        {
+            IAccountsDetailsListRepository accRepository = new AccountsDetailsListRepository();
+            this.AccountsDetailsList = new List<AccountsDetailsListEntity>( accRepository.GetAllAccountsDetailsList());
+            AccountsDetailsListCopy = this.AccountsDetailsList;
+        }
+
+        void OnNewClick(object param)
+        {
+            string obj = param.ToString();
+            SharedValues.NewClick = obj;
+            var mainview = ServiceLocator.Current.GetInstance<SDN.CashBank.Views.AccountsDetailsView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+            var tabview = ServiceLocator.Current.GetInstance<SASClient.Accounts.Views.AccountsTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Details Form");
+        }
+        void OnAccountNameClick(object param)
+        {
+            string obj = param.ToString();
+            SharedValues.getValue = obj;
+            var mainview = ServiceLocator.Current.GetInstance<SDN.CashBank.Views.AccountsDetailsView>(obj);
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+            var tabview = ServiceLocator.Current.GetInstance<SASClient.Accounts.Views.AccountsTabView>(obj);
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Details Form");
+        }
+
+        void OnFilterClick(object param)
+        {
+            string buttonContent = (string)param;
+            currentFilter = buttonContent;
+            if (buttonContent == "All")
+            {
+                this.AccountsDetailsList = AccountsDetailsListCopy;
+            }
+            else
+                this.AccountsDetailsList = AccountsDetailsListCopy.Where(x => x.AccountType.Contains(buttonContent)).ToList();
+        }
+
+        //void RefreshData(object param)
+        //{
+        //    GetAllAccountsDetailsList();
+        //    OnFilterClick(currentFilter);
+        //}
+    }
+}

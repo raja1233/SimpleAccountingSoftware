@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="SDN.Navigation.View.NewCompanyFileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Navigation.View"
+             mc:Ignorable="d" 
+             Height="180" Width="380" BorderBrush="Black" BorderThickness="1">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0"  Text="Select Server Name" Margin="5,10,0,10" Grid.ColumnSpan="2" Width="118"></TextBlock>
+        <ComboBox Grid.Row="0" Height="10"  Grid.Column="1" x:Name="txtServerName" SelectedItem="{Binding SelectedItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding SelectServerName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="49,9,21,9"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0"  Text="Enter Database Name" Margin="5,10,0,10" Grid.ColumnSpan="2" Width="134"></TextBlock>
+        <TextBox Grid.Row="1" MaxLength="50" TextChanged="Confirm_Click" Grid.Column="1" x:Name="txtName" Text="{Binding DatabaseName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="49,9,21,9"/>
+        <Button Width="60" Command="{Binding DatabaseCommand}" CommandParameter="{Binding DatabaseName,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Content="Ok" HorizontalAlignment="Left" Margin="49,11,0,11" Height="22" Style="{DynamicResource AuditTrialButton}" Grid.Row="2" Grid.Column="1"></Button>
+        <Button Width="60" Click="CloseApplication_Click" Content="Exit" HorizontalAlignment="Right" Margin="0,11,21,11" Height="22" Style="{DynamicResource AuditTrialButton}" Grid.Row="2" Grid.Column="1"></Button>
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Margin="45,20,0,0" Text="@2017 Simple Accounting Software Pte Ltd"></TextBlock>
+
+    </Grid>
+</UserControl>

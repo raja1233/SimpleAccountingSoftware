@@ -1,0 +1,807 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.DAL
+{
+    using UI.Entities;
+    using System.Collections.Generic;
+    using DALInterface;
+    using UI.Entities.Sales;
+    using System.Data.Entity;
+    using SASDAL;
+    using Common;
+
+    public class SalesQuotationDAL: ISalesQuotationDAL
+    {
+        /// <summary>
+        /// This method is used to add or edit purchase quotation
+        /// </summary>
+        /// <param name="quotationData"></param>
+        /// <returns></returns>
+        public int AddUpdateQuotation(SalesQuotationForm quotationData)
+        {
+            int autoId = 0;
+            //Add purchase quotation
+            SalesQuotation obj = new SalesQuotation();
+            obj.ID = quotationData.Quotation.ID;
+            obj.Cus_Id = quotationData.Quotation.CustomerID;
+            obj.Salesman = quotationData.Quotation.SalesmanID;
+            obj.SQ_Conv_to_SO = quotationData.Quotation.SQ_Conv_to_SO;
+            obj.SQ_Conv_to_SI = quotationData.Quotation.SQ_Conv_to_SI;
+            obj.SQ_Date = quotationData.Quotation.QuotationDate;
+            obj.SQ_GST_Amt = Convert.ToDecimal(quotationData.Quotation.TotalTax);
+            obj.SQ_No = quotationData.Quotation.QuotationNo;
+            obj.SQ_TandC = quotationData.Quotation.TermsAndConditions;
+            obj.SQ_Tot_aft_Tax = Convert.ToDecimal(quotationData.Quotation.TotalAfterTax);
+            obj.SQ_Tot_bef_Tax = Convert.ToDecimal(quotationData.Quotation.TotalBeforeTax);
+            obj.SQ_Valid_for = quotationData.Quotation.ValidForDays;
+            obj.Exc_Inc_GST = quotationData.Quotation.ExcIncGST;
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    if (entities.SalesQuotations.AsNoTracking().FirstOrDefault(x => x.ID == quotationData.Quotation.ID) == null)
+                    {
+                        //obj.CreatedBy = quotationData.SQModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.SalesQuotations.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = quotationData.SQModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    if (autoId > 0)
+                    {
+                        SalesQuotationDetail SQDetails;
+                        if (quotationData.QuotationDetails != null)
+                        {
+                            foreach (SalesQuotationDetailEntity SQDetailEntity in quotationData.QuotationDetails)
+                            {
+                                SQDetails = new SalesQuotationDetail();
+                                SQDetails.SQ_ID = autoId;
+                                SQDetails.SQ_No = SQDetailEntity.SQNo;
+                                SQDetails.PandS_Code = SQDetailEntity.PandSCode;
+                                SQDetails.PandS_Name = SQDetailEntity.PandSName;
+                                SQDetails.SQ_Amount = SQDetailEntity.SQAmount;
+                                SQDetails.SQ_Discount = SQDetailEntity.SQDiscount;
+                                SQDetails.SQ_No = SQDetailEntity.SQNo;
+                                SQDetails.SQ_Price = Convert.ToDecimal(SQDetailEntity.SQPrice);
+                                SQDetails.SQ_Qty = SQDetailEntity.SQQty;
+                                SQDetails.GST_Code = SQDetailEntity.GSTCode;
+                                SQDetails.GST_Rate = SQDetailEntity.GSTRate;
+
+                                if (entities.SalesQuotationDetails.AsNoTracking().FirstOrDefault(x => x.ID == SQDetailEntity.ID) == null)
+                                {
+                                    entities.SalesQuotationDetails.Add(SQDetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(SQDetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                            }
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public int UpdationQuotation(SalesQuotationForm quotationData)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    SalesQuotation obj = entities.SalesQuotations.Where(e => e.SQ_No == quotationData.Quotation.QuotationNo
+                    ).SingleOrDefault();
+                    if (obj != null)
+                    {
+                        //obj.ID = quotationData.Quotation.ID;
+                        obj.Cus_Id = quotationData.Quotation.CustomerID;
+                        // obj.SQ_Conv_to_SO = quotationData.Quotation.SQ_Conv_to_SO;
+                        // obj.SQ_Conv_to_SI = quotationData.Quotation.SQ_Conv_to_SI;
+                        obj.SQ_Date = Convert.ToDateTime(quotationData.Quotation.QuotationDateStr);
+                        obj.SQ_GST_Amt = Convert.ToDecimal(quotationData.Quotation.TotalTax);
+                        obj.SQ_No = quotationData.Quotation.QuotationNo;
+                        obj.SQ_TandC = quotationData.Quotation.TermsAndConditions;
+                        obj.Salesman = quotationData.Quotation.SalesmanID;
+                        obj.SQ_Tot_aft_Tax = Convert.ToDecimal(quotationData.Quotation.TotalAfterTax);
+                        obj.SQ_Tot_bef_Tax = Convert.ToDecimal(quotationData.Quotation.TotalBeforeTax);
+                        obj.SQ_Valid_for = quotationData.Quotation.ValidForDays;
+                        obj.Exc_Inc_GST = quotationData.Quotation.ExcIncGST;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+
+                    var objSales = entities.SalesQuotationDetails.Where
+                        (e => e.SQ_ID == obj.ID).ToList();
+                    if (objSales != null)
+                    {
+                        foreach (var item in objSales)
+                        {
+                            entities.SalesQuotationDetails.Remove(item);
+                            entities.SaveChanges();
+                        }
+                    }
+                    SalesQuotationDetail SQDetails;
+                    if (quotationData.QuotationDetails != null)
+                    {
+                        foreach (SalesQuotationDetailEntity SQDetailEntity in quotationData.QuotationDetails)
+                        {
+                            SQDetails = new SalesQuotationDetail();
+                            SQDetails.SQ_ID = obj.ID;
+                            SQDetails.SQ_No = SQDetailEntity.SQNo;
+                            SQDetails.PandS_Code = SQDetailEntity.PandSCode;
+                            SQDetails.PandS_Name = SQDetailEntity.PandSName;
+                            SQDetails.SQ_Amount = SQDetailEntity.SQAmount;
+                            SQDetails.SQ_Discount = SQDetailEntity.SQDiscount;
+                            SQDetails.SQ_No = SQDetailEntity.SQNo;
+                            SQDetails.SQ_Price = Convert.ToDecimal(SQDetailEntity.SQPrice);
+                            SQDetails.SQ_Qty = SQDetailEntity.SQQty;
+                            SQDetails.GST_Code = SQDetailEntity.GSTCode;
+                            SQDetails.GST_Rate = SQDetailEntity.GSTRate;
+
+                            entities.SalesQuotationDetails.Add(SQDetails);
+                            entities.SaveChanges();
+
+                        }
+                    }
+                    return obj.ID;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool CanDeleteQuotation(int pqID)
+        {
+            bool allowDelete = true;
+            using (SASEntitiesEDM entities = new SASEntitiesEDM())
+            {
+                var SO_SI = entities.SalesQuotations.Where(x => (x.SQ_Conv_to_SO == true || x.SQ_Conv_to_SI == true) && x.ID == pqID).FirstOrDefault();
+
+                if (SO_SI != null)
+                {
+                    allowDelete = false;
+                }
+
+            }
+            return allowDelete;
+        }
+
+        public bool DeleteQuotatoin(int pqID)
+        {
+            bool result = false;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                 
+                    var obj = entities.SalesQuotations.Where(x => x.ID == pqID).FirstOrDefault();
+                    //entities.SalesQuotations.Remove(obj);
+                    if (obj != null)
+                    {
+                        obj.IsDeleted = true;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+                }
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+
+        }
+
+        public int GetLastInvoiceNo()
+        {
+            int qno = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.SalesInvoices
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate
+                              }
+
+                             );
+                    if (pq != null)
+                    {
+                        qno = pq.Take(1).SingleOrDefault().ID;
+                    }
+                    else
+                    {
+                        qno = 0;
+                    }
+                }
+                return qno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public List<ContentModel> GetAllSalesman(string catType)
+        {
+            List<ContentModel> lstsalesman = new List<ContentModel>();
+            using (SASEntitiesEDM objProdEntities = new SASEntitiesEDM())
+            {
+                try
+                {
+                    lstsalesman = (from content in objProdEntities.Categories
+                                 join catContent in objProdEntities.CategoriesContents
+                                 on content.ID equals catContent.Cat_Id
+                                 where content.Cat_Code == catType && catContent.IsDeleted==false
+                                 select new ContentModel
+                                 {
+                                     ContentName = catContent.Cat_Contents,
+                                     ContentID = catContent.ID
+                                 }).ToList<ContentModel>();
+                    
+                    return lstsalesman;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+        }
+        /// <summary>
+        /// This method is used to get category content 
+        /// </summary>
+        /// <returns></returns>
+        public string GetCategoryContent(string catType)
+        {
+            string tandCContent = string.Empty;
+            using (SASEntitiesEDM objProdEntities = new SASEntitiesEDM())
+            {
+                try
+                {
+                    var tandC = (from content in objProdEntities.TermsAndConditions
+                                 where content.Cat_Code == catType
+                                 select new ContentModel
+                                 {
+                                     ContentName = content.Cat_Content,
+                                     ContentID = content.ID
+                                 });
+                    if (tandC != null)
+                    {
+                        tandCContent = tandC.SingleOrDefault().ContentName;
+                    }
+                    return tandCContent;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+        }
+
+
+
+        public int GetLastOrderNo()
+        {
+            int qno = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.SalesOrders
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate
+                              }
+
+                             );
+                    if (pq != null)
+                    {
+                        qno = pq.Take(1).SingleOrDefault().ID;
+                    }
+                    else
+                    {
+                        qno = 0;
+                    }
+                }
+                return qno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get latest quitation no
+        /// </summary>
+        /// <returns></returns>
+        public int GetLastQuotationNo()
+        {
+            int qno = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.SalesQuotations
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate
+                              }
+
+                             );
+                    int Count = Convert.ToInt32(pq.Count());
+                    if (Count>0)
+                    {
+                        qno = pq.Take(1).SingleOrDefault().ID;
+                    }
+                    else
+                    {
+                        qno = 0;
+                    }
+                }
+                return qno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// This method is used to get all purchase quotations
+        /// </summary>
+        /// <returns></returns>
+        public List<SalesQuotationEntity> GetAllSalesQuotations()
+        {
+            // List<SalesQuotationModel> lstSQF = new List<SalesQuotationForm>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var lstSQs = (from pq in entities.SalesQuotations
+                                  where (pq.IsDeleted == false || pq.IsDeleted == null)
+
+                                  select new SalesQuotationEntity
+                                  {
+                                      CustomerID = pq.Cus_Id,
+                                      QuotationNo = pq.SQ_No,
+                                      QuotationDate = pq.SQ_Date,
+                                      QuotationDateStr = Convert.ToString(pq.SQ_Date),
+                                      ValidForDays = pq.SQ_Valid_for,
+                                      TotalBeforeTax = pq.SQ_Tot_bef_Tax,
+                                      TotalTax = pq.SQ_GST_Amt,
+                                      TotalAfterTax = pq.SQ_Tot_aft_Tax,
+                                      TermsAndConditions = pq.SQ_TandC,
+                                      CreatedBy = pq.CreatedBy,
+                                      CreatedDate = pq.CreatedDate
+
+                                  }).ToList<SalesQuotationEntity>();
+
+                    return lstSQs;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public int ConvertToSalesInvoice(SalesQuotationForm quotationData)
+        {
+            int autoId = 0;
+            //Add purchase quotation
+            SalesInvoice obj = new SalesInvoice();
+            // obj.ID = quotationData.Quotation.ID;
+            obj.Cus_Id = quotationData.Quotation.CustomerID;
+            obj.SI_Date = quotationData.Quotation.QuotationDate;
+            obj.Salesman = quotationData.Quotation.SalesmanID;
+            obj.SI_GST_Amt = Convert.ToDecimal(quotationData.Quotation.TotalTax);
+            obj.SI_No = "SI-" + (GetLastInvoiceNo() + 1);
+            obj.SI_TandC = quotationData.Quotation.TermsAndConditions;
+            obj.SI_Tot_aft_Tax = Convert.ToDecimal(quotationData.Quotation.TotalAfterTax);
+            obj.SI_Tot_bef_Tax = Convert.ToDecimal(quotationData.Quotation.TotalBeforeTax);
+            obj.SI_Status = Convert.ToByte(SI_Status.UnPaid);
+            obj.Exc_Inc_GST = quotationData.Quotation.ExcIncGST;
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    if (entities.SalesInvoices.AsNoTracking().FirstOrDefault(x => x.ID == quotationData.Quotation.ID) == null)
+                    {
+                        //obj.CreatedBy = quotationData.SQModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.SalesInvoices.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = quotationData.SQModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    if (autoId > 0)
+                    {
+                        SalesInvoiceDetail SQDetails;
+                        if (quotationData.QuotationDetails != null)
+                        {
+                            foreach (SalesQuotationDetailEntity SQDetailEntity in quotationData.QuotationDetails)
+                            {
+                                SQDetails = new SalesInvoiceDetail();
+                                SQDetails.SI_ID = autoId;
+                                SQDetails.SI_No = SQDetailEntity.SQNo;
+                                SQDetails.PandS_Code = SQDetailEntity.PandSCode;
+                                SQDetails.PandS_Name = SQDetailEntity.PandSName;
+                                SQDetails.SI_Amount = SQDetailEntity.SQAmount;
+                                SQDetails.SI_Discount = SQDetailEntity.SQDiscount;
+                                SQDetails.SI_No = SQDetailEntity.SQNo;
+                                SQDetails.SI_Price = Convert.ToDecimal(SQDetailEntity.SQPrice);
+                                SQDetails.SI_Qty = SQDetailEntity.SQQty;
+                                SQDetails.GST_Code = SQDetailEntity.GSTCode;
+                                SQDetails.GST_Rate = SQDetailEntity.GSTRate;
+
+                                if (entities.SalesInvoiceDetails.AsNoTracking().FirstOrDefault(x => x.ID == SQDetailEntity.ID) == null)
+                                {
+                                    entities.SalesInvoiceDetails.Add(SQDetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(SQDetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                            }
+                        }
+
+                        SalesQuotation objQ = entities.SalesQuotations.Where(e => e.SQ_No == quotationData.Quotation.QuotationNo
+                           ).SingleOrDefault();
+                        if (objQ != null)
+                        {
+                            objQ.SQ_Conv_to_SI = true;
+                            objQ.ModifiedDate = DateTime.Now;
+                            objQ.Conv_to_No = obj.SI_No;
+                            entities.SaveChanges();
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// This method is used to convert the Sales quotation to order
+        /// </summary>
+        /// <param name="quotationData"></param>
+        /// <returns></returns>
+        public int ConvertToSalesOrder(SalesQuotationForm quotationData)
+        {
+            int autoId = 0;
+       
+            //Add purchase quotation
+            SalesOrder obj = new SalesOrder();
+            //obj.ID = quotationData.Quotation.ID;
+            obj.Cus_Id = quotationData.Quotation.CustomerID;
+            obj.SO_Date = quotationData.Quotation.QuotationDate;
+            obj.SO_Del_Date = DateTime.Now;
+            obj.SO_GST_Amt = Convert.ToDecimal(quotationData.Quotation.TotalTax);
+            obj.SO_No = "SO-" + (GetLastOrderNo() + 1);
+            obj.SO_TandC = quotationData.Quotation.TermsAndConditions;
+            obj.SO_Tot_aft_Tax = Convert.ToDecimal(quotationData.Quotation.TotalAfterTax);
+            obj.SO_Tot_bef_Tax = Convert.ToDecimal(quotationData.Quotation.TotalBeforeTax);
+            obj.Salesman = quotationData.Quotation.SalesmanID;
+            obj.Exc_Inc_GST = quotationData.Quotation.ExcIncGST;
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    if (entities.SalesOrders.AsNoTracking().FirstOrDefault(x => x.ID == quotationData.Quotation.ID) == null)
+                    {
+                        //obj.CreatedBy = quotationData.SQModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.SalesOrders.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                     
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = quotationData.SQModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    if (autoId > 0)
+                    {
+                        SalesOrderDetail SQDetails;
+                        if (quotationData.QuotationDetails != null)
+                        {
+                            foreach (SalesQuotationDetailEntity SQDetailEntity in quotationData.QuotationDetails)
+                            {
+                                SQDetails = new SalesOrderDetail();
+                                SQDetails.SO_ID = autoId;
+                                SQDetails.SO_No = SQDetailEntity.SQNo;
+                                SQDetails.PandS_Code = SQDetailEntity.PandSCode;
+                                SQDetails.PandS_Name = SQDetailEntity.PandSName;
+                                SQDetails.SO_Amount = SQDetailEntity.SQAmount;
+                                SQDetails.SO_Discount = SQDetailEntity.SQDiscount;
+                                SQDetails.SO_No = SQDetailEntity.SQNo;
+                                SQDetails.SO_Price = Convert.ToDecimal(SQDetailEntity.SQPrice);
+                                SQDetails.SO_Qty = SQDetailEntity.SQQty;
+                                SQDetails.GST_Code = SQDetailEntity.GSTCode;
+                                SQDetails.GST_Rate = SQDetailEntity.GSTRate;
+
+                                if (entities.SalesOrderDetails.AsNoTracking().FirstOrDefault(x => x.ID == SQDetailEntity.ID) == null)
+                                {
+                                    entities.SalesOrderDetails.Add(SQDetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(SQDetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                            }
+                        }
+
+                        SalesQuotation objQ = entities.SalesQuotations.Where(e => e.SQ_No == quotationData.Quotation.QuotationNo
+                           ).SingleOrDefault();
+                        if (objQ != null)
+                        {
+                            objQ.SQ_Conv_to_SO = true;
+                            objQ.Conv_to_No = obj.SO_No;
+                            objQ.ModifiedDate = DateTime.Now;
+                            entities.SaveChanges();
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get Sales Quotation details
+        /// </summary>
+        /// <param name="pqId"></param>
+        /// <returns></returns>
+        public SalesQuotationForm GetSalesQuotation(string pqno)
+        {
+            SalesQuotationForm pqf = new SalesQuotationForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.SalesQuotations
+                              where pqs.SQ_No == pqno && (pqs.IsDeleted == false || pqs.IsDeleted == null)
+                              select new SalesQuotationEntity
+                              {
+                                  ID = pqs.ID,
+                                  CustomerID = pqs.Cus_Id,
+                                  QuotationNo = pqs.SQ_No,
+                                  QuotationDate = pqs.SQ_Date,
+                                  ValidForDays = pqs.SQ_Valid_for,
+                                  TermsAndConditions = pqs.SQ_TandC,
+                                  TotalBeforeTax = pqs.SQ_Tot_bef_Tax,
+                                  TotalTax = pqs.SQ_GST_Amt,
+                                  TotalAfterTax = pqs.SQ_Tot_aft_Tax,
+                                  ExcIncGST = pqs.Exc_Inc_GST,
+                                  SQ_Conv_to_SI = pqs.SQ_Conv_to_SI,
+                                  SQ_Conv_to_SO = pqs.SQ_Conv_to_SO,
+                                  SalesmanID=pqs.Salesman
+                                  
+                              }).SingleOrDefault();
+
+                    if (pq != null)
+                    {
+                        pqf.Quotation = pq;
+                    }
+
+
+                    var pqd = (from pqds in entities.SalesQuotationDetails
+                               where pqds.SQ_ID == pq.ID
+                               select new SalesQuotationDetailEntity
+                               {
+                                   ID = pqds.ID,
+                                   SQID = pqds.SQ_ID,
+                                   SQNo = pqds.SQ_No,
+                                   PandSCode = pqds.PandS_Code,
+                                   PandSName = pqds.PandS_Name,
+                                   SQQty = pqds.SQ_Qty,
+                                   Price = pqds.SQ_Price,
+                                   SQDiscount = pqds.SQ_Discount,
+                                   SQAmount = pqds.SQ_Amount,
+                                   GSTRate = pqds.GST_Rate
+                               }).ToList<SalesQuotationDetailEntity>();
+
+                    if (pqd != null)
+                    {
+
+                        pqf.QuotationDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public SalesQuotationForm GetPrintSalesQuotation(string pqno)
+        {
+            SalesQuotationForm pqf = new SalesQuotationForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.SalesQuotations
+                              join Cus in entities.Customers on pqs.Cus_Id equals Cus.ID
+                              where pqs.SQ_No == pqno && (pqs.IsDeleted == false || pqs.IsDeleted == null)
+                              select new SalesQuotationEntity
+                              {
+                                  ID = pqs.ID,
+                                  CustomerID = pqs.Cus_Id,
+                                  CustomerName=Cus.Cus_Name,
+                                  CustomerBillAddress1=Cus.Cus_Bill_to_line1,
+                                  CustomerBillAddress2=Cus.Cus_Bill_to_line2,
+                                  CustomerBillAddressCity=Cus.Cus_Bill_to_city,
+                                  CustomerBillAddressState=Cus.Cus_Bill_to_state,
+                                  CustomerBillAddressCountary=Cus.Cus_Bill_to_country,
+                                  CustomerBillPostCode=Cus.Cus_Bill_to_post_code,
+                                  CustomerShipAddress1=Cus.Cus_Ship_to_line1,
+                                  CustomerShipAddress2=Cus.Cus_Ship_to_line2,
+                                  CustomerShipAddressCity=Cus.Cus_Ship_to_city,
+                                  CustomerShipAddressState=Cus.Cus_Ship_to_state,
+                                  CustomerShipAddressCountary=Cus.Cus_Ship_to_country,
+                                  CustomerShipPostCode=Cus.Cus_Ship_to_post_code,
+                                  CustomerTelephone=Cus.Cus_Telephone,
+                                  QuotationNo = pqs.SQ_No,
+                                  QuotationDate = pqs.SQ_Date,
+                                  ValidForDays = pqs.SQ_Valid_for,
+                                  TermsAndConditions = pqs.SQ_TandC,
+                                  TotalBeforeTax = pqs.SQ_Tot_bef_Tax,
+                                  TotalTax = pqs.SQ_GST_Amt,
+                                  TotalAfterTax = pqs.SQ_Tot_aft_Tax,
+                                  ExcIncGST = pqs.Exc_Inc_GST,
+                                  SQ_Conv_to_SI = pqs.SQ_Conv_to_SI,
+                                  SQ_Conv_to_SO = pqs.SQ_Conv_to_SO,
+                                  SalesmanID = pqs.Salesman
+
+                              }).SingleOrDefault();
+
+                    if (pq != null)
+                    {
+                        pqf.Quotation = pq;
+                    }
+                    //for comapany details
+                   
+                        var company = (from com in entities.CompanyDetails
+                                       where (com.IsDeleted == false || com.IsDeleted == null)
+                                       select new SalesQuotationEntity
+                                       {
+                                           CompanyName=com.Comp_Name,
+                                           CompanyRegNumber=com.Comp_Reg_No,
+                                           CompanyLogo = com.Comp_Logo,
+                                           CompanyGstNumber=com.Comp_GST_Reg_No,
+                                           CompanyBillToAddressLine1=com.Comp_Bill_to_line1,
+                                           CompanyBillToAddressLine2=com.Comp_Bill_to_line2,
+                                           CompanyBillToCity=com.Comp_Bill_to_city,
+                                           CompanyBillToState=com.Comp_Bill_to_state,
+                                           CompanyBillToCountary=com.Comp_Bill_to_country,
+                                           CompanyBillToPostCode=com.Comp_Bill_to_post_code,
+                                           CompanyEmail=com.Comp_Email,
+                                           CompanyFax=com.Comp_Fax
+                                       }).SingleOrDefault();
+
+                    pqf.Quotation.CompanyName = company.CompanyName;
+                    pqf.Quotation.CompanyLogo = company.CompanyLogo;
+                    pqf.Quotation.CompanyRegNumber = company.CompanyRegNumber;
+                    pqf.Quotation.CompanyGstNumber = company.CompanyGstNumber;
+                    pqf.Quotation.CompanyBillToAddressLine1 = company.CompanyBillToAddressLine1;
+                    pqf.Quotation.CompanyBillToAddressLine2 = company.CompanyBillToAddressLine2;
+                    pqf.Quotation.CompanyBillToCity = company.CompanyBillToCity;
+                    pqf.Quotation.CompanyBillToState = company.CompanyBillToState;
+                    pqf.Quotation.CompanyBillToCountary = company.CompanyBillToCountary;
+                    pqf.Quotation.CompanyBillToPostCode = company.CompanyBillToPostCode;
+                    pqf.Quotation.CompanyEmail = company.CompanyEmail;
+                    pqf.Quotation.CompanyFax = company.CompanyFax;
+                    //end for comapany details
+
+                    //option details
+                    var optiondata = (from option in entities.Options
+                                      select new SalesQuotationEntity
+                                      {
+                                          CurrencyCode = option.Currency_Code
+                                      }).SingleOrDefault();
+                    pqf.Quotation.CurrencyCode = optiondata.CurrencyCode;
+                    //end options details
+
+                    var pqd = (from pqds in entities.SalesQuotationDetails
+                                   where pqds.SQ_ID == pq.ID
+                                   select new SalesQuotationDetailEntity
+                                   {
+                                       ID = pqds.ID,
+                                       SQID = pqds.SQ_ID,
+                                       SQNo = pqds.SQ_No,
+                                       PandSCode = pqds.PandS_Code,
+                                       PandSName = pqds.PandS_Name,
+                                       SQQty = pqds.SQ_Qty,
+                                       Price = pqds.SQ_Price,
+                                       SQDiscount = pqds.SQ_Discount,
+                                       SQAmount = pqds.SQ_Amount,
+                                       GSTRate = pqds.GST_Rate
+                                   }).ToList<SalesQuotationDetailEntity>();
+
+                    if (pqd != null)
+                    {
+
+                        pqf.QuotationDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}

@@ -1,0 +1,475 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities.Customers
+{
+    using SDN.Common;
+    using System.Globalization;
+
+    public class InvoiceCreditPaymentsEntity:ViewModelBase
+    {
+        #region "Private members"
+
+        private int gridHeight;
+        private int invoiceGridHeight;
+        private int selectedCustomerID;
+        private bool isSelected;
+        private int customerID;
+        private string customerName;
+        private string _TaxName;
+        private string _DateFormat;
+        private string currencyName;
+        private string closingAmount;
+        private string openingAmount;
+        private List<InvoiceCreditPaymentsEntity> lstCustomers;
+        private List<InvCreditPaymentsDetailsEntity> lstInvoiceDetails;
+
+        private string _SelectedSearchYear;
+        private string _SelectedSearchQuarter;
+        private string _SelectedSearchMonth;
+
+        private List<YearEntity> _YearRange;
+        private List<QuarterEntity> _QuarterRange;
+
+        private string _JsonData;
+        #endregion
+
+        #region "Public Properties"
+
+
+        public string CurrencyName
+        {
+            get
+            {
+                return currencyName;
+            }
+            set
+            {
+                currencyName = value;
+                OnPropertyChanged("CurrencyName");
+            }
+        }
+        public string TaxName
+        {
+            get
+            {
+                return _TaxName;
+            }
+            set
+            {
+                _TaxName = value;
+                OnPropertyChanged("TaxName");
+            }
+        }
+        public string DateFormat
+        {
+            get { return _DateFormat; }
+            set { SetProperty(ref _DateFormat, value, "DateFormat"); }
+        }
+        public int GridHeight
+        {
+            get
+            {
+                return gridHeight;
+            }
+            set
+            {
+                gridHeight = value;
+                OnPropertyChanged("GridHeight");
+            }
+        }
+        public int InvoiceGridHeight
+        {
+            get
+            {
+                return invoiceGridHeight;
+            }
+            set
+            {
+                invoiceGridHeight = value;
+                OnPropertyChanged("InvoiceGridHeight");
+            }
+        }
+
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set
+            {
+                isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
+
+        public int SelectedCustomerID
+        {
+            get
+            {
+                return selectedCustomerID;
+            }
+            set
+            {
+                selectedCustomerID = value;
+                OnPropertyChanged("SelectedCustomerID");
+            }
+        }
+
+        public int CustomerID
+        {
+            get { return customerID; }
+            set
+            {
+                customerID = value;
+                OnPropertyChanged("CustomerID");
+            }
+        }
+        public string CustomerName
+        {
+            get { return customerName; }
+            set
+            {
+                customerName = value;
+                OnPropertyChanged("CustomerName");
+            }
+        }
+
+        public string ClosingAmount
+        {
+            get
+            {
+                if (closingAmount == null)
+                    return this.closingAmount;
+                else
+                {
+                    if (closingAmount != "")
+                    {
+                        var balance = closingAmount.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.closingAmount;
+                }
+            }
+            set
+            {
+                closingAmount = value;
+                OnPropertyChanged("ClosingAmount");
+            }
+        }
+        public string OpeningAmount
+        {
+            get
+            {
+                if (openingAmount == null)
+                    return this.openingAmount;
+                else
+                {
+                    if (openingAmount != "")
+                    {
+                        var balance = openingAmount.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.openingAmount;
+                }
+            }
+            set
+            {
+                openingAmount = value;
+                OnPropertyChanged("OpeningAmount");
+            }
+        }
+
+        public List<YearEntity> YearRange
+        {
+            get
+            {
+                return _YearRange;
+            }
+            set
+            {
+                _YearRange = value;
+                OnPropertyChanged("YearRange");
+            }
+        }
+
+        public List<QuarterEntity> QuarterRange
+        {
+            get
+            {
+                return _QuarterRange;
+            }
+            set
+            {
+                _QuarterRange = value;
+                OnPropertyChanged("QuarterRange");
+            }
+        }
+
+        public string SelectedSearchYear
+        {
+            get
+            {
+                return _SelectedSearchYear;
+            }
+            set
+            {
+                _SelectedSearchYear = value;
+                OnPropertyChanged("SelectedSearchYear");
+            }
+        }
+        public string SelectedSearchQuarter
+        {
+            get
+            {
+                return _SelectedSearchQuarter;
+            }
+            set
+            {
+                _SelectedSearchQuarter = value;
+                OnPropertyChanged("SelectedSearchQuarter");
+            }
+        }
+        public string SelectedSearchMonth
+        {
+            get
+            {
+                return _SelectedSearchMonth;
+            }
+            set
+            {
+                _SelectedSearchMonth = value;
+                OnPropertyChanged("SelectedSearchMonth");
+            }
+        }
+        public string JsonData
+        {
+            get
+            {
+                return _JsonData;
+            }
+            set
+            {
+                _JsonData = value;
+                OnPropertyChanged("JsonData");
+            }
+        }
+        public List<InvoiceCreditPaymentsEntity> LstCustomers
+        {
+            get { return lstCustomers; }
+            set
+            {
+                lstCustomers = value;
+                OnPropertyChanged("LstCustomers");
+            }
+        }
+
+        public List<InvCreditPaymentsDetailsEntity> LstInvoiceDetails
+        {
+            get { return lstInvoiceDetails; }
+            set
+            {
+                lstInvoiceDetails = value;
+                OnPropertyChanged("LstInvoiceDetails");
+            }
+        }
+
+        #endregion
+    }
+
+    public class InvCreditPaymentsDetailsEntity
+    {
+
+        private string transactionNo;
+        private DateTime? transactionDate;
+        private string transactionDateStr;
+        private decimal? invoiceAmount;
+        private string invoiceAmountStr;
+        private decimal? cnPayment;
+        private decimal? balance;
+        private string cnPaymentStr;
+        private string balanceStr;
+        private bool? _NoHyperLink;
+        public string TransactionNo
+        {
+            get { return transactionNo; }
+            set
+            {
+                transactionNo = value;
+                // OnPropertyChanged("InvoiceNo");
+            }
+        }
+        public DateTime? TransactionDate
+        {
+            get { return transactionDate; }
+            set
+            {
+                transactionDate = value;
+                // OnPropertyChanged("InvoiceDate");
+            }
+        }
+
+        public string TransactionDateStr
+        {
+            get { return transactionDateStr; }
+            set
+            {
+                transactionDateStr = value;
+                // OnPropertyChanged("InvoiceDateStr");
+            }
+        }
+
+        public decimal? InvoiceAmount
+        {
+            get { return invoiceAmount; }
+            set
+            {
+                invoiceAmount = value;
+                //  OnPropertyChanged("InvoiceAmount");
+            }
+        }
+        public string InvoiceAmountStr
+        {
+            get
+            {
+                if (invoiceAmountStr == null)
+                    return this.invoiceAmountStr;
+                else
+                {
+                    if (invoiceAmountStr != "")
+                    {
+                        var balance = invoiceAmountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.invoiceAmountStr;
+                }
+            }
+            set
+            {
+                invoiceAmountStr = value;
+                // OnPropertyChanged("InvoiceAmountStr");
+            }
+        }
+
+
+        public decimal? CNPayment
+        {
+            get
+            {
+                return cnPayment;
+            }
+            set
+            {
+                cnPayment = value;
+            }
+        }
+        public decimal? Balance
+        {
+            get
+            {
+                return balance;
+            }
+            set
+            {
+                balance = value;
+            }
+        }
+        public string CNPaymentStr
+        {
+            get
+            {
+                if (cnPaymentStr == null)
+                    return this.cnPaymentStr;
+                else
+                {
+                    if (cnPaymentStr != "")
+                    {
+                        var balance = cnPaymentStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.cnPaymentStr;
+                }
+            }
+            set
+            {
+                cnPaymentStr = value;
+                // OnPropertyChanged("AmountPaidStr");
+            }
+        }
+        public string BalanceStr
+        {
+            get
+            {
+                if (balanceStr == null)
+                    return this.balanceStr;
+                else
+                {
+                    if (balanceStr != "")
+                    {
+                        var balance = balanceStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.balanceStr;
+                }
+            }
+            set
+            {
+                balanceStr = value;
+                // OnPropertyChanged("AmountDueStr");
+            }
+        }
+        public bool? NoHyperLink
+        {
+            get
+            {
+                return _NoHyperLink;
+            }
+            set
+            {
+                _NoHyperLink = value;
+            }
+        }
+    }
+}

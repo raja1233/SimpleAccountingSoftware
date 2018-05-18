@@ -1,0 +1,27 @@
+﻿using SDN.UI.Entities.CashandBank;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASBAL.CashBank
+{
+    public  interface ICashBankStatementBL
+    {
+        /// <summary>
+        /// GetBankAccountList
+        /// </summary>
+        /// <returns></returns>
+        List<CashBankStatementEntity> GetBankAccountList();
+
+
+        /// <summary>
+        /// GetAccountDetailList
+        /// </summary>
+        /// <param name="CashBankStatementID"></param>
+        /// <param name="jsondata"></param>
+        /// <returns></returns>
+        List<CashBankStatementEntity> GetAccountDetailList(int CashBankStatementID, string jsondata);
+    }
+}

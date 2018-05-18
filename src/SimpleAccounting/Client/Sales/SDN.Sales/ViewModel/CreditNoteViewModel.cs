@@ -1,0 +1,762 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SDN.Common;
+using SDN.Product.Services;
+using SDN.Purchasing.View;
+using SDN.Sales.Services;
+using SDN.Sales.Views;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Sales;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SDN.Sales.ViewModel
+{
+    public class CreditNoteViewModel:CreditNoteEntity
+    {
+        #region "Private members"
+
+        //private ObservableCollection<PandSDetailsModel> pands;
+        private string currencyName;
+        //  private string taxName;
+        private ObservableCollection<DataGridViewModel> pqDetailsEntity;
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private ISalesInvoiceRepository pqRepository = new SalesInvoiceRepository();
+        private ICreditNoteRepository dnRepository = new CreditNoteRepository();
+        public IPandSDetailsRepository pandsRepository = new PandSDetailsRepository();
+        private ICustomerRepository supplierRepository = new CustomerRepository();
+        public ObservableCollection<DataGridViewModel> lst;
+        private DataGridViewModel pqdEntity;
+        private CreditNoteEntity creditNoteEntity;
+        //private SalesInvoiceDetailEntity selectedPandS;
+
+        private int customerId;
+
+        private decimal? taxRate;
+        //private ObservableCollection<PandSDetailsModel> productAndServices;
+        private ObservableCollection<PandSListModel> productAndServices;
+
+        private int? defaultPSID;
+
+        private decimal? amountBeforeTax;
+        private decimal? taxAmount;
+        private string pqErrros;
+        private bool isNew;
+        private bool allFieldsReadonly;
+        private bool allFieldsEnabled;
+        private int decimalPlaces;
+        private string dateFormat;
+
+        #endregion
+
+        #region "Public Properties"
+
+
+        public string CurrencyName
+        {
+            get
+            {
+                return currencyName;
+            }
+            set
+            {
+                if (currencyName != value)
+                {
+                    currencyName = value;
+                    OnPropertyChanged("CurrencyName");
+                }
+            }
+        }
+
+
+        public DataGridViewModel PQDEntity
+        {
+            get
+            {
+                return pqdEntity;
+            }
+            set
+            {
+                if (pqdEntity != value)
+                {
+                    pqdEntity = value;
+                    OnPropertyChanged("PQDEntity");
+                }
+            }
+        }
+        public string TandC
+        {
+            get; set;
+        }
+
+        public CreditNoteEntity CreditNoteEntity
+        {
+            get
+            {
+                return creditNoteEntity;
+            }
+            set
+            {
+                if (creditNoteEntity != value)
+                {
+                    creditNoteEntity = value;
+                    OnPropertyChanged("CreditNoteEntity");
+                }
+            }
+        }
+
+        public ObservableCollection<DataGridViewModel> PQDetailsEntity
+        {
+            get
+            {
+                return pqDetailsEntity;
+            }
+            set
+            {
+                if (pqDetailsEntity != value)
+                {
+                    pqDetailsEntity = value;
+                    OnPropertyChanged("PQDetailsEntity");
+                }
+            }
+        }
+
+        //public ObservableCollection<PandSDetailsModel> ProductAndServices
+        //{
+        //    get
+        //    {
+        //        return productAndServices;
+        //    }
+        //    set
+        //    {
+        //        if (productAndServices != value)
+        //        {
+        //            productAndServices = value;
+        //            OnPropertyChanged("ProductAndServices");
+        //        }
+        //    }
+        //}
+        public ObservableCollection<PandSListModel> ProductAndServices
+        {
+            get
+            {
+                return productAndServices;
+            }
+            set
+            {
+                if (productAndServices != value)
+                {
+                    productAndServices = value;
+                    OnPropertyChanged("ProductAndServices");
+                }
+            }
+        }
+        public decimal? TaxRate
+        {
+            get
+            {                 
+                if (taxRate != null)
+                    Math.Round((decimal)taxRate, 2);
+                return taxRate;
+            }
+            set
+            {
+                if (taxRate != value)
+                {
+                    taxRate = value;
+                    OnPropertyChanged("TaxRate");
+                }
+            }
+        }
+
+        public bool AllFieldsEnabled
+        {
+            get
+            {
+                return allFieldsEnabled;
+            }
+            set
+            {
+                if (allFieldsEnabled != value)
+                {
+                    allFieldsEnabled = value;
+                    OnPropertyChanged("AllFieldsEnabled");
+                }
+            }
+        }
+
+        public bool AllFieldsReadonly
+        {
+            get
+            {
+                return allFieldsReadonly;
+            }
+            set
+            {
+                if (allFieldsReadonly != value)
+                {
+                    allFieldsReadonly = value;
+                    OnPropertyChanged("AllFieldsReadonly");
+                }
+            }
+        }
+
+        public string DateFormat
+        {
+            get
+            {
+                return dateFormat;
+            }
+            set
+            {
+                if (dateFormat != value)
+                {
+                    dateFormat = value;
+                    OnPropertyChanged("DateFormat");
+                }
+            }
+        }
+
+        public int DecimalPlaces
+        {
+            get
+            {
+                return decimalPlaces;
+            }
+            set
+            {
+                if (decimalPlaces != value)
+                {
+                    decimalPlaces = value;
+                    OnPropertyChanged("DecimalPlaces");
+                }
+            }
+        }
+
+        public string PQErrors
+        {
+            get
+            {
+                return pqErrros;
+            }
+            set
+            {
+                if (pqErrros != value)
+                {
+                    pqErrros = value;
+                    OnPropertyChanged("PQErrors");
+                }
+            }
+        }
+
+        public int SelectedCustomerID
+        {
+            get
+            {
+                return customerId;
+            }
+            set
+            {
+                if (customerId != value)
+                {
+                    customerId = value;
+                    OnPropertyChanged("SelectedCustomerID");
+                }
+            }
+        }
+
+        public int? DefaultPSID
+        {
+            get
+            {
+                return defaultPSID;
+            }
+            set
+            {
+                if (defaultPSID != value)
+                {
+                    defaultPSID = value;
+                    OnPropertyChanged("DefaultPSID");
+                }
+            }
+        }
+
+
+        public decimal? AmountBeforeTax
+        {
+            get
+            {
+                return amountBeforeTax;
+            }
+            set
+            {
+                amountBeforeTax = value;
+                OnPropertyChanged("AmountBeforeTax");
+            }
+        }
+        public decimal? TaxAmount
+        {
+            get
+            {
+                return taxAmount;
+            }
+            set
+            {
+                taxAmount = value;
+                OnPropertyChanged("TaxAmount");
+            }
+        }
+
+        #endregion
+
+        #region BackGround Worker
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+            RefreshData();
+        }
+
+
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+
+        }
+
+        #endregion
+
+        #region "Constructors"
+
+        // private static IEnumerable<PandSDetailsModel> ProductList;
+        private static IEnumerable<PandSListModel> ProductList;
+
+        public CreditNoteViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+
+            CreditNoteEntity = new CreditNoteEntity();
+            PQDetailsEntity = new ObservableCollection<DataGridViewModel>();
+
+            int minHeight = 300;
+            int headerRows = 369;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 80;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.PIFormGridHeight = minHeight;
+
+            #region getting Options details
+            GetOptionsData();
+            #endregion
+
+            AllFieldsEnabled = true;
+            AllFieldsReadonly = false;
+
+            LoadSupplierBackground();
+
+            NavigateToClientCommand = new RelayCommand(NavigatetoSupplier);
+            SaveCommand = new RelayCommand(UpdateCreditNote);
+            RefundMoneyToCustomerCommand = new RelayCommand(RefundMoneyToCustomer, CanRefund);
+            AdjustCreditNoteCommand = new RelayCommand(AdjustCreditNote, CanAdjust);
+            NavigateToSICommand = new RelayCommand(NavigateToSI);
+
+            if (!String.IsNullOrEmpty(SharedValues.NewClick))
+            {
+                if (SharedValues.NewClick != "New")
+                {
+                    GetCreditNote(SharedValues.NewClick);
+                }
+
+            }
+            Mouse.OverrideCursor = null;
+
+        }
+
+        #endregion
+
+        #region Relay Commands
+        public RelayCommand NavigateToSICommand { get; set; }
+        public RelayCommand SaveCommand { get; set; }
+        public RelayCommand NavigateToClientCommand { get; set; }
+        public RelayCommand RefundMoneyToCustomerCommand { get; set; }
+        public RelayCommand AdjustCreditNoteCommand { get; set; }
+
+        #endregion
+
+        #region "Member Functions"
+
+        public void RefreshData()
+        {
+
+            //ProductList = pandsRepository.GetAllPandS();
+            //ProductAndServices = new ObservableCollection<PandSDetailsModel>(ProductList);
+            ProductList = pandsRepository.GetPandSComboList();
+            ProductAndServices = new ObservableCollection<PandSListModel>(ProductList);
+
+            #region "To get Category Contents"
+
+            var cat1 = pqRepository.GetCategoryContent("CNR".Trim());
+
+            if (cat1 != null)
+            {
+                this.TermsAndConditions = Convert.ToString(cat1);
+                TandC = Convert.ToString(cat1);
+            }
+            #endregion
+
+            #region "Get Supplier Details"
+
+            var suppliers = supplierRepository.GetAllCustomers();
+            if (suppliers != null)
+            {
+                LstCustomers = suppliers.ToList();
+            }
+            #endregion
+
+        }
+
+        public void NavigateToSI(object param)
+        {
+            if (param != null)
+            {
+                string obj = param.ToString();
+                SharedValues.NewClick = obj;
+                SharedValues.getValue = "SalesInvoiceTab";
+            }
+            var tabview = ServiceLocator.Current.GetInstance<SalesTabView>();
+
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            var mainview = ServiceLocator.Current.GetInstance<SalesInvoiceView>();
+
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }////
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Sales Invoice Form");
+        }
+
+        void NavigatetoSupplier(object param)
+        {
+            string obj = param.ToString();
+            SharedValues.getValue = obj;
+            var mainview = ServiceLocator.Current.GetInstance<Customers.Views.CustomersView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            var tabview = ServiceLocator.Current.GetInstance<Customers.Views.CustomersTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Details Form");
+        }
+
+        public void RefundMoneyToCustomer(object param)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Confirmation", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                PQErrors = string.Empty;
+                CreditNoteForm PQForm = GetDataIntoModel();
+
+                if (PQForm != null)
+                {
+                    dnRepository.UpdateCreditNote(PQForm);
+                }
+                
+            if (param != null)
+            {
+                string obj = param.ToString();
+                SharedValues.NewClick = obj;
+            }
+                SharedValues.getValue = "RefundToCustomerTab";
+            SharedValues.CollectCommand =Convert.ToString(this.SelectedCustomerID);
+            var mainview = ServiceLocator.Current.GetInstance<RefundToCustomerView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            var tabview = ServiceLocator.Current.GetInstance<SDN.Common.View.CashAndBankTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Refund To Customer Form");
+            Mouse.OverrideCursor = null;
+            }
+        }
+        public bool CanRefund(object param)
+        {
+            if (this.Status == Convert.ToByte(DN_Status.Adjusted))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public void AdjustCreditNote(object param)
+        {
+            string obj = param.ToString();
+            SharedValues.NewClick = obj;
+            var mainview = ServiceLocator.Current.GetInstance<AdjustCreditNoteFormView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+
+
+            var tabview = ServiceLocator.Current.GetInstance<SalesTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Adjust Credit Note");
+        }
+        public bool CanAdjust(object param)
+        {
+            if (this.Status == Convert.ToByte(DN_Status.Adjusted))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public void GetCreditNote(object param)
+        {
+            if (param != null)
+            {
+                CreditNoteForm pqf = dnRepository.GetCreditNoteDetails(Convert.ToString(param));
+
+                this.ID = pqf.CreditNote.ID;
+                this.CreditNo = pqf.CreditNote.CreditNo;
+                this.CreditDate = pqf.CreditNote.CreditDate;
+                this.CustomerDebitNoteNo = pqf.CreditNote.CustomerDebitNoteNo;
+                this.CustomerDebitNoteDate = pqf.CreditNote.CustomerDebitNoteDate;
+                this.CustomerDebitNoteAmount = pqf.CreditNote.CustomerDebitNoteAmount;
+                this.SelectedCustomerID = pqf.CreditNote.CustomerID;
+                this.SalesInvoiceID = pqf.CreditNote.SalesInvoiceID;
+                this.SalesInvoiceNo = pqf.CreditNote.SalesInvoiceNo;
+                this.TermsAndConditions = pqf.CreditNote.TermsAndConditions;
+
+                this.TotalBeforeTax = pqf.CreditNote.TotalBeforeTax;
+                this.TotalTax = pqf.CreditNote.TotalTax;
+                this.TotalAfterTax = pqf.CreditNote.TotalAfterTax;
+                this.TotalBeforeTaxStr = Convert.ToString(this.TotalBeforeTax);
+                this.TotalTaxStr = Convert.ToString(TotalTax);
+                this.TotalAfterTaxStr = Convert.ToString(TotalAfterTax);
+
+                this.Status = pqf.CreditNote.Status;
+
+
+                this.PQDetailsEntity = new ObservableCollection<DataGridViewModel>();
+                foreach (var item in pqf.InvoiceDetails)
+                {
+                    DataGridViewModel pqEntity = new DataGridViewModel(ProductList);
+                    pqEntity.SelectedPSID = Convert.ToString(item.SINo);
+                    pqEntity.PandSCode = item.PandSCode;
+                    pqEntity.PandSName = item.PandSName;
+                    pqEntity.GSTRate = item.GSTRate;
+                    pqEntity.SQQty = item.SIQty;
+                    pqEntity.SQPrice = Convert.ToString(item.Price);
+                    pqEntity.SQDiscount = item.SIDiscount;
+
+                    //  PQDEntity.GSTRate = item.GSTRate;
+                    pqEntity.SQAmount = item.SIAmount;
+
+                    PQDetailsEntity.Add(pqEntity);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method is used to save and edit pq
+        /// </summary>
+        /// <param name="param"></param>
+        public void UpdateCreditNote(object param)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Confirmation", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+
+                PQErrors = string.Empty;
+                CreditNoteForm PQForm = GetDataIntoModel();
+
+                if (PQForm != null)
+                {
+                    dnRepository.UpdateCreditNote(PQForm);
+                }
+
+                Mouse.OverrideCursor = null;
+            }
+        }
+
+        public CreditNoteForm GetDataIntoModel()
+        {
+            CreditNoteForm PQForm = new CreditNoteForm();
+            PQForm.InvoiceDetails = new List<SalesInvoiceDetailEntity>();
+            CreditNoteEntity model = new CreditNoteEntity();
+            model.CreditNo = this.CreditNo;
+            model.CreditDate = this.CreditDate;
+            model.TotalBeforeTax = this.TotalBeforeTax;
+            model.TotalTax = this.TotalTax;
+            model.TotalAfterTax = this.TotalAfterTax;
+            model.CustomerDebitNoteNo = this.CustomerDebitNoteNo;
+            model.CustomerDebitNoteDate = this.CustomerDebitNoteDate;
+            model.CustomerDebitNoteAmount = this.CustomerDebitNoteAmount;
+            model.CustomerID = this.SelectedCustomerID;
+
+            model.TermsAndConditions = this.TermsAndConditions;
+
+            PQForm.CreditNote = model;
+
+            foreach (var item in PQDetailsEntity)
+            {
+                SalesInvoiceDetailEntity pqEntity = new SalesInvoiceDetailEntity();
+                pqEntity.SINo = Convert.ToString(item.SelectedPSID);
+                pqEntity.PandSCode = item.PandSCode;
+                pqEntity.PandSName = item.PandSName;
+                pqEntity.SIQty = item.SQQty;
+                pqEntity.SIPrice = item.SQPrice;
+                pqEntity.SIDiscount = item.SQDiscount;
+                pqEntity.GSTRate = item.GSTRate;
+                pqEntity.SIAmount = item.SQAmount;
+                if (item.SelectedPSID != null && Convert.ToInt32(item.SelectedPSID) > 0)
+                {
+                    PQForm.InvoiceDetails.Add(pqEntity);
+                }
+            }
+            return PQForm;
+        }
+
+        private void GetOptionsData()
+        {
+            var lstOptions = pandsRepository.GetOptionDetails();
+
+            if (lstOptions != null)
+            {
+                if (lstOptions.DecimalPlaces > 0)
+                {
+                    DecimalPlaces = lstOptions.DecimalPlaces;
+                }
+                else
+                {
+                    DecimalPlaces = 4;
+                }
+                if (lstOptions.DateFormat != null)
+                {
+                    DateFormat = lstOptions.DateFormat;
+                }
+                else
+                {
+                    DateFormat = "mm/dd/yy";
+                }
+
+                CurrencyName = lstOptions.CurrencyCode;
+                bool? tax = lstOptions.ShowAmountIncGST;
+                
+
+                var data = pandsRepository.GetTaxes().Where(t => t.IsDefault == true).FirstOrDefault();
+                if (data != null)
+                {
+                    TaxName = data.TaxName;
+                    TaxRate = data.TaxRate;
+                }
+                else
+                {
+                    TaxName = "GST";
+                    TaxRate = 0;
+                }
+            }
+        }
+        
+        #endregion
+    }
+}

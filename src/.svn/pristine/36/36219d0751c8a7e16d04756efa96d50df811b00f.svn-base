@@ -1,0 +1,179 @@
+﻿namespace SDN.CashBank.DAL
+{
+    using DALInterface;
+    using SASDAL;
+    using SDN.UI.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    public class AccountDetialDAL : IAccountDetialsDAL
+    {
+        SASEntitiesEDM entites = new SASEntitiesEDM();
+        public List<AccountsEntity> GetAccountDetails()
+        {
+            List<AccountsEntity> accountsource = (from x in entites.Accounts
+                                                  join y in entites.AccountTypes on x.Acc_Type.ToString() equals y.Acc_Type_Code  
+                                        where(x.IsDeleted != true)
+                                        select new AccountsEntity
+                                        {
+                                            AccountName = x.Acc_Name,
+                                            AccountID = x.ID,
+                                            AccountType = x.Acc_Type,
+                                            AccuntTypeCode = x.Acc_Type.ToString(),
+                                            IsInactive = x.Acc_Inactive,
+                                            OpeningBalance = x.Acc_Open_Bal,
+                                            CurrentBalance = x.Acc_Cur_Bal,
+                                            //IsActive = x.IsActive,
+                                            IsLinked = x.IsLinked,
+                                            AccountTypeName = y.Acc_Type_Name,
+                                            HashSymbol = (x.IsLinked == true ? "#" : ""),
+
+                                        }).ToList();
+            var list = accountsource.Where(x => x.AccountName != "Suspense Account").ToList();
+            return accountsource = list;   
+        }
+        public List<AccountsEntity> GetAccountTypes()
+        {
+            List<AccountsEntity> accountsource = entites.AccountTypes.Select(x => new AccountsEntity
+            {
+               AccountName = x.Acc_Type_Name,
+               AccuntTypeCode = x.Acc_Type_Code
+                
+            }).ToList();
+            return accountsource;
+        }
+
+        public AccountDetailEntity GetDefaultAccount()
+        {
+            var cashbank = entites.AccountTypes.Select(x => new AccountDetailEntity
+            {
+                AccountType = x.Acc_Type_Name,
+                IsInActive = false,
+                //SeletedAccountType = x.Acc_Type_Code
+            }).FirstOrDefault();
+            return cashbank;
+        }
+        public AccountDetailEntity GetAccInfo(int AccountId)
+        {
+            var cashbank = entites.Accounts.Where(x => x.ID == AccountId).Select(x => new AccountDetailEntity
+            {
+                AccountName = x.Acc_Name,
+                AccountID = x.ID,
+                AccountOpeningBal = x.Acc_Open_Bal.ToString(),
+                AccountType = x.Acc_Type.ToString(),
+                //AccuntTypeCode = x.AccountType.Acc_Type_Code,
+                SeletedAccountType = x.Acc_Type.ToString(),
+                IsInActivestring = x.Acc_Inactive,
+                IsLinkedAccount = x.IsLinked,
+                HashSymbol = (x.IsLinked == true ? "#" : "")
+            }).FirstOrDefault();
+            return cashbank;
+        }
+
+        public int AddEditAccount(AccountDetailEntity cashbankentity)
+        {
+            try
+            {
+                var cashbank = entites.Accounts.Where(x => x.ID == cashbankentity.AccountID).FirstOrDefault();
+                var checkduplicate = entites.Accounts.Where(x => x.Acc_Name.ToLower() == cashbankentity.AccountName.ToLower() && x.IsDeleted != true).FirstOrDefault();
+                //if (checkduplicate != null)
+                //{
+                //    return 2;
+                //}
+                //else
+                //{
+                if (cashbank != null)
+                {
+                    cashbank.Acc_Name = cashbankentity.AccountName;
+                    cashbank.Acc_Open_Bal = cashbankentity.AccountOpeningBal == null ? null as decimal? : Convert.ToDecimal(cashbankentity.AccountOpeningBal);
+                    cashbank.Acc_Inactive = cashbankentity.IsInActivestring;
+                    cashbank.Acc_Type =Convert.ToInt32(cashbankentity.SeletedAccountType);
+                    entites.SaveChanges();
+                    return 1;
+                }
+                else
+                {
+                    if (checkduplicate != null)
+                    {
+                        return 2;
+                    }
+                    int acctype = Convert.ToInt32(cashbankentity.SeletedAccountType);
+                    Account AccDetail = new Account()
+                    {
+                        Acc_Name = cashbankentity.AccountName,
+                        Acc_Open_Bal = cashbankentity.AccountOpeningBal == null ? null as decimal? : Convert.ToDecimal(cashbankentity.AccountOpeningBal),
+                        Acc_Inactive = cashbankentity.IsInActivestring,
+                        Acc_Type = acctype
+                    };
+                    //if (cashbankentity.AccountName.ToLower().Trim() == "cash")
+                    //{
+                    //    //var accType = entites.AccountTypes.Where(x => x.Acc_Type_Code == "CAB").FirstOrDefault();
+                    //    //if (accType != null)
+                    //    //    AccDetail.Acc_Type = accType.ID;
+                    //    return 2;
+                    //}
+                    //else
+                    //{
+                    //    var accType = entites.AccountTypes.Where(x => x.Acc_Type_Code == "ACB").FirstOrDefault();
+                    //    if (accType != null)
+                    //        AccDetail.Acc_Type = accType.ID;
+                    //}
+                    entites.Accounts.Add(AccDetail);
+                    entites.SaveChanges();
+                    return 1;
+                }
+                //}
+            }
+            catch (Exception ex)
+            {
+                return 3;
+                throw ex;
+            }
+        }
+
+        public bool DeleteAccount(int AccountId)
+        {
+            try
+            {
+                var cashbank = entites.Accounts.Where(x => x.ID == AccountId).FirstOrDefault();
+                if (cashbank != null)
+                {
+                    cashbank.IsDeleted = true;
+                    entites.SaveChanges();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw ex;
+            }
+        }
+        public bool CanDeleteAccount(int AccountId)
+        {
+            try
+            {
+                var cashbank = entites.AccountsTransactions.Where(x => x.Acc_Id == AccountId).FirstOrDefault();
+                if (cashbank != null)
+                {
+                    return false;
+                }
+                else
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw ex;
+            }
+        }
+    }
+
+
+
+}

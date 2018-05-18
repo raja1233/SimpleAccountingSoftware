@@ -1,0 +1,178 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Win32;
+using SDN.Common;
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Input;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
+using System.Data.Odbc;
+using System.Data.SqlClient;
+using System.Data;
+using System.Configuration;
+using Microsoft.Practices.Prism.Commands;
+
+namespace SASClient.File.ViewModel
+{
+    public class RestoreDataViewModel : RestoreDataEntity
+    {
+        #region private property
+        private int _SIGridHeight;
+        
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        #endregion
+        #region public property
+        public int SIGridHeight
+        {
+            get
+            {
+                return _SIGridHeight;
+            }
+            set
+            {
+                _SIGridHeight = value;
+                OnPropertyChanged("GridHeight");
+            }
+        }
+       
+        #endregion
+        #region Constructor
+        public RestoreDataViewModel(IRegionManager regionManager, IEventAggregator eventAggregator):base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            LoadSupplierBackground();
+            RestoreCommand = new DelegateCommand(RestoreData);
+        }
+        #endregion
+        public ICommand  RestoreCommand { get; set; }
+        #region BackgroundWorked
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+
+            int minHeight = 500;
+            int headerRows = 300;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - (-62);
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.SIGridHeight = minHeight;
+            RefreshData();
+        }
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            Mouse.OverrideCursor = null;
+
+        }
+        public void RestoreData()
+        {
+            System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog1.Filter = "Text files (*.bak)|*.bak|All files (*.*)|*.*";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {     
+                string filename = System.IO.Path.GetFileName(openFileDialog1.FileName);   
+                var path = System.IO.Path.GetDirectoryName(openFileDialog1.FileName);
+                string fullPath = path + "\\" + filename;
+                string sqlcon = "Server=SDN-123\\SQLEXPRESS2014;Initial Catalog=SimpleAccounting;Trusted_Connection=True;";
+               
+                  using(SqlConnection con=new SqlConnection(sqlcon))
+                {
+                    try
+                    {
+
+                        con.Open();
+                        string UseMaster = "USE master";
+                        SqlCommand UseMasterCommand = new SqlCommand(UseMaster, con);
+                        UseMasterCommand.ExecuteNonQuery();
+                        // The below query will rollback any transaction which is
+                        //running on that database and brings SQL Server database in a single user mode.
+                        string Alter1 = @"ALTER DATABASE
+                        [" + "SimpleAccounting" + "] SET SINGLE_USER WITH ROLLBACK IMMEDIATE";
+                        SqlCommand Alter1Cmd = new SqlCommand(Alter1, con);
+                        Alter1Cmd.ExecuteNonQuery();
+                        // The below query will restore database file from disk where backup was taken ....
+                        string Restore = @"RESTORE DATABASE SimpleAccounting FROM DISK = N'"+fullPath+@"' with replace";
+                        SqlCommand RestoreCmd = new SqlCommand(Restore, con);
+                        RestoreCmd.ExecuteNonQuery();
+                        // the below query change the database back to multiuser
+                        string Alter2 = @"ALTER DATABASE
+                        [" + "SimpleAccounting" + "] SET Multi_User";
+                        SqlCommand Alter2Cmd = new SqlCommand(Alter2, con);
+                        Alter2Cmd.ExecuteNonQuery();
+                        System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Default;
+                        MessageBox.Show("Database Restore Successfully");
+                        //Restore(sqlcon,)
+                    }
+                    catch (Exception e)
+                    {
+
+                        MessageBox.Show(e.GetBaseException().ToString());
+                    }
+                    finally
+                    {
+                        if (con.State == ConnectionState.Open)
+                        {
+                            con.Close();
+                        }
+                    }
+                }            
+ 
+            }
+        }
+     
+        public void RefreshData()
+        {
+            
+        }
+        #endregion
+    }
+}

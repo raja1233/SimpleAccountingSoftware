@@ -1,0 +1,182 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.CloseRequest;
+using SDN.Common;
+using SDN.Navigation.Services;
+using SDN.Navigation.View;
+using SDN.Settings.ViewModels;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Login;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace SDN.Navigation.ViewModel
+{
+    public class LoginUserViewModel : LoginUserEntity
+    {
+        #region private properties
+        /// <summary>
+        /// The region manager
+        /// </summary>
+        private readonly IRegionManager regionManager;
+
+        /// <summary>
+        /// The event aggregator
+        /// </summary>
+        private readonly IEventAggregator eventAggregator;
+       
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        static List<LoginUserEntity> loginentity = new List<LoginUserEntity>();
+        StackList itemlist = new StackList();
+        List<string> loginlist = new List<string>();
+        private ObservableCollection<UserRoleModel> _UserRoleModelCollection = new ObservableCollection<UserRoleModel>();
+        private ObservableCollection<LoginUserEntity> _LoginUserEntity = new ObservableCollection<LoginUserEntity>();
+       
+        #endregion
+        #region public properties
+        object _getLogin;
+        public object getLogin
+        {
+            get
+            {
+                return _getLogin;
+            }
+            set
+            {
+                if (_getLogin != value)
+                {
+                    _getLogin = value;
+                    OnPropertyChanged("getLogin");
+                    // OnUserChange();
+                }
+            }
+        }
+        public ObservableCollection<LoginUserEntity> LoginsUserEntity
+        {
+            get
+            {
+
+                //_UsersSecurityEntity = new ObservableCollection<UsersSecurityEntity>(securityRepository.GetUsers());
+                // _UsersSecurityEntity = new ObservableCollection<UsersSecurityEntity>();
+                return _LoginUserEntity;
+                //return _UsersSecurityEntity = new ObservableCollection<UsersSecurityEntity>(securityRepository.GetUsers());
+            }
+            set
+            {
+                if (_LoginUserEntity != value)
+                {
+                    _LoginUserEntity = value;
+                    OnPropertyChanged("LoginsUserEntity");
+                }
+            }
+        }
+        public ObservableCollection<UserRoleModel> UserRoleModelCollection
+        {
+            get
+            {
+                return _UserRoleModelCollection;
+            }
+            set
+            {
+                _UserRoleModelCollection = value;
+                OnPropertyChanged("UserRoleModelCollection");
+            }
+        }
+        #endregion
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoginUserViewModel"/> class.
+        /// </summary>
+        /// <param name="regionManager">The region manager.</param>
+        /// <param name="eventAggregator">The event aggregator.</param>
+        public LoginUserViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            eventAggregator.GetEvent<HeaderVisibilityChangeEvent>().Publish(false);
+        }
+        #region Relay Commands
+        public RelayCommand LoginClickCommand { get; set; }
+        #endregion
+        #endregion
+        #region Command properties
+        #endregion
+        #region button Commands
+        #endregion
+        #region public method
+
+        public void LoginUser()
+        {
+            
+            // Mouse.OverrideCursor = Cursors.Wait;
+            var siRepository = new LoginUserRepository();
+            var uid = UserName;
+            var pwd = Password;
+            loginentity = siRepository.GetUsers();
+            var currentuser = 0;
+            UserRoleModelCollection = new ObservableCollection<UserRoleModel>(siRepository.GetAllUserRoles());
+            foreach (var item in loginentity)
+            {
+                if(item.UserName == uid)
+                {
+                    currentuser = item.ID;
+                }
+            }
+            var storecurrentuser = currentuser;
+            loginentity = siRepository.GetUserRoles(storecurrentuser);
+            SharedValues.UserList = loginentity.Select(x=> x.TabName);
+            itemlist.AddToList();
+            var sif = siRepository.GetAuthorizedUser(uid, pwd);
+            
+            if (sif == true)
+            {
+               this.regionManager.RegisterViewWithRegion(RegionNames.FooterRegion,
+                   () => ServiceLocator.Current.GetInstance<FooterView>());
+                var view = ServiceLocator.Current.GetInstance<MainView>();
+                IRegion region1 = this.regionManager.Regions[RegionNames.MainRegion];
+                region1.Add(view);
+                if (region1 != null)
+                {
+                    region1.Activate(view);
+                }
+                eventAggregator.GetEvent<TabVisibilityEvent>().Publish(false);
+                eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+                eventAggregator.GetEvent<TitleChangedEvent>().Publish("Simple Accounting Software");
+            }
+            
+            //secure.OnUserChange();
+        }
+        public void AccessableScreens()
+        {
+            List<string> listview = (List<string>)Application.Current.Resources["views"];
+        }
+        #endregion
+        #region private method
+        public override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+           
+
+            base.OnPropertyChanged(name);
+        }
+        #endregion
+        #region Background Methods
+        #endregion
+    }
+}

@@ -1,0 +1,28 @@
+﻿using SDN.UI.Entities.CashandBank;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.CashBank
+{
+    public interface ICashBankStatementDAL
+    {
+
+
+        /// <summary>
+       
+        /// have a two method to get full and one list from database
+        /// </summary>
+        /// <returns></returns>
+        List<CashBankStatementEntity> GetBankAccountList();
+        /// <summary>
+        /// Give Account Details 
+        /// </summary>
+        /// <param name="CashBankStatementID"></param>
+        /// <param name="jsondata"></param>
+        /// <returns></returns>
+        List<CashBankStatementEntity> GetAccountDetailList(int CashBankStatementID, string jsondata);
+    }
+}

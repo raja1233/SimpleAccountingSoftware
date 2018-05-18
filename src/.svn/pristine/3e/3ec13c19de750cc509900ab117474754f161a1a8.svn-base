@@ -1,0 +1,60 @@
+﻿using SDN.UI.Entities.Customers;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASDAL.Customers
+{
+    public class CustomersUnPaidInvoicesDAL : ICustomersUnpaidInvoicesDAL
+    {
+        public List<CustomersUnpaidInvoicesEntity> GetCustomersList(string statementDate)
+        {
+            List<CustomersUnpaidInvoicesEntity> supList = new List<CustomersUnpaidInvoicesEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    supList = entities.Database.SqlQuery<CustomersUnpaidInvoicesEntity>("PRC_GetUnPaidInvoices_Customers @StatementDate",
+                        new SqlParameter("StatementDate", statementDate)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return supList;
+        }
+        public CustomersStatementEntity GetAllUnPaidInvoice(int customerID, string statementDate)
+        {
+            CustomersStatementEntity entity = new CustomersStatementEntity();
+            List<CustomersBalanceEntity> lstbalances = new List<CustomersBalanceEntity>();
+            List<CustomersInvoiceDetailsEntity> lstInvoices = new List<CustomersInvoiceDetailsEntity>();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    lstInvoices = entities.Database.SqlQuery<CustomersInvoiceDetailsEntity>("USP_CustomersStatementUnPaidInvoice @ID,@SDate",
+                   new SqlParameter("ID", customerID),
+                   new SqlParameter("SDate", statementDate)).ToList();
+
+                    lstbalances = entities.Database.SqlQuery<CustomersBalanceEntity>("USP_GetStatementUnpaidInvoice_Summary @ID,@SDate,@Type",
+                    new SqlParameter("ID", customerID),
+                    new SqlParameter("SDate", statementDate),
+                    new SqlParameter("Type", "C")).ToList();
+
+                    entity.LstBalances = lstbalances;
+                    entity.LstInvoices = lstInvoices;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return entity;
+        }
+    }
+}

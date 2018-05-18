@@ -1,0 +1,202 @@
+﻿<UserControl x:Class="SDN.Sales.Views.CustomersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Sales.Views"
+             xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+             mc:Ignorable="d" 
+             >
+    <ScrollViewer VerticalScrollBarVisibility="Visible"  ScrollViewer.CanContentScroll="True">
+        <Grid Margin="10,10,100,100">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="65px"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.Row="1"    >
+                <Run Text="Customer Name ( "/>
+                <InlineUIContainer>
+        		    <Label x:Name="CustomerCount" Content="{Binding TotalCustomer}"  />
+        	    </InlineUIContainer><Run Text=" )"/>
+            </TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" >
+                <Run Text="Customer Name" />
+                <Run Text="*" Foreground="Red"/>
+            </TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="3" Name="txtCustomerName" Text="{Binding CustomerName}"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="4"   Text="Company Registration No." ></TextBlock>
+            <TextBlock Grid.Column="0" Grid.Row="5"  >
+                <Run Text="Balance "/>
+                <InlineUIContainer>
+        		    <Label x:Name="CurrencyName" Content="USD"  />
+        	    </InlineUIContainer><Run Text=" "/>
+            </TextBlock>
+            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Comp_Reg_No, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock Name="lblBilltoAddress" Grid.Column="3" Grid.Row="2"     Text="Bill to Address"  ></TextBlock>
+            <ComboBox Name="cmbBilltoAddress" Grid.Column="4" Grid.Row="2"   ></ComboBox>
+            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="22" Grid.ColumnSpan="3" HorizontalAlignment="Right" >
+                <Button  >Delete</Button>
+                <Button >New</Button>
+                <Button >Save</Button>
+                <Button >Cancel</Button>
+            </StackPanel>
+            <StackPanel  Grid.Column="4" Grid.Row="0" Orientation="Vertical">
+                <Label  HorizontalAlignment="Left" Foreground="Black">Last Updated</Label>
+                <TextBlock Name="LastUpdatedDate" Grid.Column="5" Grid.Row="0" HorizontalAlignment="Left"  Text="2/20/2017"  />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1">
+                <Button x:Name="GoNext" Content=" &lt;&lt; "  HorizontalAlignment="Left"  VerticalAlignment="Center" Width="30" />
+                <Button x:Name="GoBack" Content=" &gt;&gt; " Grid.Column="2" HorizontalAlignment="Left"  VerticalAlignment="Center" Width="30" />
+            </StackPanel>
+
+            <TextBlock Grid.Column="3" Grid.Row="1"     >
+            <Run Text="Active ( "/><InlineUIContainer>
+        		<Label x:Name="ActiveCnt" Content="{Binding ActiveCustomer}"  />
+        	</InlineUIContainer><Run Text=" )"/>
+            </TextBlock>
+            <TextBlock Grid.Column="4" Grid.Row="1"     >
+            <Run Text="Inactive ( "/>
+            <InlineUIContainer>
+        		<Label x:Name="InActiveCnt" Content="{Binding InActiveCustomer}"  />
+        	</InlineUIContainer>
+            <Run Text=" )"/>
+            </TextBlock>
+            <Button x:Name="btnRefresh" Content="Refresh" Grid.Column="4"   Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="75"/>
+            <CheckBox x:Name="chkInActive" Content="Inactive" HorizontalAlignment="Left"  Grid.Row="2" VerticalAlignment="Center" Foreground="Black"/>
+            <ComboBox Grid.Column="1" Grid.Row="1"   Name="CustomerSearch"  ></ComboBox>
+            <TextBox Name="txtBalance" Grid.Column="1" Grid.Row="5"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="6" Text="Customer Type"  HorizontalAlignment="Left"  ></TextBlock>
+            <ComboBox Name="cmbCustomerType" Grid.Column="1" Grid.Row="6" 
+                      ItemsSource="{Binding CustomerType}" 
+                      DisplayMemberPath="Cat_Contents" SelectedValuePath="ID" 
+                      SelectedValue="{Binding SelectedCustomerType}">
+            </ComboBox>
+            <TextBlock Grid.Column="0" Grid.Row="7" Text="Sales Man"   ></TextBlock>
+            <ComboBox Name="cmbSalesman" Grid.Column="1" Grid.Row="7"  
+                      ItemsSource="{Binding SalesmanType}" 
+                      DisplayMemberPath="Cat_Contents" SelectedValuePath="ID" >
+            </ComboBox>
+            <TextBlock Grid.Column="0" Grid.Row="8" Text="Credit Limit Days"   ></TextBlock>
+            <ComboBox Name="cmbCreditLimitDays" Grid.Column="1" Grid.Row="8" 
+                  ItemsSource="{Binding CreditLimitDays}" 
+                  DisplayMemberPath="Cat_Contents" SelectedValuePath="ID">
+            </ComboBox>
+            <TextBlock Grid.Column="0" Grid.Row="9"   >
+            <Run Text="Credit Limit Amount "/><InlineUIContainer>
+        		<Label x:Name="CreditAmountCurrencyName" Content="USD"  />
+        	</InlineUIContainer><Run Text=" "/>
+            </TextBlock>
+            <ComboBox Name="cmbCreditLimitAmount" Grid.Column="1" Grid.Row="9" 
+            ItemsSource="{Binding CreditLimitAmount}" 
+            DisplayMemberPath="Cat_Contents" SelectedValuePath="ID">
+
+            </ComboBox>
+            <TextBlock Grid.Column="0" Grid.Row="10" Text="Discount" ></TextBlock>
+            <ComboBox Name="cmbDiscount" Grid.Column="1" Grid.Row="10" 
+                  ItemsSource="{Binding Discount}" 
+            DisplayMemberPath="Cat_Contents" SelectedValuePath="ID"></ComboBox>
+            <TextBlock Grid.Column="0" Grid.Row="11" Text="Telephone"   ></TextBlock>
+            <TextBox Name="txtTelephone" Grid.Column="1" Grid.Row="11"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="12" Text="Fax"   ></TextBlock>
+            <TextBox Name="txtFax" Grid.Column="1" Grid.Row="12"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="13" Text="Email"   ></TextBlock>
+            <TextBox Name="txtEmail" Grid.Column="1" Grid.Row="13"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="14" Text="Contact Person"   ></TextBlock>
+            <TextBox Name="txtContactPerson" Grid.Column="1" Grid.Row="14"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="15" Text="GST Registration No"   ></TextBlock>
+            <TextBox Name="txtGstRegistrationNo" Grid.Column="1" Grid.Row="15"></TextBox>
+            <TextBlock Grid.Column="0" Grid.Row="16" Text="Change Customer GST?"   ></TextBlock>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="16">
+                <RadioButton   Name="radChangeGSTYes" GroupName="radChangeGST"   Content="Yes" ></RadioButton>
+                <RadioButton   Name="radChangeGSTNo"  GroupName="radChangeGST" Content="No" ></RadioButton>
+            </StackPanel>
+            <TextBlock Grid.Column="0" Grid.Row="17" Text="Remarks"    ></TextBlock>
+            <TextBox Name="txtRemark" Grid.Column="0" Grid.Row="18" TextWrapping="Wrap" Grid.RowSpan="2"
+                 Grid.ColumnSpan="2"
+                 AcceptsReturn="True" ></TextBox>
+
+            <TextBlock Grid.Column="0" Grid.Row="20" TextWrapping="Wrap" Text="Administrator can stop Users from changing Credit Limit Days,Credit Limit Amount and Discount in Settings > Options."   ></TextBlock>
+            <Border Grid.Column="0" Grid.Row="21" BorderBrush="Black" BorderThickness="1">
+                <TextBlock Text="Company Name"  ></TextBlock>
+            </Border>
+
+
+            <TextBlock  Name="txtBAddressLine1" Grid.Column="3" Grid.Row="3"   Text="Line 1"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="3"   Text="{Binding BAddressLine1, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock  Name="txtBAddressLine2" Grid.Column="3" Grid.Row="4"   Text="Line 2"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="4"   Text="{Binding BAddressLine2, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock  Name="txtBCity" Grid.Column="3" Grid.Row="5"   Text="City"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="5"    Text="{Binding BCity, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock  Name="txtBCountry" Grid.Column="3" Grid.Row="6"   Text="Country"    ></TextBlock>
+            <ComboBox Name="cmbBCountry" Grid.Column="4" Grid.Row="6"   ></ComboBox>
+            <TextBlock  Name="txtBState" Grid.Column="3" Grid.Row="7"   Text="State"    ></TextBlock>
+            <ComboBox Name="cmbBState" Grid.Column="4" Grid.Row="7"  ></ComboBox>
+            <TextBlock  Name="txtBPostalCode" Grid.Column="3" Grid.Row="8"   Text="Postal Code"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="8"    Text="{Binding BPostalCode, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+
+            <TextBlock  Name="txtshipToAddress" Grid.Column="3" Grid.Row="9"   Text="Ship to Address"    ></TextBlock>
+
+            <!--<DockPanel  Grid.Column="4" Grid.Row="9" HorizontalAlignment="Stretch">
+                <ComboBox Name="cmbShipAddress" DockPanel.Dock="Left" Width="210" Margin="0,0,10,0"></ComboBox>
+                <Button Name="btnBAddNew" DockPanel.Dock="Left" >New</Button>
+                <Button Name="btnBDelete" DockPanel.Dock="Left"  >Delete</Button>
+            </DockPanel>-->
+            <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.Row="9" HorizontalAlignment="Stretch" >
+                <ComboBox Name="cmbShipAddress" Width="210" Margin="0,5,10,0"></ComboBox>
+                <Button Name="btnBAddNew" Margin="0,5,10,5" >New</Button>
+                <Button Name="btnBDelete" Margin="0,5,10,5" >Delete</Button>
+            </StackPanel>
+            <TextBlock  Name="txtSAddressLine1" Grid.Column="3" Grid.Row="10"   Text="Line 1"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="10"   Text="{Binding ShipAddressLine1, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock  Name="txtSAddressLine2" Grid.Column="3" Grid.Row="11"   Text="Line 2"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="11"   Text="{Binding ShipAddressLine2, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock  Name="txtSCity" Grid.Column="3" Grid.Row="12"   Text="City"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="12"    Text="{Binding ShipCity, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <TextBlock  Name="txtSCountry" Grid.Column="3" Grid.Row="13"   Text="Country"    ></TextBlock>
+            <ComboBox Name="cmbSCountry" Grid.Column="4" Grid.Row="13"   ></ComboBox>
+            <TextBlock  Name="txtSState" Grid.Column="3" Grid.Row="14"   Text="State"    ></TextBlock>
+            <ComboBox Name="cmbSState" Grid.Column="4" Grid.Row="14"  ></ComboBox>
+            <TextBlock  Name="txtSPostalCode" Grid.Column="3" Grid.Row="15"   Text="Postal Code"    ></TextBlock>
+            <TextBox Grid.Column="4" Grid.Row="15"    Text="{Binding ShipPostalCode, BindingGroupName=CusGroup, UpdateSourceTrigger=Explicit}"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.Row="16" HorizontalAlignment="Right">
+                <Button Name="btnSameAsBill" Margin="0,5,10,0">Same as Bill to Address</Button>
+                <Button Name="btnShipAddNew" Margin="0,5,10,5" >New</Button>
+                <Button Name="btnShipDelete" Margin="0,5,10,5">Delete</Button>
+            </StackPanel>
+            <GroupBox Header="Business Card Photos" Grid.Column="3" Grid.Row="17" Grid.ColumnSpan="2" Grid.RowSpan="4">
+
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

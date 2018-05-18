@@ -1,0 +1,235 @@
+﻿using SDN.Settings.DALInterface; 
+using SDN.UI.Entities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using SASDAL;
+namespace SDN.Settings.DAL
+{
+    public class UserSecurityDAL : IUserSecurityDAL
+    {
+        SASEntitiesEDM entites = new SASEntitiesEDM();
+
+
+        public List<UsersSecurityEntity> GetUsers()
+        {
+            if (entites != null) {
+                entites.Dispose();
+                entites = new SASEntitiesEDM();
+            }
+            List<UsersSecurityEntity> users = entites.Users.Where(x => x.IsDeleted != true).Select(x => new UsersSecurityEntity
+            {
+                UserName = x.User_Name,
+                EncryptedPassword = x.User_Password,
+                Isinactive = x.Active,
+                ID = x.UserId
+            }).ToList();
+            foreach (var item in users)
+            {
+                if (item.EncryptedPassword != null && item.EncryptedPassword != "")
+                    item.Password = Decrypt(item.EncryptedPassword);
+            }
+
+            return users.OrderBy(x=>x.UserName).ToList();
+        }
+
+        public List<UserRoleModel> GetAllUserRoles()
+        {
+            List<UserRoleModel> lstuserRoles = new List<UserRoleModel>();
+            try
+            {
+
+                lstuserRoles = (from u in entites.MasterModules
+                                select new UserRoleModel
+                                {
+                                    ID = u.ID,
+                                    ModuleId = u.Module_Id,
+                                    ModuleName = u.Module_Name,
+                                    TabId = u.Tab_Id.ToString(),
+                                    TabName = u.Tab_Name,
+                                    OrderId = u.Order_Id
+
+                                }).OrderBy(x => x.OrderId).ToList<UserRoleModel>();
+
+                return lstuserRoles;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public List<UserRoleModel> GetUserRoles(int userID)
+        {
+            try
+            {
+                var result = entites.UserSecurities.Where(x => x.User_Id == userID).Select(x => new UserRoleModel
+                {
+                    TabId = x.Tab_Id,
+                }).ToList();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool SaveUsers(List<UsersSecurityEntity> Users)
+        {
+            try
+            {
+
+                foreach (var item in Users)
+                {
+                    if (item.Password != null && item.Password != "")
+                    {
+                        item.EncryptedPassword = Encrypt(item.Password);
+                    }
+                    var checkuser = entites.Users.Where(x => x.UserId == item.ID).FirstOrDefault();
+                    if (checkuser != null)
+                    {
+                        checkuser.User_Name = item.UserName;
+                        checkuser.User_Password = item.EncryptedPassword;
+                        checkuser.Active = item.Isinactive;
+                        checkuser.CreatedDate = DateTime.Now;
+                        checkuser.User_Email = "Simple@accounting.com";
+                        entites.SaveChanges();
+                    }
+                    else
+                    {
+                        User user = new User()
+                        {
+                            User_Name = item.UserName.ToLower(),
+                            User_Password = item.EncryptedPassword,
+                            Active = item.Isinactive,
+                            CreatedDate = DateTime.Now,
+                            User_Email = "Simple@accounting.com"
+                        };
+                        entites.Users.Add(user);
+                        entites.SaveChanges();
+                    }
+                }
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+                //throw ex;
+            }
+        }
+
+        public bool AddRoles(List<UserRoleModel> RoleModel, int UserId)
+        {
+            UserSecurity sec = new UserSecurity();
+            var role = entites.UserSecurities.Where(x => x.User_Id == UserId).ToList();
+            if (role != null)
+            {
+                foreach(var item in role)
+                {
+                    entites.UserSecurities.Remove(item);
+                }
+                entites.SaveChanges();
+            }
+            
+            foreach (var item in RoleModel)
+            {
+                if (item.CheckTab == true)
+                {
+                    sec.Tab_Id = item.TabId;
+                    sec.User_Id = UserId;
+                    entites.UserSecurities.Add(sec);
+                    entites.SaveChanges();
+                }
+            }
+            return true;
+        }
+
+        public bool DeleteUser(int UserId)
+        {
+            try
+            {
+                var user = entites.Users.Where(x => x.UserId == UserId).FirstOrDefault();
+                if (user != null)
+                {
+                    user.IsDeleted = true;
+                    entites.SaveChanges();
+                }
+                else return false;
+                var roles = entites.UserSecurities.Where(x => x.User_Id == UserId).ToList();
+                if (roles != null)
+                {
+                    foreach (var item in roles)
+                    {
+                        entites.UserSecurities.Remove(item);
+                    }
+                    return true;
+                }
+                else return false;
+            }
+            catch
+            {
+                return false;
+            }
+
+
+        }
+
+        #region PasswordEncryption and Decryption 
+
+        public static string Encrypt(string clearText)
+        {
+            string EncryptionKey = "Simple";
+            byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    clearText = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return clearText;
+        }
+
+
+        public static string Decrypt(string cipherText)
+        {
+            string EncryptionKey = "Simple";
+            cipherText = cipherText.Replace(" ", "+");
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+            return cipherText;
+        }
+        #endregion
+    }
+}
+

@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="SDN.Purchasing.View.PurchaseTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Purchasing.View"
+          
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid  HorizontalAlignment="Left" Height="auto">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <RadioButton IsChecked="{Binding QuotationTabTrue}" GroupName="grpPurchasetab" Content="Purchase Quotations" Margin="10,0,0,0" Style="{DynamicResource TabMenuButtonStyle}" Grid.Column="0" 
+                  Command="{Binding PurchaseQuotationClickCommand}">
+            
+        </RadioButton>
+        <RadioButton IsChecked="{Binding OrderTabTrue}" GroupName="grpPurchasetab" Content="Purchase Orders"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="1"  Margin="10,0,0,0"
+                   Command="{Binding PurchaseOrderClickCommand}"/>
+        <RadioButton IsChecked="{Binding InvoiceTabTrue}" GroupName="grpPurchasetab" Content="Purchase Invoices"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="2"  Margin="10,0,0,0"
+                     Command="{Binding PurchaseInvoiceClickCommand}"/>
+        <RadioButton IsChecked="{Binding DebitTabTrue}"  GroupName="grpPurchasetab" Content="Debit Notes"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="3" Margin="10,0,0,0"
+                 Command="{Binding DebitNoteClickCommand}" />
+        <RadioButton IsChecked="{Binding PaymentTabTrue}"  GroupName="grpPurchasetab" Content="Payments to Suppliers"  Style="{DynamicResource TabMenuButtonStyle}"  Grid.Column="4" Margin="10,0,0,0"
+                    Command="{Binding PaymentToSupplierClickCommand}"/>
+    </Grid>
+</UserControl>

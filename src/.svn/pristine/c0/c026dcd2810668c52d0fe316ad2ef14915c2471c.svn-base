@@ -1,0 +1,601 @@
+﻿<UserControl x:Class="SDN.Sales.Views.SalesQuotationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Sales.Views"
+             xmlns:my="clr-namespace:SDN.Common;assembly=SDN.Common"
+             mc:Ignorable="d"  xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+           Width="1024"
+             xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+             Height="auto">
+    <UserControl.Resources>
+        <helpers:EmptyIntConverter x:Key="EmptyIntConverter"/>
+        <helpers:DateTimeConverter x:Key="DateTimeFormatter"></helpers:DateTimeConverter>
+        <helpers:RowToIndexConverter x:Key="RowToIndexConverter"/>
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <helpers:TextInputToVisibilityConverter x:Key="TextInputToVisibilityConverter"/>
+        <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
+        <SolidColorBrush x:Key="brushWatermarkForeground" Color="Gray" />
+        <SolidColorBrush x:Key="brushWatermarkBorder" Color="Black" />
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
+        <Grid Margin="10,10,0,10" Width="auto" Height="auto">
+            <Grid.Resources>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="Height" Value="25"></Setter>
+                    <Setter Property="Margin" Value="0,0,0,4"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Style>
+                <Style x:Key="ComboStyle" TargetType="{x:Type ComboBox}">
+                    <Setter Property="Margin" Value="0,0,0,4"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="33"></RowDefinition>
+                <RowDefinition Height="33"></RowDefinition>
+                <RowDefinition Height="1"></RowDefinition>
+                <RowDefinition Height="1"></RowDefinition>
+                <RowDefinition Height="33"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1"></RowDefinition>
+                <RowDefinition Height="1"></RowDefinition>
+                <RowDefinition Height="1"></RowDefinition>
+                <RowDefinition Height="35"></RowDefinition>
+                <RowDefinition Height="33"></RowDefinition>
+                <RowDefinition Height="33"></RowDefinition>
+                <RowDefinition Height="1"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="35"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"></ColumnDefinition>
+                <ColumnDefinition Width="250"></ColumnDefinition>
+                <ColumnDefinition Width="160"></ColumnDefinition>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="220"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+                
+         
+            <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+                <TextBlock  Name="lblCustomerName" Text="Customer Name"></TextBlock>
+                <TextBlock Text="*" Foreground="Red" Margin="45,0,0,0" />
+
+
+                <ComboBox TabIndex="1" IsEditable="True" Name="cmbCustomerName" BorderBrush="{StaticResource brushWatermarkBorder}" Margin="0,2,0,5" IsEnabled="{Binding CustomerEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding LstCustomers}"  
+                           Width="230" Height="25"  HorizontalAlignment="Left"
+                              SelectedIndex="{Binding SelectedCustomerID, Converter={StaticResource EmptyIntConverter}}"
+               SelectedValue="{Binding SelectedCustomerID}"  DisplayMemberPath="FirstName" SelectedValuePath="CustomerID" VerticalAlignment="Top"  >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding CustomerSelectionChangedCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <TextBlock  Margin="10,0,0,0" >
+                  <Hyperlink  Command="{Binding DataContext.NavigateToClientCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                     CommandParameter="{Binding SelectedCustomerID}">
+                      <TextBlock Text="Customer Details" TextWrapping="Wrap" />
+                        </Hyperlink>
+                       </TextBlock>
+            </DockPanel>
+            <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="130,0,0,0" >
+                <TextBlock   Margin="17 5 0 0"   Style="{StaticResource WaterMarkStyle}" 
+                    HorizontalAlignment="Left"   Text="Search" Foreground="{StaticResource brushWatermarkForeground}" >
+                    <TextBlock.Visibility>
+                        <MultiBinding Converter="{StaticResource TextInputToVisibilityConverter}">
+                            <Binding ElementName="cmbCustomerName" Path="Text.IsEmpty" />
+                            <Binding ElementName="cmbCustomerName" Path="IsFocused" />
+                        </MultiBinding>
+                    </TextBlock.Visibility>
+                </TextBlock>
+            </DockPanel>
+            <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" >
+                <TextBlock  Name="lblSalesman" Text="Salesman"></TextBlock>
+
+                <ComboBox TabIndex="5" Name="cmbSalesman" Margin="89,0,0,5" IsEnabled="{Binding AllFieldsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  ItemsSource="{Binding LstSalesman}"  
+                           Width="230" Height="25"  HorizontalAlignment="left"
+             BorderBrush="Black"  SelectedValue="{Binding SelectedSalesmanID,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  DisplayMemberPath="ContentName" SelectedValuePath="ContentID" VerticalAlignment="Top"  >
+
+                </ComboBox>
+
+            </DockPanel>
+            <TextBlock Grid.Row="0" Grid.Column="2" Name="lblBlank"   Text="" Grid.RowSpan="3" ></TextBlock>
+
+
+            <TextBlock Grid.Row="0" Grid.Column="3" Name="lblQuotationNo" Text="Quotation No." ></TextBlock>
+            <TextBox TabIndex="2" HorizontalAlignment="Left" Width="210" Grid.Row="0" Grid.Column="4" Name="txtQuotationNo" Margin="8,0,0,5" Text="{Binding QuotationNo,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Foreground="Gray" ></TextBox>
+
+            <TextBlock Grid.Row="1" Grid.Column="3" Name="lblQuotationDate" Text="Quotation Date" ></TextBlock>
+            <DockPanel Grid.Row="1"  Grid.Column="4"  HorizontalAlignment="Left" >
+                <TextBlock Text="*" Foreground="Red" Margin="0,0,2,2"></TextBlock>
+                <DatePicker TabIndex="4" Width="210"  Margin="1,0,0,4" PreviewKeyUp="OpenDatePicker_KeyDown"  PreviewKeyDown="OpenDatePicker_KeyUp" 
+                  IsEnabled="{Binding AllFieldsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   SelectedDate="{Binding QuotationDate, BindingGroupName=Group1, UpdateSourceTrigger=PropertyChanged}"   >
+                    <DatePicker.Resources>
+                        <Style TargetType="{x:Type DatePickerTextBox}">
+                            <Setter Property="Control.Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <TextBox x:Name="PART_TextBox" IsReadOnly="True"  BorderThickness="0" HorizontalContentAlignment="Stretch" 
+                                             VerticalContentAlignment="Stretch"  BorderBrush="{DynamicResource BaseBorderBrush}" >
+                                            <TextBox.Text >
+                                                <MultiBinding Converter="{StaticResource DateTimeFormatter}">
+                                                    <Binding Path="SelectedDate"/>
+                                                    <Binding Path="DateFormat"></Binding>
+                                                    <Binding Path="DataContext.QuotationDate"
+                                                                RelativeSource="{RelativeSource AncestorType={x:Type DatePicker}}"  />
+                                                </MultiBinding>
+                                            </TextBox.Text>
+                                        </TextBox>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DatePicker.Resources>
+                </DatePicker>
+            </DockPanel>
+            <!--<DockPanel Grid.Row="1"  Grid.Column="0"  HorizontalAlignment="Left" Margin="0,4,0,0" >
+                <TextBlock  Name="lblBillToAddress"  Text="Bill to Address" ></TextBlock>
+            </DockPanel>
+            <DockPanel Grid.Row="1"  Grid.Column="1" Margin="5,4,0,0"  >
+                <TextBlock  Name="lblShipToAddress"  Text="Ship to Address" ></TextBlock>
+            </DockPanel>
+            <DockPanel Grid.Row="2" Grid.RowSpan="2" Grid.Column="0">
+                <TextBox HorizontalAlignment="Left"  Name="txtBillToAddress" Text="{Binding BillToAddress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                Height="30"  IsReadOnly="True" TextWrapping="Wrap" Width="250"  ></TextBox>
+            </DockPanel>
+            <DockPanel Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" >
+                <TextBox HorizontalAlignment="Left"   Name="txtShipToAddress"  Width="250" Margin="5,0,0,0"
+                     Height="30" Text="{Binding ShipToAddress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" TextWrapping="Wrap" ></TextBox>
+            </DockPanel>-->
+            <!--<DockPanel Grid.Row="2" Grid.Column="0">
+                <TextBlock  Name="lblBillToAddress"  Text="Bill to Address" ></TextBlock>
+                <TextBlock  Name="lblShipToAddress" Text="Ship to Address" HorizontalAlignment="Right"></TextBlock>
+            </DockPanel>
+            <DockPanel  Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                <TextBox HorizontalAlignment="Left"  Name="txtBillToAddress" Text="{Binding BillToAddress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                Height="40"  IsReadOnly="True" TextWrapping="Wrap" MaxWidth="300" Width="200"  ></TextBox>
+                <TextBox HorizontalAlignment="Center"   Name="txtShipToAddress"  Width="200" Margin="0,0,6,5"
+                     Height="40" Text="{Binding ShipToAddress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" TextWrapping="Wrap" ></TextBox>
+            </DockPanel>-->
+            <DockPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                <TextBlock  Name="lblValidForDays" Text="Valid for (Days)" ></TextBlock>
+                <TextBox TabIndex="3"  Width="230" HorizontalAlignment="Left"   Name="txtValidForDays" Margin="57,0,0,5"
+                  IsReadOnly="{Binding AllFieldsReadonly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Text="{Binding ValidForDays,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ></TextBox>
+            </DockPanel>
+
+            <DockPanel Grid.Row="4" Grid.Column="4" Margin="8,3,0,5" HorizontalAlignment="Right">
+                <RadioButton Name="rdnExcludeGST" IsEnabled="{Binding AllFieldsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  GroupName="grpTax" IsChecked="{Binding ExcludingTax,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <i:InvokeCommandAction Command="{Binding ExcludeTaxCheckedCommand}" CommandParameter="SSRT" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </RadioButton>
+                <TextBlock Name="lblExcludeGST"  Margin="10,0,10,0">
+                    <Run Text="exc."/>
+                    <Run Text="{Binding TaxName}"/>
+                </TextBlock>
+                <RadioButton Name="rdnIncludeGST"  IsEnabled="{Binding AllFieldsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" GroupName="grpTax" IsChecked="{Binding IncludingTax,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  
+                            >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <i:InvokeCommandAction Command="{Binding IncludeTaxCheckedCommand}" CommandParameter="SSRT" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </RadioButton>
+                <TextBlock Name="lblIncludeGST"  Margin="10,0,0,0">
+                    <Run Text="inc."/>
+                    <Run Text="{Binding TaxName}"/>
+                </TextBlock>
+            </DockPanel>
+            <Grid Width="998"  Height="{Binding SQFormGridHeight}"  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5">
+                <Grid>
+                    <DataGrid x:Name="CustomGridLines" ItemsSource="{Binding BackGroundLines}" Grid.Column="0" 
+                          Height="{Binding ElementName=grdPandS,Path=ActualHeight}" GridLinesVisibility="All"   Width="{Binding ElementName=grdPandS,Path=ActualWidth}"
+                          HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray" AutoGenerateColumns="False" 
+                           HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled"
+                          ColumnHeaderStyle="{StaticResource BackHeaderStyle20}" HeadersVisibility="All" Margin="0,0,0,0"  >
+                        <DataGrid.Columns>
+                            <!--<DataGridTextColumn Header="" Binding="{Binding Col0}"  Width="20"></DataGridTextColumn>-->
+                            <DataGridTextColumn Header="" Binding="{Binding Col0}"  Width="230"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col1}"  Width="230"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col2}"  Width="110"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col3}"  Width="120"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col4}"  Width="60"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col4}"  Width="145"></DataGridTextColumn>
+                            <DataGridTextColumn Header="" Binding="{Binding Col4}"  Width="88"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid TabIndex="6" Grid.Column="0" HorizontalAlignment="Left" Width="998" Name="grdPandS" GridLinesVisibility="All" IsReadOnly="{Binding AllFieldsReadonly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                      BorderThickness="1" BorderBrush="Black"  Height="{Binding SQFormGridHeight}" 
+                         AutoGenerateColumns="False" CanUserAddRows="True"    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      CanUserReorderColumns="False" GotFocus="grdPandS_GotFocus" 
+                      CanUserSortColumns="True" CanUserDeleteRows="True" Background="Transparent" 
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"   IsTabStop="False"
+                         
+                     KeyUp="grdPandS_KeyUp" ColumnHeaderStyle="{StaticResource HeaderStyle20}" LostFocus="grdPandS_LostFocus"                      
+                       >
+
+                        <DataGrid.Columns >
+                            <!--<DataGridTextColumn Header="" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowToIndexConverter}}" IsReadOnly="True" CanUserSort="False" />-->
+                            <DataGridComboBoxColumn Width="230" x:Name="PSCode" IsReadOnly="{Binding AllowToEditPandS,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                     DisplayMemberPath="PSCode"  
+                     SelectedValuePath="ID" 
+                     SelectedValueBinding="{Binding SelectedPSID,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }" >
+                                <DataGridComboBoxColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=PSCode,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0">
+                                                <TextBlock Name="txtHeaderPandScode">
+                                <Run Text="Product &amp; Service Code"></Run>
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                                <TextBlock Text="*" Foreground="Red"></TextBlock>
+                                            </DockPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridComboBoxColumn.HeaderTemplate>
+                                <DataGridComboBoxColumn.ElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ProductAndServices, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                    </Style>
+                                </DataGridComboBoxColumn.ElementStyle>
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ProductAndServices, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <Setter Property="IsEditable" Value="True" />
+                                        <EventSetter Event="UIElement.GotFocus" Handler="Item_GotFocus"></EventSetter>
+                                        <!--<EventSetter Event="SelectionChanged" Handler="PandSCodeSelectionChanged"  />-->
+                                        <!--<EventSetter Event="UIElement.KeyUp" Handler="PandSCodeKeyUp" ></EventSetter>-->
+                                    </Style>
+
+                                </DataGridComboBoxColumn.EditingElementStyle>
+
+                            </DataGridComboBoxColumn>
+
+                            <DataGridComboBoxColumn x:Name="chkPSName" Width="230" IsReadOnly="{Binding AllowToEditPandS,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                     DisplayMemberPath="PSName" 
+                     SelectedValuePath="ID" 
+                     SelectedValueBinding="{Binding SelectedPSID,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged }" >
+
+                                <DataGridComboBoxColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=chkPSName,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0">
+                                                <TextBlock Name="txtHeaderPandSname">
+                                <Run Text="Product &amp; Service Name"></Run>
+                                                </TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                                <TextBlock  Text="*" Foreground="Red"></TextBlock>
+                                            </DockPanel>
+
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridComboBoxColumn.HeaderTemplate>
+                                <DataGridComboBoxColumn.ElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ProductAndServices, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                    </Style>
+                                </DataGridComboBoxColumn.ElementStyle>
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ProductAndServices, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                        <Setter Property="IsEditable" Value="True" />
+
+                                    </Style>
+                                </DataGridComboBoxColumn.EditingElementStyle>
+
+                            </DataGridComboBoxColumn>
+
+                            <DataGridTextColumn x:Name="txtQty" SortMemberPath="SQQty"  Binding = "{Binding SQQty, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Width="110"  HeaderStyle="{StaticResource HeaderStyle20Right}" >
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=txtQty,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock>   
+                                 <Run Text="Quantity"/></TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                                <TextBlock Text="*" Foreground="Red"></TextBlock>
+
+                                            </DockPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="MaxLength" Value="5"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                        <!--<Setter Property="Width" Value="{Binding ElementName=txtQty,Path=ActualWidth}"/>-->
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn  x:Name="Txtprice" SortMemberPath="SQPrice"  Header = "Price" Binding = "{Binding SQPrice ,StringFormat='{}{0:0.####}' , Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Width="120"   HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=Txtprice,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock>   
+                                 <Run Text="Price"/></TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                            </DockPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="MaxLength" Value="10"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="IsEnabled" Value="{Binding IsAllowEditPrice}" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="false">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Name="Txtdiscount" KeyboardNavigation.IsTabStop="false"
+                       Header = "Disc %" CanUserSort="False"  Binding = "{Binding SQDiscount , Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="60"   HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                        <Setter Property="MaxLength" Value="2"/>
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="IsEnabled" Value="{Binding Path=IsAllowEditDiscount}" />
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="false">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Name="Txtamount" SortMemberPath="SQAmountStr" Header = "Amount" Binding = "{Binding SQAmountStr}" Width="145" IsReadOnly="True"  HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="{Binding ElementName=Txtamount,Path=ActualWidth}"/>
+                                            </Grid.ColumnDefinitions>
+                                            <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                                                <TextBlock>   
+                                 <Run Text="Amount"/></TextBlock>
+                                                <Image Source="/SASClient;component/Images/Shorting-Arrow-2.png"
+                                                Width="10" Height="20"
+                                           HorizontalAlignment="Left"  />
+                                            </DockPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <!--<DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="IsTabStop" Value="False" />
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>-->
+                                
+                            </DataGridTextColumn>
+                            <DataGridTextColumn x:Name="TxtTaxname"  CanUserSort="False"
+                                         Header="Tax Rate"
+                                        Binding = "{Binding GSTRateStr,                                         
+                                        Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  
+                                        Width="88" IsReadOnly="True"  HeaderStyle="{StaticResource HeaderStyle20Right}">
+                                <DataGridTextColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid Grid.IsSharedSizeScope="True"   Width="{Binding ElementName=TxtTaxname,Path=ActualWidth}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition ></ColumnDefinition>
+                                                <!--<ColumnDefinition SharedSizeGroup="Txname"></ColumnDefinition>-->
+                                            </Grid.ColumnDefinitions>
+                                            <!--<TextBlock Grid.Column="0" Text="{Binding DataContext.TaxName,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"  ></TextBlock>
+                                            <TextBlock Text="Rate"></TextBlock>-->
+                                            <TextBlock Grid.Column="0"  HorizontalAlignment="Right" >
+                                                <Run Text="{Binding DataContext.TaxName,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"></Run>
+                                                <Run  Text="Rate %"></Run>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTextColumn.HeaderTemplate>
+
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                <!--<DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="IsTabStop" Value="False" />
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>-->
+                                
+                            </DataGridTextColumn>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+            </Grid>
+            <!--<TextBlock Grid.Row="7" Grid.Column="0" Width="20"/>-->
+
+            <TextBlock Grid.Row="9" Grid.Column="2" Grid.ColumnSpan="2" Name="lblTotalBeforeTax" Text="Total before Tax" VerticalAlignment="Center"
+                       Margin="90 10 0 0" ></TextBlock>
+            <TextBox Grid.ColumnSpan="2" Width="{Binding ElementName=Txtamount,Path=ActualWidth}" Grid.Row="9" Grid.Column="3" Margin="91,0,0,3" Name="txtTotalBeforeTax" IsReadOnly="True"  HorizontalAlignment="Left"
+                HorizontalContentAlignment="Right"   Foreground="Gray"  Text="{Binding TotalBeforeTaxStr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+            <TextBlock  Grid.Row="10" Grid.Column="2" Grid.ColumnSpan="2" Name="lblTax" Text="{Binding TaxName}" Margin="90 0 0 0" VerticalAlignment="Center" ></TextBlock>
+            <TextBox Grid.ColumnSpan="2" Grid.Row="10" Grid.Column="3" Margin="91,0,0,3" Name="txtTax" IsReadOnly="True" Foreground="Gray" Width="{Binding ElementName=Txtamount,Path=ActualWidth}" HorizontalAlignment="Left"
+                HorizontalContentAlignment="Right"    Text="{Binding TotalTaxStr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+            <TextBlock  Grid.Row="11" Grid.Column="2" Grid.ColumnSpan="2" Name="lblTotalAfterTax"  Margin="90 2 0 0" VerticalAlignment="Center">
+                <Run Text="Total after Tax"/>
+                <Run Text="{Binding CurrencyName}"/>
+            </TextBlock>
+            <TextBox Grid.ColumnSpan="2" Grid.Row="11" Grid.Column="3" Margin="91,0,0,0" Name="txtTotalAfterTax" IsReadOnly="True" Foreground="Gray" Width="{Binding ElementName=Txtamount,Path=ActualWidth}" HorizontalAlignment="Left" 
+               HorizontalContentAlignment="Right" Text="{Binding TotalAfterTaxStr,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+            <TextBlock Margin="125,23,0,25"  Width="250" 
+                             VerticalAlignment="Center"   Grid.Row="10" Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding Path=RubberStampSO, Converter={StaticResource BoolToVis}}"  Foreground="Red" RenderTransformOrigin="0.668,0.529" Grid.ColumnSpan="2" Height="25" FontWeight="Bold" >CONVERTED TO SALES ORDER</TextBlock>
+            <TextBlock Margin="125,10,0,25" Width="250"  
+                             VerticalAlignment="Center"   Grid.Row="10" Grid.Column="1" Grid.RowSpan="2" Visibility="{Binding Path=RubberStampSI, Converter={StaticResource BoolToVis}}" Foreground="Red" RenderTransformOrigin="0.668,0.529" Grid.ColumnSpan="2" Height="31" FontWeight="Bold">CONVERTED TO SALES INVOICE</TextBlock>
+            <TextBlock Grid.Row="9" VerticalAlignment="Center"  Grid.ColumnSpan="2" Grid.Column="0"  Name="lblTermsandConditions" Text="Terms and Conditions"  ></TextBlock>
+            <TextBox TabIndex="7" x:Name="txtTermsandConditions" Grid.Row="10" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="2"  Width="370" 
+                  IsReadOnly="{Binding AllFieldsReadonly,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"    TextWrapping="Wrap" HorizontalAlignment="Left"  Height="80" VerticalAlignment="Top"
+               Text="{Binding TermsAndConditions,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+            <!--<ListBox Grid.Row="9" Grid.Column="0" Width="420" MaxHeight="200" Grid.RowSpan="3" Name="lbTermsandConditions"
+             IsEnabled="{Binding AllFieldsEnabled,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"   Height="Auto" BorderBrush="Black" BorderThickness="1"  Grid.ColumnSpan="2" Margin="0,0,0,4" ItemContainerStyle="{StaticResource SimpleListBoxItem}"
+               ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"   ItemsSource="{Binding LstTermsAndConditions}"  SelectedValuePath="ContentName">
+
+                <ListBox.ItemTemplate >
+                    <DataTemplate >
+                        <DockPanel>
+                            <CheckBox Name="chkTandC"  IsChecked="{Binding IsSelected}"  Margin="0,0,5,0">
+                                <TextBlock Name="lblTandC" Text="{Binding ContentName}" TextWrapping="Wrap"></TextBlock>
+                            </CheckBox>
+                        </DockPanel>
+                    </DataTemplate>
+
+                </ListBox.ItemTemplate>
+
+            </ListBox>-->
+
+            <!--<TextBlock Grid.Row="15" Grid.Column="2" Width="10" Text=""></TextBlock>-->
+
+            <!--<DockPanel Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="2">
+                <Button  Content="Convert to Sales Order"  Style="{StaticResource ButtonStyle}" Width="180" HorizontalAlignment="Left" Command="{Binding ConvertToPOCommand}" ></Button>
+                <Button  Content="Convert to Sales Invoice"  Style="{StaticResource ButtonStyle}" Width="180" Margin="10,0,0,0" HorizontalAlignment="Left" Command="{Binding ConvertToPICommand}" ></Button>
+            </DockPanel>-->
+            <TextBlock Grid.Row="13" Grid.Column="0" Height="10"/>
+            <TextBlock Grid.Row="13" Grid.Column="3" Grid.ColumnSpan="3" Grid.RowSpan="3"  Foreground="Red"    TextWrapping="Wrap" Text="{Binding SQErrors,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+
+            <DockPanel Grid.Row="14" Grid.Column="0"  HorizontalAlignment="Left" VerticalAlignment="Top"  Grid.ColumnSpan="2" Margin="0 10 10 0" >
+                <Button TabIndex="8" Content="Convert to Sales Order"  Style="{StaticResource ButtonStyle}" Width="180" HorizontalAlignment="Left" Command="{Binding ConvertToSOCommand}" ></Button>
+                <Button TabIndex="9" Content="Convert to Sales Invoice"  Style="{StaticResource ButtonStyle}" Width="180" Margin="10,0,0,0" HorizontalAlignment="Left" Command="{Binding ConvertToSICommand}" ></Button>
+            </DockPanel>
+            <DockPanel Grid.Row="14" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.ColumnSpan="3" Margin="0 0 3 0">
+                <Button TabIndex="10" x:Name="btnPrint" Margin="10,0,0,0" Content="Print" Command="{Binding clickCommand, Mode=TwoWay}" CommandParameter="{Binding Path=QuotationNo}" Style="{DynamicResource ButtonStyle}"></Button>
+                <Button TabIndex="11" x:Name="btnDuplicate" Content="Duplicate" Margin="10,0,0,0" Style="{DynamicResource ButtonStyle}" Command="{Binding DuplicateCommand}"></Button>
+                <Button TabIndex="12" x:Name="btnDelete" Content="Delete" Margin="10,0,0,0" Style="{DynamicResource ButtonStyle}" Command="{Binding DeleteCommand}"></Button>
+                <Button TabIndex="13" x:Name="btnNew" Content="New" Margin="10,0,0,0" Style="{DynamicResource ButtonStyle}" Command="{Binding NewSQCommand}"></Button>
+                <Button TabIndex="14" x:Name="btnSave" Content="Save" Margin="10,0,0,0" Style="{DynamicResource ButtonStyle}" Command="{Binding SaveCommand}"></Button>
+                <Button TabIndex="15" x:Name="btnClose" Content="Close" Margin="10,0,0,0" Style="{DynamicResource ButtonStyle}" Command="{Binding CloseCommand}"></Button>
+            </DockPanel>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

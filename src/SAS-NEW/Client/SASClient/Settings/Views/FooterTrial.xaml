@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="SDN.Settings.Views.FooterTrial"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SDN.Settings.Views"
+             mc:Ignorable="d" 
+             >
+    <DockPanel >
+        <!--<Border DockPanel.Dock="Left" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Margin="10,10,100,10">
+            <TextBox Name="lblCompanyName" Text="{Binding CompanyName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="300"/>
+        </Border>-->
+        <Label DockPanel.Dock="Right" Content="@2017 Simple Accounting Software Pte Ltd" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+    </DockPanel>
+</UserControl>

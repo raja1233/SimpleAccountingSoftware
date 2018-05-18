@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="3bcae8b7-f235-42ce-a505-073e85c6d3a5" name="Hambeere@HAMBEERE-PC 2013-08-26 16:52:30" runUser="Hambeere-PC\Hambeere" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="cbba068f-ca6b-4d32-97d5-f4739766905c">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Hambeere_HAMBEERE-PC 2013-08-26 16_52_30">
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Manufacturing\Illusion.Manufacturings.DAL\bin\Debug\Illusion.Manufacturings.DAL.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Manufacturing\Illusion.Manufacturings.DALInterface\bin\Debug\Illusion.Manufacturings.DALInterface.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Sales\Sales.DALInterface\bin\Debug\Sales.DALInterface.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Sales\Sales.EDM\bin\Debug\Sales.EDM.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Product\Illusion.ProductEDM\bin\Debug\Illusion.ProductEDM.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Product\Illusion.Product.DAL\bin\Debug\Illusion.Product.DAL.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Product\Illusion.Product.DALInterface\bin\Debug\Illusion.Product.DALInterface.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Manufacturing\Illusion.ManufacturingEDM\bin\Debug\Illusion.ManufacturingEDM.dll" />
+      <DeploymentItem filename="D:\ATeam\Illusion\DataAccess\Sales\Sales.DAL\bin\Debug\Sales.DAL.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2013-08-26T16:52:30.2149358+05:30" queuing="2013-08-26T16:52:32.6050725+05:30" start="2013-08-26T16:52:32.6310740+05:30" finish="2013-08-26T16:52:32.9730935+05:30" />
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="GetAllProductAssembly" storage="d:\ateam\illusion\tests\dataaccesstest\salesdataaccesstest\bin\debug\salesdataaccesstest.dll" id="93d11772-6528-f0fc-9b0d-df86a2b4c887">
+      <Execution id="913d2ddd-406f-404b-9e5a-41d8727c541a" />
+      <TestMethod codeBase="D:/ATeam/Illusion/Tests/DataAccessTest/SalesDataAccessTest/bin/Debug/SalesDataAccessTest.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="SalesDataAccessTest.ProductDALTest, SalesDataAccessTest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="GetAllProductAssembly" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="93d11772-6528-f0fc-9b0d-df86a2b4c887" executionId="913d2ddd-406f-404b-9e5a-41d8727c541a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="913d2ddd-406f-404b-9e5a-41d8727c541a" testId="93d11772-6528-f0fc-9b0d-df86a2b4c887" testName="GetAllProductAssembly" computerName="HAMBEERE-PC" duration="00:00:00.1187177" startTime="2013-08-26T16:52:32.6380744+05:30" endTime="2013-08-26T16:52:32.9550925+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="913d2ddd-406f-404b-9e5a-41d8727c541a">
+    </UnitTestResult>
+  </Results>
+</TestRun>

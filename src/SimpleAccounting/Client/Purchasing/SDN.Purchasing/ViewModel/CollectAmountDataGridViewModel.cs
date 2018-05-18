@@ -1,0 +1,285 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Purchasing.ViewModel
+{
+    using SDN.Common;
+    using System.Globalization;
+
+    public class CollectAmountDataGridViewModel: ViewModelBase
+    {
+        #region "Private Members"
+        private string purchaseNo;
+        private DateTime? purchaseDate;
+        private DateTime? paymentDueDate;
+         private decimal? purchaseAmount;
+        private string purchaseAmountStr;
+        private string amountDueStr;
+        private decimal? amountDue;
+        private decimal? discount;
+        private string amountAdjustedStr;
+        private decimal? amountAdjusted;
+        private string discountStr;
+        private bool? checkAmountAdjusted;
+        #endregion
+
+        #region "Public Members"
+        public string PurchaseNo
+        {
+            get { return purchaseNo; }
+            set { purchaseNo = value;
+                OnPropertyChanged("PurchaseNo");
+            }
+        }
+        public bool? CheckAmountAdjusted
+        {
+            get { return checkAmountAdjusted; }
+            set
+            {
+                checkAmountAdjusted = value;
+                OnPropertyChanged("CheckAmountAdjusted");
+            }
+        }
+
+        public DateTime? PurchaseDate
+        {
+            get { return purchaseDate; }
+            set { purchaseDate = value;
+                OnPropertyChanged("PurchaseDate");
+            }
+        }
+        public DateTime?  PaymentDueDate
+        {
+            get { return paymentDueDate; }
+            set
+            {
+                paymentDueDate = value;
+                OnPropertyChanged("PaymentDueDate");
+            }
+        }
+        private string purchaseDateStr;
+        private string paymentDueDateStr;
+        public string PurchaseDateStr
+        {
+            get { return purchaseDateStr; }
+            set
+            {
+                purchaseDateStr = value;
+                OnPropertyChanged("PurchaseDateStr");
+            }
+        }
+        public string PaymentDueDateStr
+        {
+            get { return paymentDueDateStr; }
+            set
+            {
+                paymentDueDateStr = value;
+                OnPropertyChanged("PaymentDueDateStr");
+            }
+        }
+        public decimal? PurchaseAmount
+        {
+            get { return purchaseAmount; }
+            set { purchaseAmount = value;
+                OnPropertyChanged("PurchaseAmount");
+            }
+        }
+
+        public string PurchaseAmountStr
+        {
+            get
+            {
+                if (purchaseAmountStr == null)
+                    return this.purchaseAmountStr;
+                else
+                {
+                    if (purchaseAmountStr != "")
+                    {
+                        var balance = purchaseAmountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.purchaseAmountStr;
+                }
+            }
+            set
+            {
+                purchaseAmountStr = value;
+                OnPropertyChanged("PurchaseAmountStr");
+            }
+        }
+
+        public decimal? AmountDue
+        {
+            get { return  amountDue; }
+            set { amountDue = value;
+                OnPropertyChanged("AmountDue");
+            }
+        }
+
+        public string AmountDueStr
+        {
+            get
+            {
+                if (amountDueStr == null)
+                    return this.amountDueStr;
+                else
+                {
+                    if (amountDueStr != "")
+                    {
+                        var balance = amountDueStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.amountDueStr;
+                }
+            }
+            set
+            {
+                amountDueStr = value;
+                OnPropertyChanged("AmountDueStr");
+            }
+        }
+
+        public decimal? Discount
+        {
+            get { return discount; }
+            set { discount = value;
+                OnPropertyChanged("Discount");
+            }
+        }
+        public string DiscountStr
+        {
+            get
+            {
+                if (discountStr == null)
+                    return this.discountStr;
+                else
+                {
+                    if (discountStr != "")
+                    {
+                        var balance = discountStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.discountStr;
+                }
+            }
+            set
+            {
+                discountStr = value;
+                OnPropertyChanged("DiscountStr");
+                OnChangeAmount();
+            }
+        }
+        public decimal? AmountAdjusted
+        {
+            get {return  amountAdjusted; }
+            set { amountAdjusted = value;
+                OnPropertyChanged("AmountAdjusted");
+            }
+        }
+
+        public string AmountAdjustedStr
+        {
+            get
+            {
+                if (amountAdjustedStr == null)
+                    return this.amountAdjustedStr;
+                else
+                {
+                    if (amountAdjustedStr != "")
+                    {
+                        var balance = amountAdjustedStr.Replace(",", "");
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 2)
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 3)
+                            return Convert.ToDecimal(balance).ToString("N3", new CultureInfo(SharedValues.CurrencyName));
+                        if (Convert.ToInt32(SharedValues.decimalPlaces) == 0)
+                            return Convert.ToDecimal(balance).ToString("N0", new CultureInfo(SharedValues.CurrencyName));
+                        else
+                            return Convert.ToDecimal(balance).ToString("N", new CultureInfo(SharedValues.CurrencyName));
+                    }
+                    else
+                        return this.amountAdjustedStr;
+                }
+            }
+            set
+            {
+                amountAdjustedStr = value;
+                OnPropertyChanged("AmountAdjustedStr");
+                OnChangeAmount();
+            }
+
+        }
+        #endregion
+
+        #region "Member Functions"
+
+        private void OnChangeAmount()
+        {
+            CalculateAmount();
+        }
+
+        private void CalculateAmount()
+        {
+            if (!string.IsNullOrEmpty(AmountAdjustedStr))
+            {
+                //if (PurchaseAmount >= Convert.ToDecimal(AmountAdjustedStr))
+                //{
+                //    if (string.IsNullOrEmpty(DiscountStr))
+                //    {
+                //        AmountDueStr = Convert.ToString(PurchaseAmount - Convert.ToDecimal(AmountAdjustedStr));
+                //    }
+                //    else
+                //    {
+                //        AmountDueStr = Convert.ToString(PurchaseAmount - (Convert.ToDecimal(AmountAdjustedStr) + Convert.ToDecimal(DiscountStr)));
+                //    }
+                //}
+              
+                //if(!string.IsNullOrEmpty(AmountDueStr))
+                //{
+                //    if (Convert.ToDecimal(AmountAdjustedStr) > Convert.ToDecimal(AmountDueStr))
+                //    {
+                //        AmountAdjustedStr = Convert.ToString(AmountDueStr);
+                //        AmountDueStr = Convert.ToString(0);
+                //        DiscountStr = Convert.ToString(0);
+                //    }
+                //}
+                //else 
+                if (Convert.ToDecimal(AmountAdjustedStr) > Math.Abs(Decimal.Parse(PurchaseAmount.ToString())))
+                {
+                    AmountAdjustedStr = Convert.ToString(AmountDueStr);
+                    AmountDueStr = Convert.ToString(0);
+                    DiscountStr=  Convert.ToString(0);
+                }
+            }
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,20 @@
+﻿
+namespace SDN.Settings.BLInterface
+{
+    using SDN.SettingsEDM;
+    using SDN.UI.Entities;
+
+    using System.Collections.Generic;
+    public interface ICompanyBL
+    {
+        //CompanyDetail AddCompany(Company);
+        CompanyDetailsEntities GetCompanyDetails();
+        bool AddCompany(CompanyDetailsEntities companyDetail);
+        //IEnumerable<ShippingAddressEntity> GetShippingDetails(int CompanyId, string EntityType);
+        //IEnumerable<ShippingAddressEntity> GetSelectedShipDetails(int ShipId);
+        //bool DeleteShippingaddress(int ShippingId);
+        void AddCompanyLogo(byte[] Image);
+        //List<Country> GetAllCountryModel();
+        //List<State> GetAllStateModel();
+    }
+}

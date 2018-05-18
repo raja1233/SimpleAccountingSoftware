@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SDN.UI.Entities;
+using SASBAL.File;
+using System.Data;
+
+namespace SASClient.File.Services
+{
+    public class ImportDataRepository : IImportDataRepository
+    {
+        public bool ImportData(int ID, string FileName)
+        {
+            IImportDataBL import = new ImportDataBL();
+            return import.ImportData(ID, FileName);
+        }
+
+        public  DataTable ExcelToDataTable(string filepath)
+        {
+             IImportDataBL import = new ImportDataBL();
+             return import.ExcelToDataTable(filepath);
+        }
+        public void DataTableToList(int Id, string filepath, bool RUBool)
+        {
+            IImportDataBL List = new ImportDataBL();
+            List.DataTableToList(Id, filepath, RUBool);
+        }
+    }
+}

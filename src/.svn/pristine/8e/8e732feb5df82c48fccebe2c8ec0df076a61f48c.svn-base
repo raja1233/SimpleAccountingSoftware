@@ -1,0 +1,337 @@
+﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using SASClient.Accounts.Services;
+using SASClient.CashBank.Views;
+using SDN.Common;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class UnpaidSalesInvoiceViewModel : UnpaidSalesInvoiceEntity
+    {
+        #region private property
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private IUnpaidSalesInvoiceRepository unpaidInvoiceRepository = new UnpaidSalesInvoiceRepository();
+        private List<UnpaidSalesInvoiceViewModel> _FullList;
+        private static IEnumerable<UnpaidSalesInvoiceEntity> UnpaidInvoiceList;
+        private ObservableCollection<UnpaidSalesInvoiceGridViewModel> _UnpaidSalesInvoicedetailsEntity;
+        private ObservableCollection<UnpaidSalesInvoiceEntity> _UnpaidInvoiceService;
+        private ObservableCollection<UnpaidSalesInvoiceGridViewModel> TempList;
+        private string casErrors;
+        #endregion
+        #region public property
+        public ObservableCollection<UnpaidSalesInvoiceEntity> UnpaidInvoiceService
+        {
+            get
+            {
+                return _UnpaidInvoiceService;
+            }
+            set
+            {
+                if (_UnpaidInvoiceService != value)
+                {
+                    _UnpaidInvoiceService = value;
+                    OnPropertyChanged("UnpaidInvoiceService");
+                }
+            }
+        }
+        public string CASErrors
+        {
+            get { return casErrors; }
+            set
+            {
+                casErrors = value;
+                OnPropertyChanged("CASErrors");
+            }
+        }
+        public ObservableCollection<UnpaidSalesInvoiceGridViewModel> UnpaidSalesInvoicedetailsEntity
+        {
+            get
+            {
+                return _UnpaidSalesInvoicedetailsEntity;
+            }
+            set
+            {
+                _UnpaidSalesInvoicedetailsEntity = value;
+                OnPropertyChanged("UnpaidSalesInvoicedetailsEntity");
+            }
+        }
+        #endregion
+        #region constructor property
+        public UnpaidSalesInvoiceViewModel(IRegionManager regionManager, IEventAggregator eventAggregator) :base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            LoadSupplierBackground();
+            UnpaidSalesInvoicedetailsEntity = new ObservableCollection<UnpaidSalesInvoiceGridViewModel>();
+            createNewUnpaidSalesInvoice();
+            SaveCommand = new RelayCommand(SaveUnpaidSalesInvoice);
+            NavigateToSuppliersFormCommand = new RelayCommand(NavigateToCustomerDetails);
+            NavigateToAccountsDetailsListFormCommand = new RelayCommand(NavigateToAccountsDetailList);
+        }
+       public RelayCommand SaveCommand { get; set; }
+        public RelayCommand NavigateToSuppliersFormCommand { get; set; }
+        public RelayCommand NavigateToAccountsDetailsListFormCommand { get; set; }
+        public void  NavigateToAccountsDetailList(object param)
+        {
+            SharedValues.getValue = "AccountsDetailsListTab";
+            var view = ServiceLocator.Current.GetInstance<AccountsDetailsListView>();
+            var region = this.regionManager.Regions[RegionNames.MainRegion];
+            region.Add(view);
+            if (region != null)
+            {
+                region.Activate(view);
+            }
+
+            var tabview = ServiceLocator.Current.GetInstance<SASClient.Accounts.Views.AccountsTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Accounts Details List");
+        }
+        public void NavigateToCustomerDetails(object param)
+        {
+            
+                SharedValues.getValue = "CustomerDetailTab";
+                var view = ServiceLocator.Current.GetInstance<SDN.Customers.Views.CustomersView>();
+
+                IRegion region = this.regionManager.Regions[RegionNames.MainRegion];
+
+                region.Add(view);
+                if (region != null)
+                {
+                    region.Activate(view);
+                }
+
+                var view2 = ServiceLocator.Current.GetInstance<SDN.Customers.Views.CustomersTabView>();
+
+                IRegion region2 = this.regionManager.Regions[RegionNames.MenuBarRegion];
+
+                region2.Add(view2);
+                if (region2 != null)
+                {
+                    region2.Activate(view2);
+                }
+        
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customers Details Form");
+        }
+        public void createNewUnpaidSalesInvoice()
+        {
+         
+            var row = new UnpaidSalesInvoiceGridViewModel(UnpaidInvoiceList);
+            //row.SelectedPSID = 0;
+            if (UnpaidSalesInvoicedetailsEntity != null)
+            {
+                if (UnpaidSalesInvoicedetailsEntity.Count > 0)
+                {
+                    UnpaidSalesInvoicedetailsEntity.Clear();
+                    // var row = new CollectAmountDataGridViewModel();
+                    //  PQDetailsEntity.Add(row);
+                    OnPropertyChanged("UnpaidSalesInvoicedetailsEntity");
+                }
+            }
+            UnpaidSalesInvoicedetailsEntity.Add(row);
+            OnPropertyChanged("UnpaidSalesInvoicedetailsEntity");
+        }
+
+        #endregion
+        #region public method
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+
+            int minHeight = 400;
+            int headerRows = 300;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows -5;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.SIGridHeight = minHeight;
+            RefreshData();
+        }
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            Mouse.OverrideCursor = null;
+
+        }
+        public void RefreshData()
+        {
+            try
+            {
+                UnpaidInvoiceList = unpaidInvoiceRepository.getCustomerList();
+                if(UnpaidInvoiceList != null)
+                {
+                    UnpaidInvoiceService = new ObservableCollection<UnpaidSalesInvoiceEntity>(UnpaidInvoiceList);
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+        public int ManageDuplicateUnpaidSalesInvoice()
+        {
+            int rowFocusindex = -1;
+            //ShowAllCount = PSDetailsEntity.Where(e => e.SelectedPSID != 0).Count();
+            TempList = new ObservableCollection<UnpaidSalesInvoiceGridViewModel>();
+            TempList = UnpaidSalesInvoicedetailsEntity;
+
+            var query = TempList.GroupBy(x => x.ID)
+              .Where(g => g.Count() > 1)
+              .ToList();
+            if (query.Count > 0 && UnpaidSalesInvoicedetailsEntity.Count > 1)
+            {
+
+                var obj1 = query[0].ElementAt(0);
+                var obj2 = query[0].ElementAt(1);
+                int? qty = 1;
+
+                qty = query[0].ElementAt(0).CountQty + query[0].ElementAt(1).CountQty;
+
+                var index1 = TempList.IndexOf(query[0].ElementAt(0));
+                var index2 = TempList.IndexOf(query[0].ElementAt(1));
+                OnPropertyChanged("UnpaidSalesInvoicedetailsEntity");
+                TempList = UnpaidSalesInvoicedetailsEntity;
+            }
+            else
+            {
+                int count = UnpaidSalesInvoicedetailsEntity.Count(x => x.ID == 0);
+                if (count == 0)
+                {
+                    var row = new UnpaidSalesInvoiceGridViewModel(UnpaidInvoiceList);
+                    // row.CountQty = 0;
+                    //   row.GSTRate = TaxRate;
+
+                    UnpaidSalesInvoicedetailsEntity.Add(row);
+                    OnPropertyChanged("UnpaidSalesInvoicedetailsEntity");
+                    TempList = UnpaidSalesInvoicedetailsEntity;
+                    rowFocusindex = -1;
+                }
+                else
+                {
+                    var emptyRow = TempList.Where(y => y.ID == 0).FirstOrDefault();
+                    rowFocusindex = UnpaidSalesInvoicedetailsEntity.IndexOf(emptyRow);
+                }
+
+            }
+            return rowFocusindex;
+        }
+        public void SaveUnpaidSalesInvoice(object param)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Confirmation", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+               
+               
+                string msg = ValidateJournal();
+                if (msg != string.Empty)
+                {
+                    CASErrors = msg;
+                    Mouse.OverrideCursor = null;
+                    return;
+                }
+
+                CASErrors = string.Empty;
+                UnpaidSalesInvoiceModel JForm = GetDataIntoModel();
+                unpaidInvoiceRepository.SaveUnpaidSalesInvoiceData(JForm);
+
+                Mouse.OverrideCursor = null;
+            }
+        }
+        public string ValidateJournal()
+        {
+            string msg = string.Empty;
+            UnpaidSalesInvoiceModel JForm = GetDataIntoModel();
+            var tempInvoiceNumber = unpaidInvoiceRepository.IsChequeNoPresent();
+            string result = JForm.UnpaidSalesInvoiceDetailsData.Where(x => x.InvoiceNo == tempInvoiceNumber).Select(x => x.InvoiceNo).FirstOrDefault();
+            if(result!=null)
+            {
+                msg = "Entry against Cheque No is already done";
+            }
+            
+           
+            return msg;
+        }
+        public UnpaidSalesInvoiceModel GetDataIntoModel()
+        {
+            UnpaidSalesInvoiceModel JForm = new UnpaidSalesInvoiceModel();
+            JForm.UnpaidSalesInvoiceDetailsData = new List<UnpaidSalesInvoiceEntity>();
+            //UnpaidSalesInvoiceEntity model = new UnpaidSalesInvoiceEntity();
+           
+            //JForm.UnpaidSalesInvoiceData = model;
+
+            foreach (var item in UnpaidSalesInvoicedetailsEntity)
+            {
+                if (item.ID != null)
+                {
+                    UnpaidSalesInvoiceEntity jEntity = new UnpaidSalesInvoiceEntity();
+                    jEntity.ID = item.ID;
+                    jEntity.CustomerName = item.CustomerName;
+                    jEntity.InvoiceNo = "OSI-"+item.InvoiceNo;
+                    jEntity.UnpaidAmount = item.UnpaidAmount;
+                    jEntity.InvoiceDate = item.InvoiceDate;
+                    if (item.ID != 0 && Convert.ToInt32(item.ID) > 0)
+                    {
+                        JForm.UnpaidSalesInvoiceDetailsData.Add(jEntity);
+                    }
+                }
+            }
+
+            return JForm;
+        }
+        #endregion
+    }
+}

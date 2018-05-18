@@ -1,0 +1,582 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Purchasings.DAL
+{
+    using Common;
+    using SDN.Purchasings.DALInterface;
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Purchase;
+    using SASDAL;
+    using System.Data.Entity;
+
+    public class AdjustDebitNoteDAl : IAdjustDebitNoteDAl
+    {
+
+        public List<SupplierDetailEntity> GetAllSupplier()
+        {
+            using (SASEntitiesEDM entities = new SASEntitiesEDM())
+            {
+                //List<SupplierDetailEntity> suppliersource = entities.Suppliers.Where(x => x.IsDeleted != true).Select(x => new SupplierDetailEntity
+                //{
+                //    ID = x.ID,
+                //    SupplierName = x.Sup_Name,
+                //    Createddate = x.CreatedDate,
+                //}).ToList();
+                List<SupplierDetailEntity> suppliersource = (from s in entities.Suppliers
+                                                             join d in entities.DebitNotes on s.ID equals d.Sup_Id
+                                                             where d.IsDeleted != true
+                                                             select new SupplierDetailEntity
+                                                             {
+                                                                 ID = s.ID,
+                                                                 SupplierName = s.Sup_Name
+                                                             }).Distinct().ToList();
+
+                return suppliersource;
+            }
+        }
+
+        public List<AdjustDebitNoteEntity> GetDebitNotes(string SupplierId)
+        {
+            using (SASEntitiesEDM entities = new SASEntitiesEDM())
+            {
+                int supid = 0;
+                //List<SupplierDetailEntity> suppliersource = entities.Suppliers.Where(x => x.IsDeleted != true).Select(x => new SupplierDetailEntity
+                //{
+                //    ID = x.ID,
+                //    SupplierName = x.Sup_Name,
+                //    Createddate = x.CreatedDate,
+                //}).ToList();
+                if (SupplierId != null || SupplierId != "" || SupplierId != " ")
+                {
+                    supid = Convert.ToInt32(SupplierId);
+                }
+                List<AdjustDebitNoteEntity> debitnotelist = (from p in entities.PurchaseInvoices
+                                                             join d in entities.DebitNotes on p.ID equals d.PI_Id
+                                                             where d.IsDeleted != true && d.Sup_Id == supid
+                                                             select new AdjustDebitNoteEntity
+                                                             {
+                                                                 Date = d.DN_Date,
+                                                                 Amount = p.PI_Tot_aft_Tax,
+                                                                 DebitNoteNo = d.DN_No
+                                                             }).ToList();
+
+                return debitnotelist;
+            }
+        }
+
+        public AdjustDebitNoteForm GetAdjustDebitNoteDetails(string DebitNoteNo)
+        {
+            AdjustDebitNoteForm pqf = new AdjustDebitNoteForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    decimal value;
+                    var pq = (from pqs in entities.DebitNotes
+                              join pi in entities.PurchaseInvoices on pqs.PI_Id equals pi.ID
+                              where pqs.DN_No == DebitNoteNo
+                              select new AdjustDebitNoteEntity
+                              {
+                                  ID = pqs.ID,
+                                  SupplierID = pqs.Sup_Id,
+                                  //Amount =  pi.PI_Tot_aft_Tax,
+                                  Amount = pi.PI_Tot_aft_Tax,
+                                  Date = pqs.DN_Date,
+                                  DebitNoteNo = pqs.DN_No
+                                  //CashChequeNo = pqs.Cash_Cheque_No,
+                              }).FirstOrDefault();
+
+                    if (pq != null)
+                    {
+                        pq.AmountStr = Convert.ToString(pq.Amount);
+                        pqf.AdjustDebitNote = pq;
+                    }
+
+                    if (pq.SupplierID != 0 || pq.SupplierID != null)
+                    {
+                        //var pqd = (from pqs in entities.PurchaseInvoices 
+                        //           where pqs.Sup_Id == pq.SupplierID && pqs.PI_Status == 2
+                        //           select new AdjustDebitNoteDetailsEntity
+                        //           {
+                        //               PurchaseNo = pqs.PI_No,
+                        //               PurchaseDate = pqs.PI_Date,
+                        //               PaymentDueDate = pqs.PI_Pmt_Due_Date,
+                        //               PurchaseAmount = pqs.PI_Tot_aft_Tax,
+                        //               //AmountDue = pqs.Amt_Due,
+                        //               //Discount = pqs.Discount,
+                        //               //AmountAdjusted = pqs
+
+                        //           }).ToList<AdjustDebitNoteDetailsEntity>();
+
+                        var pqd = entities.Database.SqlQuery<AdjustDebitNoteDetailsEntity>("PRC_GetPurchaseDataForAdjustDebitNotes @SupplierID={0}", pq.SupplierID).ToList();
+
+                        if (pqd != null)
+                        {
+                            pqf.AdjustDebitNoteDetails = pqd;
+                        }
+                    }
+
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public AdjustDebitNoteForm GetNewPS(int? SupplierID)
+        {
+            AdjustDebitNoteForm pqf = new AdjustDebitNoteForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pqd = entities.Database.SqlQuery<AdjustDebitNoteDetailsEntity>("PRC_GetPurchaseDataForAdjustDebitNotes @SupplierID={0}", SupplierID).ToList();
+
+                    if (pqd != null)
+                    {
+                        pqf.AdjustDebitNoteDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public int UpdateAdjustDebitNote(AdjustDebitNoteForm psForm, int Type)
+        {
+            int autoID = 0;
+            string AdjustedNo =string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    //adjusted table entity
+                    //adjusted debit note
+                    AdjustedDebitNote Adn = new AdjustedDebitNote();
+                    Adn.SupplierID = psForm.AdjustDebitNote.SupplierID;
+                    Adn.AdjustDebitNoteNumber = psForm.AdjustDebitNote.AdjustDebitNoteNumber;
+                    Adn.AdjustDebitNoteDate = Convert.ToDateTime(psForm.AdjustDebitNote.AdjustDebitNoteDateStr);
+                    Adn.DebitNoteNumber = psForm.AdjustDebitNote.DebitNoteNo;
+                    Adn.DebitNoteDate = psForm.AdjustDebitNote.Date;
+                    Adn.DebitNoteAmount = psForm.AdjustDebitNote.Amount;
+                    Adn.CreatedBy = 0;
+                    if (entities.AdjustedDebitNotes.AsNoTracking().FirstOrDefault(x => x.ID == psForm.AdjustDebitNote.ID) == null)
+                    {
+                        //obj.CreatedBy = invoiceData.SIModel.CreatedBy;
+                        Adn.CreatedDate = DateTime.Now;
+                        entities.AdjustedDebitNotes.Add(Adn);
+                        entities.SaveChanges();
+                        autoID = Adn.ID;
+                        AdjustedNo = Adn.AdjustDebitNoteNumber;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = invoiceData.SIModel.ModifiedBy;
+                        Adn.ModifiedDate = DateTime.Now;
+                        entities.Entry(Adn).State = EntityState.Modified;
+                        autoID = entities.SaveChanges();
+                    }
+                    foreach (var item in psForm.AdjustDebitNoteDetails)
+                    {
+                        if (item.CheckAmountAdjusted == true)
+                        {
+                            AdjustedDebitNoteDetail ADN = new AdjustedDebitNoteDetail();
+                            if (autoID > 0)
+                            {
+                                ADN.ADN_ID = autoID;
+                                ADN.PurchaseInvoiceNo = item.PurchaseNo;
+                                ADN.PurchaseInvoiceDate = item.PurchaseDate;
+                                ADN.PaymentDueDate = item.PaymentDueDate;
+                                ADN.PurchaseInvoiceAmount = item.PurchaseAmount;
+                                ADN.AmountDue = item.AmountDue;
+                                ADN.AmountAdjusted = item.AmountAdjusted;
+                                ADN.CreatedBy = 0;
+                                ADN.CreatedDate = DateTime.Now;
+                                if (entities.AdjustedDebitNoteDetails.AsNoTracking().FirstOrDefault(x => x.ID == psForm.AdjustDebitNote.ID) == null)
+                                {
+                                    entities.AdjustedDebitNoteDetails.Add(ADN);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(ADN).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                    //adjusted table entity
+                    foreach (var item in psForm.AdjustDebitNoteDetails)
+                    {
+                        if (item.CheckAmountAdjusted == true)
+                        {
+                            CashAndBankTransaction obj = entities.CashAndBankTransactions.Where(e => e.SO_CN_PO_DN_No == item.PurchaseNo).OrderByDescending(x=>x.ID).ToList().FirstOrDefault();
+                            if (obj != null)
+                            {
+                                obj.Acc_Id = psForm.AdjustDebitNote.AccountId;
+                                obj.Amount = psForm.AdjustDebitNote.Amount;
+                                //obj.Cash_Cheque_No = psForm.AdjustDebitNote.CashChequeNo;
+                                 obj.Cash_Cheque_Date = psForm.AdjustDebitNote.Date;
+                                obj.Remarks = psForm.AdjustDebitNote.Remarks;
+                                obj.Is_Cheque = psForm.AdjustDebitNote.IsCheque;
+                                //saving details entity
+                                obj.SO_CN_PO_DN_No = item.PurchaseNo;
+                                obj.SO_CN_PO_DN_Date = item.PurchaseDate;
+                                obj.SO_CN_PO_DN_Amt = item.PurchaseAmount;
+                                obj.Amt_Due = item.AmountDue- item.AmountAdjusted;
+                                obj.Amt_Refunded = item.AmountAdjusted;
+                                obj.Discount = item.Discount;
+                                obj.DN_CN_No = psForm.AdjustDebitNote.DebitNoteNo;
+                                obj.Type = Type.ToString();
+                                obj.UpdatedBy = 0;
+                                obj.UpdatedDate = DateTime.Now.Date;
+                                obj.AD_AC_NO = AdjustedNo;
+                                entities.SaveChanges();
+
+                                if ( item.AmountAdjusted == item.PurchaseAmount)
+                                {
+                                    PurchaseInvoice invoice = entities.PurchaseInvoices.Where(e => e.PI_No == item.PurchaseNo).SingleOrDefault();
+                                    //PurchaseOrder order = entities.PurchaseOrders.Where(e => e.PO_No == item.PurchaseNo).SingleOrDefault();
+                                    if (invoice != null)
+                                    {
+                                        invoice.PI_Status = Convert.ToByte(PI_Status.Paid);
+                                        entities.SaveChanges();
+                                    }
+                                    //else if (order != null)
+                                    //{
+                                    //}
+                                   
+                                }
+                                DebitNote debit = entities.DebitNotes.Where(e => e.DN_No == psForm.AdjustDebitNote.DebitNoteNo).SingleOrDefault();
+                                if (debit != null)
+                                {
+                                    debit.DN_Status = Convert.ToByte(DN_Status.Adjusted);
+                                    entities.SaveChanges();
+                                }
+                            }
+                            else
+                            {
+                                CashAndBankTransaction cashbankobj = new CashAndBankTransaction()
+                                {
+                                    Acc_Id = psForm.AdjustDebitNote.AccountId,
+                                    Amount = psForm.AdjustDebitNote.Amount,
+                                    Cash_Cheque_Date = psForm.AdjustDebitNote.Date,
+                                    Remarks = psForm.AdjustDebitNote.Remarks,
+                                    Is_Cheque = psForm.AdjustDebitNote.IsCheque,
+                                    SO_CN_PO_DN_No = item.PurchaseNo,
+                                    SO_CN_PO_DN_Date = item.PurchaseDate,
+                                    SO_CN_PO_DN_Amt = item.PurchaseAmount,
+                                    Amt_Due = item.AmountDue - item.AmountAdjusted,
+                                    Amt_Refunded = item.AmountAdjusted,
+                                    Discount = item.Discount,
+                                    UpdatedBy = 0,
+                                    UpdatedDate = DateTime.Now.Date,
+                                    Cus_Sup_Id = psForm.AdjustDebitNote.SupplierID,
+                                    DN_CN_No = psForm.AdjustDebitNote.DebitNoteNo,
+                                    Type = Type.ToString(),
+                                    AD_AC_NO = AdjustedNo
+                                };
+                                entities.CashAndBankTransactions.Add(cashbankobj);
+                                entities.SaveChanges();
+                                if ( item.AmountAdjusted == item.PurchaseAmount)
+                                {
+                                    PurchaseInvoice invoice = entities.PurchaseInvoices.Where(e => e.PI_No == item.PurchaseNo).SingleOrDefault();
+                                    //PurchaseOrder order = entities.PurchaseOrders.Where(e => e.PO_No == item.PurchaseNo).SingleOrDefault();
+                                    if (invoice != null)
+                                    {
+                                        invoice.PI_Status = Convert.ToByte(PI_Status.Paid);
+                                        entities.SaveChanges();
+                                    }
+                                    //else if (order != null)
+                                    //{
+                                    //}
+                                }
+                                DebitNote debit = entities.DebitNotes.Where(e => e.DN_No == psForm.AdjustDebitNote.DebitNoteNo).SingleOrDefault();
+                                if (debit != null)
+                                {
+                                    debit.DN_Status = Convert.ToByte(DN_Status.Adjusted);
+                                    entities.SaveChanges();
+                                }
+
+                            }
+                        }
+                    }
+                  
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return psForm.AdjustDebitNote.ID;
+        }
+
+        public int SaveAdjustDebitNote(AdjustDebitNoteForm psForm, int Type)
+        {
+            int autoId = 0;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    foreach (var item in psForm.AdjustDebitNoteDetails)
+                    {
+                        CashAndBankTransaction obj = new CashAndBankTransaction();
+                        obj.Cus_Sup_Id = psForm.AdjustDebitNote.SupplierID;
+                        obj.Acc_Id = psForm.AdjustDebitNote.AccountId;
+                        obj.Amount = psForm.AdjustDebitNote.Amount;
+                        //obj.Cash_Cheque_No = psForm.AdjustDebitNote.CashChequeNo;
+                        obj.Cash_Cheque_Date = psForm.AdjustDebitNote.Date;
+                        obj.Remarks = psForm.AdjustDebitNote.Remarks;
+                        obj.Type = Type.ToString();
+                        //obj.Is_Cheque = psForm.AdjustDebitNote.IsCheque;
+
+                        //saving details entity
+                        obj.SO_CN_PO_DN_No = item.PurchaseNo;
+                        obj.SO_CN_PO_DN_Date = item.PurchaseDate;
+                        obj.SO_CN_PO_DN_Amt = item.PurchaseAmount;
+                        obj.Amt_Due = item.AmountDue - item.AmountAdjusted;
+                        obj.Amt_Refunded = item.AmountAdjusted;
+                        obj.Discount = item.Discount;
+
+                        obj.UpdatedBy = 0;
+                        obj.UpdatedDate = DateTime.Now.Date;
+
+                        entities.CashAndBankTransactions.Add(obj);
+                        entities.SaveChanges();
+
+                        if ( item.AmountAdjusted == item.PurchaseAmount)
+                        {
+                            PurchaseInvoice invoice = entities.PurchaseInvoices.Where(e => e.PI_No == item.PurchaseNo).SingleOrDefault();
+                            PurchaseOrder order = entities.PurchaseOrders.Where(e => e.PO_No == item.PurchaseNo).SingleOrDefault();
+                            if (invoice != null)
+                            {
+                                invoice.PI_Status = Convert.ToByte(PI_Status.Paid);
+                                entities.SaveChanges();
+                            }
+                            
+
+                        }
+                        DebitNote debit = entities.DebitNotes.Where(e => e.DN_No == psForm.AdjustDebitNote.DebitNoteNo).SingleOrDefault();
+                        if (debit != null)
+                        {
+                            debit.DN_Status = Convert.ToByte(DN_Status.Adjusted);
+                            entities.SaveChanges();
+                        }
+
+                        //}
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return autoId;
+        }
+
+        public string GetCountOfPOSuppliers()
+        {
+            string POCount = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = (from e in entities.PurchaseOrders
+                              join p in entities.Suppliers
+                              on e.Sup_Id equals p.ID
+                              where e.IsDeleted == false
+                              select new
+                              {
+                                  e.Sup_Id,
+                                  p.Sup_Name
+                              }
+                         ).Distinct().ToList();
+
+                    if (po != null)
+                    {
+                        POCount = Convert.ToString(po.Count);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return POCount;
+        }
+        public string GetCountOfPISuppliers()
+        {
+            string PICount = string.Empty;
+            byte status = Convert.ToByte(PI_Status.UnPaid);
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = (from e in entities.PurchaseInvoices
+                              join p in entities.Suppliers
+                              on e.Sup_Id equals p.ID
+                              where e.IsDeleted == false
+                              && e.PI_Status == status
+                              select new
+                              {
+                                  e.Sup_Id,
+                                  p.Sup_Name
+                              }
+                          ).Distinct().ToList();
+                    if (po != null)
+                    {
+                        PICount = Convert.ToString(po.Count);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return PICount;
+        }
+
+        public bool IsChequeNoPresent(string cashChequeNo)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var po = entities.CashAndBankTransactions.Where(e => e.Cash_Cheque_No == cashChequeNo).ToList();
+                    if (po.Count > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string GetLatestInvoiceNo()
+        {
+            string sNo = string.Empty;
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from acn in entities.AdjustedDebitNotes
+                              orderby acn.CreatedDate descending
+                              select new
+                              {
+                                  acn.ID,
+                                  acn.AdjustDebitNoteNumber,
+                                  acn.AdjustDebitNoteDate
+                              }
+
+                             ).ToList();
+                    if (pq.Count > 0)
+                    {
+                        sNo = pq.Take(1).SingleOrDefault().AdjustDebitNoteNumber;
+                        if (sNo != null)
+                        {
+                            string[] str = sNo.Split('-');
+                            if (str != null)
+                            {
+                                sNo = Convert.ToString(Convert.ToInt64(str[1]) + 1);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        sNo = Convert.ToString(1);
+                    }
+                }
+                return sNo;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+      
+        public AdjustDebitNoteForm AdjustDebitNoteDetails(string AdjustedNo)
+        {
+            AdjustDebitNoteForm pqf = new AdjustDebitNoteForm();
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+
+                    var pq = (from pqs in entities.AdjustedDebitNotes
+                              join pi in entities.AdjustedDebitNoteDetails on pqs.ID equals pi.ADN_ID
+                              where pqs.AdjustDebitNoteNumber == AdjustedNo
+                              select new AdjustDebitNoteEntity
+                              {
+                                  ID = pqs.ID,
+                                  SupplierID = pqs.SupplierID,
+                                  //Amount =  pi.SI_Tot_aft_Tax,
+                                  Amount = pqs.DebitNoteAmount,
+                                  Date = pqs.DebitNoteDate,
+                                  DebitNoteNo = pqs.DebitNoteNumber,
+                                  AdjustDebitNoteNumber = pqs.AdjustDebitNoteNumber,
+                                  AdjustDebitNoteDate = pqs.AdjustDebitNoteDate
+                                  //CashChequeNo = pqs.Cash_Cheque_No,
+                              }).FirstOrDefault();
+                   
+                    if (pq != null)
+                    {
+                        pq.AmountStr = Convert.ToString(pq.Amount);
+                        pqf.AdjustDebitNote = pq;
+                    }
+
+                    var pqd = (from s in entities.AdjustedDebitNotes
+                               join t in entities.AdjustedDebitNoteDetails on s.ID equals t.ADN_ID
+                               where s.AdjustDebitNoteNumber == AdjustedNo
+                               select new AdjustDebitNoteDetailsEntity
+                               {
+                                   PurchaseNo = t.PurchaseInvoiceNo,
+                                   PurchaseDate = t.PurchaseInvoiceDate,
+                                   PaymentDueDate = t.PaymentDueDate,
+                                   PurchaseAmount = t.PurchaseInvoiceAmount,
+                                   AmountDue = t.AmountDue,
+                                   AmountAdjusted = t.AmountAdjusted
+                               }).ToList();
+
+                    if (pqd != null)
+                    {
+                        pqf.AdjustDebitNoteDetails = pqd;
+                    }
+                }
+
+
+                return pqf;
+            }
+
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+    }
+}

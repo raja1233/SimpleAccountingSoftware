@@ -1,0 +1,350 @@
+﻿using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.Regions;
+using Microsoft.Practices.ServiceLocation;
+using Microsoft.Reporting.WinForms;
+using SASClient.CloseRequest;
+using SASClient.Customers.Services;
+using SASClient.Reports;
+using SASClient.Reports.ReportsPage;
+using SDN.Common;
+using SDN.Purchasing.Services;
+using SDN.Sales.Views;
+using SDN.UI.Entities;
+using SDN.UI.Entities.Customers;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Drawing.Printing;
+using System.IO;
+using System.Linq;
+using System.Printing;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+//using System.Windows.Xps.Packaging;
+
+namespace SASClient.Customers.ViewModel
+{
+    public class CustomersUnpaidInvoicesViewModel : CustomersUnpaidInvoicesEntity
+    {
+        #region "Private members"
+
+        private ICustomersUnPaidInvoicesRepository uiRepository = new CustomersUnPaidInvoicesRepository();
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        public event PropertyChangedEventHandler PropertyChanged;
+        private int Count = 0;
+        StackList listitem = new StackList();
+
+        private DateTime? selectedStatementDate;
+       
+        #endregion
+
+        #region "Properties"
+
+        public DateTime? SelectedStatementDate
+        {
+            get { return selectedStatementDate; }
+            set
+            {
+                selectedStatementDate = value;
+                OnPropertyChanged("SelectedStatementDate");
+                OnDateSelected();
+                
+            }
+        }
+        
+        #endregion
+
+        #region "Constructors"
+        public CustomersUnpaidInvoicesViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.LoadCustomerBackground();
+            SelectChangedCommand = new RelayCommand(OnSelectionChange);
+            NavigateToInvoiceCommand = new RelayCommand(SalesInvoiceCommand);
+           // CheckIsActive = new RelayCommand(checkisactive);
+            //StatementDate = DateTime.Now;
+            var today = DateTime.Today;
+            var month = new DateTime(today.Year, today.Month, 1);
+            var last = month.AddDays(-1);
+            SelectedStatementDate = last;
+            clickCommand = new RelayCommand(PrintDocument,CanPrint);
+            CloseCommand = new DelegateCommand(Close);
+        }
+
+        public CustomersUnpaidInvoicesViewModel()
+        {
+        }
+        #endregion
+
+        #region "Relay Commands"
+        public ICommand CloseCommand { get; set; }
+        public RelayCommand SelectChangedCommand { get; set; }
+        public RelayCommand NavigateToInvoiceCommand { get; set; }
+        // public RelayCommand CheckIsActive { get; set; }
+        private readonly ICommand CheckIsActive;
+        public RelayCommand clickCommand { get; set; }
+       
+
+        #endregion
+
+        #region "Action Methods"
+        public void RefreshData()
+        {
+            GetOptionsandTaxValues();
+        }
+        private void Close()
+        {
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                var secondlast = listview.AsEnumerable().Reverse().Skip(1).First();
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest(secondlast, true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            catch (Exception)
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest("MainView", true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            //List<string> calledlist = stack.x();
+        }
+       public void PrintDocument(object param)
+       {
+            LstCustomers.RemoveAll(s => s.IsSelected == false);
+            IEnumerable<int> selectedcustomers = (IEnumerable<int>)LstCustomers.Select(v => v.CustomerID);
+            SharedValues.CustomersID = selectedcustomers;
+            var SelectedDate = param.ToString();
+            SharedValues.Print_Id = SelectedCustomerID.ToString();
+            SharedValues.PrintDate = SelectedDate;
+           //PrintSalesOrder();
+           var mainview = ServiceLocator.Current.GetInstance<UnpaidSalesInvoiceReport>();
+
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }////
+
+           // eventAggregator.GetEvent<TitleChangedEvent>().Publish("Customer Report");
+        }
+        public bool CanPrint(object param)
+        {
+            //bool a = false;
+            List<CustomersUnpaidInvoicesEntity> demo = new List<CustomersUnpaidInvoicesEntity>();
+            if (LstCustomers != null)
+                demo = LstCustomers.Where(x => x.IsSelected == true).ToList();
+            else
+                return false;
+
+            if (demo.Count <= 0)
+            {
+                return false;
+            }
+            else
+            {
+
+                return true;
+            }
+        }
+
+        void GetOptionsandTaxValues()
+        {
+            OptionsEntity oData = new OptionsEntity();
+            IPurchaseInvoiceListRepository purchaseRepository = new PurchaseInvoiceListRepository();
+            oData = purchaseRepository.GetOptionSettings();
+            if (oData != null)
+            {
+                this.CurrencyName = oData.CurrencyCode;     //there is no currency name field in database          
+            }
+            else
+            {
+                this.CurrencyName = "USD";
+                this.DateFormat = "dd/MM/yyyy";
+            }
+
+            TaxModel objDefaultTax = new TaxModel();
+            objDefaultTax = purchaseRepository.GetDefaultTaxes().FirstOrDefault();
+            if (objDefaultTax != null)
+            {
+                this.TaxName = objDefaultTax.TaxName;
+                //this.TaxName = objDefaultTax.TaxRate;
+            }
+            else
+            {
+                this.TaxName = "GST";
+                //this.TaxRate = 0;
+            }
+        }
+     
+       
+        public void OnDateSelected()
+        {
+            LstCustomers = uiRepository.GetCustomersList(Convert.ToString(SelectedStatementDate));
+           
+        }
+
+        public void OnSelectionChange(object param)
+        {
+            if (SelectedCustomerID != 0)
+            {
+                BalAndUnpaidInv = uiRepository.GetAllUnPaidInvoice(SelectedCustomerID, Convert.ToString(SelectedStatementDate));
+                LstBalances = BalAndUnpaidInv.LstBalances;
+                LstInvoiceDetails = BalAndUnpaidInv.LstInvoices;
+                LstInvoiceDetails = LstInvoiceDetails.OrderBy(e => e.InvoiceDate).ToList();
+                TotalInvoiceAmount = Convert.ToString(LstInvoiceDetails.Sum(e => e.InvoiceAmount));
+                TotalPaidAmount = Convert.ToString(LstInvoiceDetails.Sum(e => e.AmountPaid));
+                TotalDueAmount = Convert.ToString(LstInvoiceDetails.Sum(e => e.AmountDue));
+                LstCustomers.Where(x=>x.CustomerID== SelectedCustomerID).ToList().ForEach(x => { x.IsSelected = false;});
+                //LstCustomers.Where(x => x.CustomerID != SelectedCustomerID).ToList().ForEach(x => { x.IsSelected = false; });
+            }
+            else
+            {
+                if (param != null)
+                {
+                    var SelectedCustomerID = param.ToString();
+                    BalAndUnpaidInv = uiRepository.GetAllUnPaidInvoice(Convert.ToInt32(SelectedCustomerID), Convert.ToString(SelectedStatementDate));
+                    LstBalances = BalAndUnpaidInv.LstBalances;
+                    LstInvoiceDetails = BalAndUnpaidInv.LstInvoices;
+                    LstInvoiceDetails = LstInvoiceDetails.OrderBy(e => e.InvoiceDate).ToList();
+                    TotalInvoiceAmount = Convert.ToString(LstInvoiceDetails.Sum(e => e.InvoiceAmount));
+                    TotalPaidAmount = Convert.ToString(LstInvoiceDetails.Sum(e => e.AmountPaid));
+                    TotalDueAmount = Convert.ToString(LstInvoiceDetails.Sum(e => e.AmountDue));
+                }
+
+            }
+
+        }
+        void SalesInvoiceCommand(object param)
+        {
+            SharedValues.ScreenCheckName = "Sales Invoice";
+            SharedValues.ViewName = "Sales Invoice";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                string obj = param.ToString();
+            SharedValues.NewClick = obj;
+            SharedValues.getValue = "SalesInvoiceTab";
+            var tabview = ServiceLocator.Current.GetInstance<SalesTabView>();
+
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            var mainview = ServiceLocator.Current.GetInstance<SalesInvoiceView>();
+
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }////
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<SubTabVisibilityEvent>().Publish(false);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Sales Invoice - Form");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.\n"+"@ Simple Accounting Software Pte Ltd");
+            }
+        }
+        //public object  checkisactive(object param)
+        //{
+        //    List<object> values = new List<object>();
+        //    values = param as List<object>;
+        //    var TransType = values[0];
+        //    if (TransType.ToString() == "True")
+        //    {
+        //        foreach (var item in this.LstCustomers)
+        //        {
+        //            var id = item.CustomerID;
+        //            SharedValues.Print_Id = id.ToString();
+        //            item.IsSelected = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        foreach (var item in this.LstCustomers)
+        //        {
+        //            item.IsSelected = false;
+        //        }
+        //    }
+           
+        //}
+
+
+        #endregion
+
+        #region BackgroundWorked
+        private void LoadCustomerBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadCustomerBackground);
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadCustomerBackgroundProgress);
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadCustomerBackgroundComplete);
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        private void LoadCustomerBackground(object sender, DoWorkEventArgs e)
+        {
+            int minHeight = 300;
+            int headerRows = 270;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 52;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.GridHeight = minHeight;
+            this.InvoiceGridHeight = GridHeight - 31;
+            RefreshData();
+        }
+        //List<PandSSellPriceListEntity> DefaultList = new List<PandSSellPriceListEntity>();
+        //List<PandSSellPriceListEntity> FullList = new List<PandSSellPriceListEntity>();
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadCustomerBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+        }
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadCustomerBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+            Mouse.OverrideCursor = null;
+            Count = 1;
+
+        }
+        #endregion
+    }
+}

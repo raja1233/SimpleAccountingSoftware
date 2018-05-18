@@ -1,0 +1,995 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Purchasing.ViewModel
+{
+
+    using Common;
+    using Microsoft.Practices.Prism.Commands;
+    using Microsoft.Practices.Prism.Events;
+    using Microsoft.Practices.Prism.Regions;
+    using Microsoft.Practices.ServiceLocation;
+    using Sales.Services;
+    using SASClient.CashBank.Services;
+    using SASClient.CloseRequest;
+    using SDN.UI.Entities.Purchase;
+    using Services;
+    using Settings.Services;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Windows;
+    using System.Windows.Input;
+    using UI.Entities;
+    using View;
+
+    public class RefundFromSupplierViewModel: RefundFromSupplierEntity
+    {
+        #region "Private Members"
+        internal void RaisePropertyChanged(string prop)
+        {
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs(prop)); }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private string _DateErrors;
+        private DateTime? _RefundDateCalender;
+        ICompanyDetails CompanyD = new CompanyDetails();
+        private ObservableCollection<QuarterEntity> _quarterlist = new ObservableCollection<QuarterEntity>();
+        private ObservableCollection<MonthEntity> _monthlist = new ObservableCollection<MonthEntity>();
+        private ISupplierRepository supplierRepository = new SupplierRepository();
+        private IRefundFromSupplierRepository psRepository = new RefundFromSupplierRepository();
+        private IPaymentToSupplierFormRepository payRepository = new PaymentToSupplierFormRepository();
+        private IReceiveMoneyRepository rmRepository = new ReceiveMoneyRepository();
+        private readonly IRegionManager regionManager;
+        private readonly IEventAggregator eventAggregator;
+        private ObservableCollection<CollectAmountDataGridViewModel> pqDetailsEntity;
+        private ObservableCollection<CollectAmountDataGridViewModel> pqDetailsEntityLst;
+        private RefundFromSupplierEntity paymentToSupplierEntity;
+        StackList listitem = new StackList();
+        private int? selectedSupplierID;
+        private int? selectedAccountID;
+        private bool? isChequeFalse;
+        private bool? isChequeTrue;
+        private string currencyName;
+        private string dateFormat;
+        private bool? isSupplierEnabled;
+        private bool? isCashChequeEnabled;
+        private bool? isTextBoxReadOnly;
+        private int piGridHeight;
+
+
+        #endregion
+
+        #region "Properties"
+        public string DateErrors
+        {
+            get
+            {
+                return _DateErrors;
+            }
+            set
+            {
+                _DateErrors = value;
+                OnPropertyChanged("DateErrors");
+            }
+        }
+        public DateTime? RefundDateCalender
+        {
+            get
+            {
+                return _RefundDateCalender;
+            }
+            set
+            {
+                _RefundDateCalender = value;
+                OnPropertyChanged("RefundDateCalender");
+            }
+        }
+        public RefundFromSupplierEntity RefundFromSupplierEntity
+        {
+            get { return paymentToSupplierEntity; }
+            set
+            {
+                paymentToSupplierEntity = value;
+                OnPropertyChanged("RefundFromSupplierEntity");
+            }
+        }
+        public ObservableCollection<CollectAmountDataGridViewModel> PQDetailsEntity
+        {
+            get
+            {
+                return pqDetailsEntity;
+            }
+            set
+            {
+                if (pqDetailsEntity != value)
+                {
+                    pqDetailsEntity = value;
+                    OnPropertyChanged("PQDetailsEntity");
+                }
+            }
+        }
+        public ObservableCollection<CollectAmountDataGridViewModel> PQDetailsEntityLst
+        {
+            get
+            {
+                return pqDetailsEntityLst;
+            }
+            set
+            {
+                if (pqDetailsEntityLst != value)
+                {
+                    pqDetailsEntityLst = value;
+                    OnPropertyChanged("PQDetailsEntityLst");
+                }
+            }
+        }
+
+        public bool? IsSupplierEnabled
+        {
+            get { return isSupplierEnabled; }
+            set
+            {
+                isSupplierEnabled = value;
+                OnPropertyChanged("IsSupplierEnabled");
+            }
+        }
+
+        public bool? IsCashChequeEnabled
+        {
+            get { return isCashChequeEnabled; }
+            set
+            {
+                isCashChequeEnabled = value;
+                OnPropertyChanged("IsCashChequeEnabled");
+            }
+        }
+        public int? SelectedSupplierID
+        {
+            get { return selectedSupplierID; }
+            set
+            {
+                selectedSupplierID = value;
+                OnPropertyChanged("SelectedSupplierID");
+                //GetPSData(null);
+            }
+        }
+        public int? SelectedAccountID
+        {
+            get { return selectedAccountID; }
+            set
+            {
+                selectedAccountID = value;
+                OnPropertyChanged("SelectedAccountID");
+                GetAccountDetails();
+            }
+        }
+
+        public bool? IsTextBoxReadOnly
+        {
+            get { return isTextBoxReadOnly; }
+            set
+            {
+                isTextBoxReadOnly = value;
+                OnPropertyChanged("IsTextBoxReadOnly");
+            }
+        }
+
+        public bool? IsChequeFalse
+        {
+            get { return isChequeFalse; }
+            set
+            {
+                isChequeFalse = value;
+                OnPropertyChanged("IsChequeFalse");
+                //OnCashChecked();
+            }
+        }
+        public bool? IsChequeTrue
+        {
+            get { return isChequeTrue; }
+            set
+            {
+                isChequeTrue = value;
+                OnPropertyChanged("IsChequeTrue");
+                // OnChequeChecked();
+            }
+        }
+        private string psErrors;
+        public string PSErrors
+        {
+            get { return psErrors; }
+            set
+            {
+                psErrors = value;
+                OnPropertyChanged("PSErrors");
+            }
+        }
+
+        public int PIGridHeight
+        {
+            get { return piGridHeight; }
+            set
+            {
+                piGridHeight = value;
+                OnPropertyChanged("PIGridHeight");
+            }
+        }
+
+        private bool? isNew;
+        public bool? IsNew
+        {
+            get { return isNew; }
+            set
+            {
+                isNew = value;
+                OnPropertyChanged("IsNew");
+            }
+        }
+        public string CurrencyName
+        {
+            get { return currencyName; }
+            set
+            {
+                currencyName = value;
+                OnPropertyChanged("CurrencyName");
+            }
+        }
+
+        private string poCount;
+        private string dnCount;
+
+        public string POCount
+        {
+            get { return poCount; }
+            set
+            {
+                poCount = value;
+                OnPropertyChanged("POCount");
+            }
+        }
+        public string DNCount
+        {
+            get { return dnCount; }
+            set
+            {
+                dnCount = value;
+                OnPropertyChanged("DNCount");
+            }
+        }
+
+        public string DateFormat
+        {
+            get { return dateFormat; }
+            set
+            {
+                dateFormat = value;
+                OnPropertyChanged("DateFormat");
+            }
+        }
+
+        public string SelectedPurchaseNo
+        {
+            get; set;
+        }
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurchaseOrderListViewModel"/> class.
+        /// </summary>
+        public RefundFromSupplierViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+            : base()
+        {
+            this.regionManager = regionManager;
+            this.eventAggregator = eventAggregator;
+            this.LoadSupplierBackground();
+            CloseCommand = new DelegateCommand(Close);
+            NavigateToClientCommand = new RelayCommand(NavigatetoSupplier);
+            SaveCommand = new RelayCommand(OnSavePS, CanSave);
+            RefreshCommand = new RelayCommand(refreshcommand);
+            SelectChangedCommand = new RelayCommand(GetPSData);
+            NewPSCommand = new RelayCommand(GetNewPS);
+            NavigaetoPurchaseCommand = new RelayCommand(NavigatetoPurchaseOrder);
+            NavigaetoOrderCommand = new RelayCommand(NavigatetoPurchaseOrder);
+            PurchaseNoChangedCommand = new RelayCommand(OnPurchaseNoChange);
+            CashCheckedCommand = new RelayCommand(OnCashChecked);
+            ChequeCheckedCommand = new RelayCommand(OnChequeChecked);
+            List<SupplierDetailEntity> lst1 = new List<SupplierDetailEntity>();
+            List<SupplierDetailEntity> lst = new List<SupplierDetailEntity>();
+            int custId = 0;
+            IRefundFromSupplierRepository purchaseRepository = new RefundFromSupplierRepository();
+            //this.ListSuppliers = supplierRepository.GetAllSupplier().ToList();
+
+            POCount = psRepository.GetCountOfPOSuppliers(out lst1);
+            DNCount = psRepository.GetCountOfDNSuppliers(out lst);
+            if (lst != null)
+            {
+                var result = lst.Concat(lst1).GroupBy(t => t.ID).Select(t => t.First()).ToList();
+                ListSuppliers = result.OrderBy(t => t.SupplierName).ToList();
+            }
+            if (ListSuppliers.Count > 0)
+            {
+                int SupplierSelectedId = 0;
+                if (SharedValues.getValue != null)
+                {
+                    bool isValid = Int32.TryParse(SharedValues.getValue, out SupplierSelectedId);
+                }
+                if (SupplierSelectedId != 0)
+                {
+                    this.SelectedSupplierID = SupplierSelectedId;
+                }
+                else
+                {
+                    custId = ListSuppliers[0].ID;
+                    this.SelectedSupplierID = custId;
+                    GetPSData(this.SelectedSupplierID);
+
+
+                }
+            }
+            this.AccountDetails = rmRepository.GetAccountDetails().Where(e => e.AccountType == Convert.ToInt32(Account_Type.Bank) || e.AccountType == Convert.ToInt32(Account_Type.Cash) || e.AccountType == Convert.ToByte(Account_Type.CreditCard)).ToList();
+            if (!String.IsNullOrEmpty(SharedValues.NewClick))
+            {
+                if (SharedValues.NewClick != "New")
+                {
+                    MustCompare = false;
+                    IsCashChequeEnabled = false;
+                    IsTextBoxReadOnly = true;
+                    IsSupplierEnabled = false;
+                    GetRefundFromSupplierDetails(SharedValues.NewClick);
+                }
+                else if (SharedValues.NewClick == "New")
+                {
+                    MustCompare = true;
+                    IsCashChequeEnabled = true;
+                    IsTextBoxReadOnly = false;
+                    IsSupplierEnabled = true;
+                    GetNewPS();
+                }
+            }
+        }
+
+        public RefundFromSupplierViewModel()
+        {
+        }
+        public ICommand CloseCommand { get; set; }
+        public RelayCommand NewPSCommand { get; set; }
+        public RelayCommand NavigateToClientCommand { get; set; }
+        public RelayCommand PurchaseNoChangedCommand { get; set; }
+        public RelayCommand SaveCommand { get; set; }
+        public RelayCommand RefreshCommand { get; set; }
+        public RelayCommand NavigaetoPurchaseCommand { get; set; }
+        public RelayCommand NavigaetoOrderCommand { get; set; }
+        public RelayCommand CashCheckedCommand { get; set; }
+        public RelayCommand ChequeCheckedCommand { get; set; }
+        public RelayCommand SelectChangedCommand { get; set; }
+
+        #endregion  Constructor
+
+        #region ButtonCommands
+        void refreshcommand(object param)
+        {
+            RefreshData();
+        }
+        //private void GoBack()
+        //{
+        //    /*GoForward()*/
+        //    //CloseRequest obj = new CloseRequest();
+        //    var y = regionManager.Regions[RegionNames.MainRegion].Views;
+        //    var view = y.Reverse().Skip(1).First();
+        //    IRegion region = regionManager.Regions[RegionNames.MainRegion];
+        //    var f = view.GetType();
+        //    var z = f.Name;
+        //    var n = view;
+        //    CloseRequestNew obj = new CloseRequestNew(regionManager, eventAggregator);
+        //    obj.CloseViewRequest(z, region);
+
+        //    //region.NavigationService.Journal.GoBack();
+
+        //}
+        private void Close()
+        {
+            try
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                var secondlast = listview.AsEnumerable().Reverse().Skip(1).First();
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest(secondlast, true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            catch (Exception)
+            {
+                List<string> listview = (List<string>)Application.Current.Resources["views"];
+                CloseView close = new CloseView(regionManager, eventAggregator);
+                close.CloseViewRequest("MainView", true);
+                listview.RemoveAt(listview.Count - 1);
+            }
+            //List<string> calledlist = stack.x();
+        }
+        void GetNewPS(object param)
+        {
+            IsNew = true;
+            // SelectedSupplierID = 0;
+            IsCashChequeEnabled = true;
+            IsSupplierEnabled = true;
+            IsTextBoxReadOnly = false;
+            PSErrors = string.Empty;
+
+            GetNewPS();
+            SelectedSupplierID = 0;
+
+            
+        }
+
+        void OnSavePS(object param)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to save changes?", "Save Confirmation", MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                RefundFromSupplierForm PSForm = GetDataIntoModel();
+                string msg = ValidateRefundFromSupplier();
+                if (msg != string.Empty)
+                {
+                    PSErrors = msg;
+                    Mouse.OverrideCursor = null;
+                    return;
+                }
+
+                PSErrors = string.Empty;
+
+                if (PSForm != null)
+                {
+                    if (IsNew == true)
+                    {
+                        int i = psRepository.SaveRefundFromSupplier(PSForm);
+                        IsSupplierEnabled = false;
+                        IsTextBoxReadOnly = true;
+                        IsNew = false;
+                    }
+                    else
+                    {
+                        int i = psRepository.UpdateRefundFromSupplier(PSForm);
+                        IsNew = false;
+                        IsSupplierEnabled = false;
+                        IsTextBoxReadOnly = true;
+                    }
+
+                    Mouse.OverrideCursor = null;
+                }
+            }
+        }
+
+
+        public bool CanSave(object param)
+        {
+            string date = this.DateFormat as string;
+            var c = CompanyD.GetCompanyDetails().Comp_year_start_date;
+
+            if ((SelectedSupplierID != null || SelectedSupplierID != 0)
+               && (SelectedAccountID != null || SelectedAccountID != 0)
+               && !(string.IsNullOrEmpty(AmountStr)) && !(string.IsNullOrEmpty(CashChequeNo))
+              && Date != null)
+            {
+                return true;
+            }
+            if (DateStr != null)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(DateStr) && !string.IsNullOrWhiteSpace(DateStr))
+                    {
+
+                        //item.StartDate = item.StartDate.Replace('.', '/');
+                        //item.StartDate = item.StartDate.Replace('-', '/');
+                        //item.EndDate = item.EndDate.Replace('.', '/');
+                        //item.EndDate = item.EndDate.Replace('-', '/');
+                        var Start = (DateTime.ParseExact(DateStr, date, CultureInfo.InvariantCulture));
+                        this.DateErrors = "";
+                        //var End = (DateTime.ParseExact(item.EndDate, date, CultureInfo.InvariantCulture));
+                        if (Start < c)
+                        {
+                            this.DateErrors = "Date should be greater than Start Financial year";
+                            return false;
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.DateErrors = "Please enter the date in " + date + " format!";
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        void OnPurchaseNoChange(object param)
+        {
+
+            if (SelectedPurchaseNo != null)
+            {
+                PQDetailsEntity = new ObservableCollection<CollectAmountDataGridViewModel>(PQDetailsEntityLst.Where(e => e.PurchaseNo == SelectedPurchaseNo).ToList());
+            }
+            else
+            {
+                PQDetailsEntity = PQDetailsEntityLst;
+            }
+        }
+
+        void NavigatetoSupplier(object param)
+        {
+            SharedValues.ScreenCheckName = "Suppliers Details";
+            SharedValues.ViewName = "Suppliers Details";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                string obj = param.ToString();
+            SharedValues.getValue = obj;
+            var mainview = ServiceLocator.Current.GetInstance<SupplierDetailView>();
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }
+            var tabview = ServiceLocator.Current.GetInstance<SupplierTabView>();
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Suppliers Details Form");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.");
+            }
+        }
+        void NavigatetoPurchaseOrder(object param)
+        {
+            SharedValues.ScreenCheckName = "Purchase Order";
+            SharedValues.ViewName = "Purchase Order";
+            var accessitem = listitem.AddToList();
+            if (accessitem == true)
+            {
+                if (param != null)
+            {
+                string obj = param.ToString();
+                SharedValues.NewClick = obj;
+            }
+            var tabview = ServiceLocator.Current.GetInstance<PurchaseTabView>();
+
+            var tabregion = this.regionManager.Regions[RegionNames.MenuBarRegion];
+            tabregion.Add(tabview);
+            if (tabregion != null)
+            {
+                tabregion.Activate(tabview);
+            }
+
+            var mainview = ServiceLocator.Current.GetInstance<PurchaseOrderView>();
+
+            var mainregion = this.regionManager.Regions[RegionNames.MainRegion];
+            mainregion.Add(mainview);
+            if (mainregion != null)
+            {
+                mainregion.Activate(mainview);
+            }////
+            eventAggregator.GetEvent<TabVisibilityEvent>().Publish(true);
+            eventAggregator.GetEvent<TitleChangedEvent>().Publish("Purchase Order Form");
+            }
+            else
+            {
+                MessageBox.Show("You do not have access to this screen. Please contact your Administrator.");
+            }
+        }
+
+        #endregion
+
+        #region "Private methods"
+
+        public void GetAccountDetails()
+        {
+            if (SelectedAccountID != 0 || SelectedAccountID != null)
+            {
+                var actType = AccountDetails.SingleOrDefault(e => e.AccountID == SelectedAccountID);
+                if (actType != null)
+                {
+
+                    if (actType.AccountType == Convert.ToByte(Account_Type.Cash) && actType.IsLinked == true)
+                    {
+                        IsChequeTrue = false;
+                        IsChequeFalse = true;
+                        IsTextBoxReadOnly = true;
+                        CashChequeNo = "RS-" + psRepository.GetLastCashNo();
+                        IsCheque = false;
+                    }
+                    else
+                    {
+                        IsChequeTrue = true;
+                        IsChequeFalse = false;
+                        IsTextBoxReadOnly = false;
+                        CashChequeNo = string.Empty;
+                        IsCheque = true;
+                    }
+                }
+            }
+        }
+        public RefundFromSupplierForm GetDataIntoModel()
+        {
+             OptionsEntity oData = new OptionsEntity();
+            ISalesOrderListRepository purchaseRepository = new SalesOrderListRepository();
+            oData = purchaseRepository.GetOptionSettings();
+            RefundFromSupplierForm PQForm = new RefundFromSupplierForm();
+            PQForm.RefundFromSupplierDetails = new List<RefundFromSupplierDetailsEntity>();
+            RefundFromSupplierEntity model = new RefundFromSupplierEntity();
+            //  this.ID = pqf.RefundFromSupplier.ID;
+            model.SupplierID = this.SelectedSupplierID;
+            model.AccountId = this.SelectedAccountID;
+            model.Date = DateTime.ParseExact(this.DateStr, oData.DateFormat, null);
+            model.AmountStr = this.AmountStr;
+            model.Amount = Convert.ToDecimal(this.AmountStr);
+            model.IsCheque = this.IsCheque;
+            model.CashChequeNo = this.CashChequeNo;
+            model.Remarks = this.Remarks;
+            if (this.IsChequeTrue == true)
+            {
+                model.IsCheque = true;
+            }
+            else
+            {
+                model.IsCheque = false;
+            }
+
+            PQForm.RefundFromSupplier = model;
+
+            foreach (var item in PQDetailsEntity.Where(e=>Convert.ToDecimal(e.AmountAdjustedStr)!=0))
+            {
+                RefundFromSupplierDetailsEntity pqEntity = new RefundFromSupplierDetailsEntity();
+
+                pqEntity.PurchaseNo = item.PurchaseNo;
+                pqEntity.PurchaseDate = item.PurchaseDate;
+                pqEntity.PurchaseAmount = Convert.ToDecimal(item.PurchaseAmountStr);
+                //item.PurchaseAmount=pqEntity.PurchaseAmount;
+                pqEntity.PaymentDueDate = Convert.ToDateTime(item.PaymentDueDateStr);
+                //pqEntity.AmountDueStr = Convert.ToString(item.AmountDue);
+                pqEntity.AmountDue = Convert.ToDecimal(item.AmountDueStr);
+                // pqEntity.AmountAdjustedStr = Convert.ToString(item.AmountAdjusted);
+                pqEntity.AmountAdjusted = Convert.ToDecimal(item.AmountAdjustedStr);
+
+                pqEntity.Discount = Convert.ToDecimal(item.DiscountStr);
+
+                PQForm.RefundFromSupplierDetails.Add(pqEntity);
+            }
+            return PQForm;
+        }
+
+
+        private void OnCashChecked(object param)
+        {
+            IsTextBoxReadOnly = true;
+            CashChequeNo = "RS-" + psRepository.GetLastCashNo();
+        }
+
+        private void OnChequeChecked(object param)
+        {
+            IsTextBoxReadOnly = false;
+            CashChequeNo = string.Empty;
+        }
+
+        private string ValidateRefundFromSupplier()
+        {
+            string msg = string.Empty;
+            foreach (var item in PQDetailsEntity)
+            {
+                if (string.IsNullOrEmpty(item.AmountAdjustedStr))
+                {
+                    return msg = "Please enter Amount Adjusted";
+                }
+                else
+                {
+                    item.AmountAdjusted = Convert.ToDecimal(item.AmountAdjustedStr);
+                    item.Discount = Convert.ToDecimal(item.DiscountStr);
+                }
+            }
+
+            if (IsNew == true)
+            {
+                if (!string.IsNullOrEmpty(CashChequeNo))
+                {
+                    if (psRepository.IsChequeNoPresent(CashChequeNo))
+                    {
+                        return msg = "Entry against Cheque No is already done";
+                    }
+                }
+            }
+
+            if (Convert.ToDecimal(AmountStr) != (PQDetailsEntity.Sum(e => e.AmountAdjusted)))
+            {
+                return msg = "Total of Amount Refunded column must be equal to Cash/Cheque Amount.";
+            }
+
+            return msg;
+        }
+
+        public void OnAmountChanged()
+        {
+            // PQDetailsEntity.Select(t => t.AmountDueStr);
+        }
+
+        private void GetPSData(object param)
+        {
+            if (SelectedSupplierID != null && SelectedSupplierID != 0)
+            {
+                RefundFromSupplierForm pqf = psRepository.GetNewPS(SelectedSupplierID);
+                GetModelData(pqf);
+            }
+            if (param != null)
+            {
+                int SelectedSupplierID = (int)param;
+                RefundFromSupplierForm pqf = psRepository.GetNewPS(SelectedSupplierID);
+                GetModelData(pqf);
+            }
+        }
+
+        private void GetNewPS()
+        {
+            this.AmountStr = string.Empty;
+            this.CashChequeNo = string.Empty;
+            this.Remarks = string.Empty;
+            IsChequeFalse = true;
+            IsChequeTrue = false;
+            Date = DateTime.Now.Date;
+            //SelectedAccountID = 0;
+            IsNew = true;
+            CashChequeNo = "RS-" + psRepository.GetLastCashNo();
+            IsTextBoxReadOnly = true;
+            //this.ListSuppliers = supplierRepository.GetAllSupplier().Where(e => e.IsInActive != "Y").OrderBy(s => s.SupplierName).ToList();
+            if (Convert.ToInt32(SharedValues.CollectCommand) != 0)
+                this.SelectedSupplierID = Convert.ToInt32(SharedValues.CollectCommand);
+        }
+
+        private void GetModelData(RefundFromSupplierForm pqf)
+        {
+            if (IsNew == false)
+            {
+                //this.ID = pqf.RefundFromSupplier.ID;
+                this.SelectedSupplierID = pqf.RefundFromSupplier.SupplierID;
+                this.SelectedAccountID = pqf.RefundFromSupplier.AccountId;
+                          
+                this.AmountStr = pqf.RefundFromSupplier.AmountStr;
+                this.IsCheque = pqf.RefundFromSupplier.IsCheque;
+                if (IsCheque == true)
+                {
+                    IsChequeTrue = true;
+                }
+                else
+                {
+                    IsChequeFalse = true;
+                }
+                this.CashChequeNo = pqf.RefundFromSupplier.CashChequeNo;
+                this.Remarks = pqf.RefundFromSupplier.Remarks;
+            }
+
+            var result = pqf.RefundFromSupplierDetails.OrderByDescending(e=>e.CreatedDate).GroupBy(e => e.PurchaseNo).Select(e => e.First()).ToList();
+
+            this.PQDetailsEntity = new ObservableCollection<CollectAmountDataGridViewModel>();
+            foreach (var item in result)
+            {
+                CollectAmountDataGridViewModel pqEntity = new CollectAmountDataGridViewModel();
+                pqEntity.PurchaseNo = item.PurchaseNo;
+                pqEntity.PurchaseDate = item.PurchaseDate;
+                pqEntity.PurchaseDateStr = changedateformat(item.PurchaseDate);
+                pqEntity.PurchaseAmountStr = Convert.ToString(item.PurchaseAmount);
+                pqEntity.PurchaseAmount = item.PurchaseAmount;
+                pqEntity.PaymentDueDate = item.PaymentDueDate;
+                pqEntity.PaymentDueDateStr = changedateformat(item.PaymentDueDate);
+                pqEntity.AmountDue = Math.Abs(decimal.Parse(Convert.ToString(item.AmountDue)));
+                pqEntity.AmountDueStr = Convert.ToString(Math.Abs(decimal.Parse(Convert.ToString(item.AmountDue))));
+                pqEntity.AmountAdjusted = item.AmountAdjusted;
+                pqEntity.AmountAdjustedStr = Convert.ToString(item.AmountAdjusted);
+                pqEntity.Discount = item.Discount;
+                pqEntity.DiscountStr = Convert.ToString(item.Discount);
+
+                PQDetailsEntity.Add(pqEntity);
+                OnPropertyChanged("PQDetailsEntity");
+            }
+
+            TotalSalesAmount = Convert.ToString(PQDetailsEntity.Sum(e => e.PurchaseAmount));
+            TotalAmountDue = Convert.ToString(PQDetailsEntity.Sum(e => e.AmountDue));
+            TotalAmountPaid = Convert.ToString(PQDetailsEntity.Sum(e => e.AmountAdjusted));
+
+            PQDetailsEntityLst = PQDetailsEntity;
+        }
+
+        private void GetRefundFromSupplierDetails(string cashChequeNo)
+        {
+            OptionsEntity oData = new OptionsEntity();
+            ISalesOrderListRepository purchaseRepository = new SalesOrderListRepository();
+            oData = purchaseRepository.GetOptionSettings();
+            this.ListSuppliers = supplierRepository.GetAllSupplier().ToList();
+            IsNew = false;
+            RefundFromSupplierForm pqf = psRepository.GetRefundFromSupplierDetails(cashChequeNo);
+            DateTime Dateinstr = (DateTime)pqf.RefundFromSupplier.Date;
+            this.DateStr = Dateinstr.ToString(oData.DateFormat);
+            GetModelData(pqf);
+
+        }
+
+        #endregion
+
+        #region BackgroundWorked
+        private void LoadSupplierBackground()
+        {
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            //run time-consuming operations on a background thread
+            BackgroundWorker worker = new BackgroundWorker();
+
+            //Set the WorkerReportsProgress property to true if you want the BackgroundWorker to support progress updates.
+            //When this property is true, user code can call the ReportProgress method to raise the ProgressChanged event.
+            worker.WorkerReportsProgress = true;
+
+
+            //This event is raised when you call the RunWorkerAsync method. This is where you start the time-consuming operation.
+            worker.DoWork += new DoWorkEventHandler(this.LoadSupplierBackground);
+
+            // This event is raised when you call the ReportProgress method.
+            worker.ProgressChanged += new ProgressChangedEventHandler(this.LoadSupplierBackgroundProgress);
+
+            //The RunWorkerCompleted event is raised when the background worker has completed. 
+            //Depending on whether the background operation completed successfully, encountered an error,
+            //or was canceled, update the user interface accordingly
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.LoadSupplierBackgroundComplete);
+
+            //Starts running a background operation
+            worker.RunWorkerAsync();
+        }
+        List<PurchaseOrderListEntity> DefaultList = new List<PurchaseOrderListEntity>();
+        List<PurchaseOrderListEntity> FullPQList = new List<PurchaseOrderListEntity>();
+        private void LoadSupplierBackground(object sender, DoWorkEventArgs e)
+        {
+
+            int minHeight = 300;
+            int headerRows = 260;//180+40+30+10;
+            var height = System.Windows.SystemParameters.PrimaryScreenHeight - headerRows - 200;
+            bool validHeight = int.TryParse(height.ToString(), out minHeight);
+            this.PtSFGridHeight = minHeight;
+
+            RefreshData();
+        }
+
+        public void OnAmountChange(int index)
+        {
+            var query = PQDetailsEntity.ToList();
+
+            if (query != null)
+            {
+                query[index].AmountAdjustedStr = query[index].AmountDueStr;
+                query[index].AmountAdjusted = Convert.ToDecimal(query[index].AmountAdjustedStr);
+                //query[index].AmountDueStr = Convert.ToString("0");
+            }
+
+            TotalSalesAmount = Convert.ToString(PQDetailsEntity.Sum(e => e.PurchaseAmount));
+            TotalAmountDue = Convert.ToString(PQDetailsEntity.Sum(e => e.AmountDue));
+            TotalAmountPaid = Convert.ToString(PQDetailsEntity.Sum(e => e.AmountAdjusted));
+            // OnPropertyChanged("PQDetailsEntity");
+        }
+
+        private void RefreshData()
+        {
+            try
+            {
+                
+                GetOptionsandTaxValues();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        void GetOptionsandTaxValues()
+        {
+            OptionsEntity oData = new OptionsEntity();
+            IPurchaseOrderListRepository purchaseRepository = new PurchaseOrderListRepository();
+            oData = purchaseRepository.GetOptionSettings();
+            if (oData != null)
+            {
+                CurrencyName = oData.CurrencyCode;
+                DateFormat = oData.DateFormat;
+                if (!string.IsNullOrWhiteSpace(oData.DefCashBankAcc))
+                {
+                    this.SelectedAccountID = Convert.ToInt32(oData.DefCashBankAcc);
+                }
+            }
+            TaxModel objDefaultTax = new TaxModel();
+            objDefaultTax = purchaseRepository.GetDefaultTaxes().FirstOrDefault();
+
+        }
+
+        string changedateformat(DateTime? datetoConvert)
+        {
+            string convertedDate = string.Empty;
+            string date = this.DateFormat as string;
+            var tempdate = Convert.ToDateTime(datetoConvert).ToString(date);
+            convertedDate = tempdate.Replace('-', '/');
+            return convertedDate;
+        }
+        void changeNumberformat(List<PurchaseOrderListEntity> entity)
+        {
+            //int decimalpoints = Convert.ToInt32(this.DecimalPlaces);
+            //foreach (var item in entity)
+            //{
+            //    //item.QuotationAmount = item.QuotationAmountIncGST;
+            //    if (item.OrderAmount != null && item.OrderAmount != "")
+            //        item.OrderAmount = Math.Round(Convert.ToDouble(item.OrderAmount), decimalpoints).ToString();
+            //}
+        }
+
+        protected override void OnPropertyChanged(string name)
+        {
+            var eventHandler = this.PropertyChanged;
+            if (eventHandler != null)
+            {
+                eventHandler(this, new PropertyChangedEventArgs(name));
+            }
+            switch (name)
+            {
+                case "RefundDateCalender":
+                    FillStartDate();
+                    break;
+
+
+            }
+            base.OnPropertyChanged(name);
+        }
+
+
+        void FillStartDate()
+        {
+            string date = this.DateFormat as string;
+            DateStr = Convert.ToDateTime(this.RefundDateCalender).ToString(date);
+
+        }
+
+
+
+
+        /// <summary>
+        ///  Occurs when System.ComponentModel.BackgroundWorker.ReportProgress(System.Int32) is called.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="ProgressChangedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundProgress(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        ///// <summary>
+        /////  Occurs when the background operation has completed, has been canceled, or has raised an exception.
+        ///// </summary>
+        ///// <param name="sender">The sender.</param>
+        ///// <param name="e">The <see cref="RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        private void LoadSupplierBackgroundComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+           
+            Mouse.OverrideCursor = null;
+
+        }
+
+        #endregion
+    }
+}

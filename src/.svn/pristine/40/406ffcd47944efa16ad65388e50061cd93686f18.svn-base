@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{98FAD5FC-9A4E-4C68-966D-8B310BF1FDC1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SASBAL</RootNamespace>
+    <AssemblyName>SASBAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\SDN.SimpleAccounting\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CashBank\AccountDetailsBL.cs" />
+    <Compile Include="CashBank\CashBankDetailsBL.cs" />
+    <Compile Include="CashBank\IAccountDetailsBL.cs" />
+    <Compile Include="CashBank\ICashBankDetailsBL.cs" />
+    <Compile Include="Customers\CustomerHistoryBL.cs" />
+    <Compile Include="Customers\CustomersBL.cs" />
+    <Compile Include="Customers\ICustomerHistoryBL.cs" />
+    <Compile Include="Customers\ICustomersBL.cs" />
+    <Compile Include="Customers\IPandSSoldToCustomersBL.cs" />
+    <Compile Include="Customers\PandSSoldToCustomersBL.cs" />
+    <Compile Include="Product\CountAndAdjustStockBL.cs" />
+    <Compile Include="Product\CountAndAdjustStockListBL.cs" />
+    <Compile Include="Product\ICountAndAdjustStockBL.cs" />
+    <Compile Include="Product\ICountAndAdjustStockListBL.cs" />
+    <Compile Include="Product\IPandSCodesAndRatesListBL.cs" />
+    <Compile Include="Product\IPandSCostPriceListBL.cs" />
+    <Compile Include="Product\IPandSDescriptionListBL.cs" />
+    <Compile Include="Product\IPandSDetailsBL.cs" />
+    <Compile Include="Product\IPandSPurchaseBL.cs" />
+    <Compile Include="Product\IPandSSellPriceListBL.cs" />
+    <Compile Include="Product\IPandSSoldBL.cs" />
+    <Compile Include="Product\IPandSStockQuantitiesListBL.cs" />
+    <Compile Include="Product\IPandSStockValueListBL.cs" />
+    <Compile Include="Product\PandSCodesAndRatesListBL.cs" />
+    <Compile Include="Product\PandSCostPriceListBL.cs" />
+    <Compile Include="Product\PandSDescriptionListBL.cs" />
+    <Compile Include="Product\PandSDetailsBL.cs" />
+    <Compile Include="Product\PandSPurchaseBL.cs" />
+    <Compile Include="Product\PandSSellPriceListBL.cs" />
+    <Compile Include="Product\PandSSoldBL.cs" />
+    <Compile Include="Product\PandSStockQuantitiesListBL.cs" />
+    <Compile Include="Product\PandSStockValueListBL.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Purchasing\AdjustDebitNoteBL.cs" />
+    <Compile Include="Purchasing\DebitNoteBL.cs" />
+    <Compile Include="Purchasing\DebitNoteListBL.cs" />
+    <Compile Include="Purchasing\IAdjustDebitNoteBL.cs" />
+    <Compile Include="Purchasing\IDebitNoteBL.cs" />
+    <Compile Include="Purchasing\IDebitNoteListBL.cs" />
+    <Compile Include="Purchasing\IPaymentsToSuppliersListBL.cs" />
+    <Compile Include="Purchasing\IPaymentToSupplierBL.cs" />
+    <Compile Include="Purchasing\IPurchaseInvoiceBEBL.cs" />
+    <Compile Include="Purchasing\IPurchaseInvoiceListBL.cs" />
+    <Compile Include="Purchasing\IPurchaseInvoicePandSBL.cs" />
+    <Compile Include="Purchasing\IPurchaseOrderBL.cs" />
+    <Compile Include="Purchasing\IPurchaseOrderListBL.cs" />
+    <Compile Include="Purchasing\IPurchaseQuotationBL.cs" />
+    <Compile Include="Purchasing\IPurchaseQuotationListBL.cs" />
+    <Compile Include="Purchasing\IRefundFromSupplierBL.cs" />
+    <Compile Include="Purchasing\IRefundFromSuppliersListBL.cs" />
+    <Compile Include="Purchasing\ISupplierBL.cs" />
+    <Compile Include="Purchasing\ISupplierHistoryBL.cs" />
+    <Compile Include="Purchasing\PaymentsToSuppliersListBL.cs" />
+    <Compile Include="Purchasing\PaymentToSupplierBL.cs" />
+    <Compile Include="Purchasing\PurchaseInvoiceBEBL.cs" />
+    <Compile Include="Purchasing\PurchaseInvoiceListBL.cs" />
+    <Compile Include="Purchasing\PurchaseInvoicePandSBL.cs" />
+    <Compile Include="Purchasing\PurchaseOrderBL.cs" />
+    <Compile Include="Purchasing\PurchaseOrderListBL.cs" />
+    <Compile Include="Purchasing\PurchaseQuotationBL.cs" />
+    <Compile Include="Purchasing\PurchaseQuotationListBL.cs" />
+    <Compile Include="Purchasing\RefundFromSupplierBL.cs" />
+    <Compile Include="Purchasing\RefundFromSuppliersListBL.cs" />
+    <Compile Include="Purchasing\SupplierBL.cs" />
+    <Compile Include="Purchasing\SupplierHistoryBL.cs" />
+    <Compile Include="Sales\AdjustCreditNoteBL.cs" />
+    <Compile Include="Sales\CreditNoteBL.cs" />
+    <Compile Include="Sales\CreditNoteListBL.cs" />
+    <Compile Include="Sales\IAdjustCreditNoteBL.cs" />
+    <Compile Include="Sales\ICreditNoteBL.cs" />
+    <Compile Include="Sales\ICreditNoteListBL.cs" />
+    <Compile Include="Sales\IPaymentFromCustomersBL.cs" />
+    <Compile Include="Sales\IPaymentFromCustomersListBL.cs" />
+    <Compile Include="Sales\IRefundToCustomersBL.cs" />
+    <Compile Include="Sales\IRefundToCustomersListBL.cs" />
+    <Compile Include="Sales\ISalesBL.cs" />
+    <Compile Include="Sales\ISalesInvoiceBL.cs" />
+    <Compile Include="Sales\ISalesInvoiceListBL.cs" />
+    <Compile Include="Sales\ISalesOrderBL.cs" />
+    <Compile Include="Sales\ISalesOrderListBL.cs" />
+    <Compile Include="Sales\ISalesQuotationBL.cs" />
+    <Compile Include="Sales\ISalesQuotationListBL.cs" />
+    <Compile Include="Sales\PaymentFromCustomersBL.cs" />
+    <Compile Include="Sales\PaymentFromCustomersListBL.cs" />
+    <Compile Include="Sales\RefundToCustomersBL.cs" />
+    <Compile Include="Sales\RefundToCustomersListBL.cs" />
+    <Compile Include="Sales\SalesInvoiceBL.cs" />
+    <Compile Include="Sales\SalesInvoiceListBL.cs" />
+    <Compile Include="Sales\SalesOrderBL.cs" />
+    <Compile Include="Sales\SalesOrderListBL.cs" />
+    <Compile Include="Sales\SalesQuotationBL.cs" />
+    <Compile Include="Sales\SalesQuotationListBL.cs" />
+    <Compile Include="Settings\CategoryBL.cs" />
+    <Compile Include="Settings\CompanyBL.cs" />
+    <Compile Include="Settings\ICategoryBL.cs" />
+    <Compile Include="Settings\ICompanyBL.cs" />
+    <Compile Include="Settings\IOptionsBL.cs" />
+    <Compile Include="Settings\ITaxCodesAndRatesBL.cs" />
+    <Compile Include="Settings\IUserSecurityBL.cs" />
+    <Compile Include="Settings\OptionsBL.cs" />
+    <Compile Include="Settings\TaxCodesAndRatesBL.cs" />
+    <Compile Include="Settings\UserSecurityBL.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Client\UIEntities\SDN.UI.Entities\SDN.UI.Entities.csproj">
+      <Project>{d2de95a2-9053-4f19-870b-97c4487820f9}</Project>
+      <Name>SDN.UI.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\SDN.Common\SDN.Common.csproj">
+      <Project>{f9920e3e-8140-4db5-ace4-85043e727aad}</Project>
+      <Name>SDN.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DataAccess\SASDAL\SASDAL.csproj">
+      <Project>{1ffd08e9-ed3f-4335-ae79-9c2d166b279c}</Project>
+      <Name>SASDAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,733 @@
+﻿
+
+namespace SDN.Purchasings.DAL
+{
+    using System;
+
+
+    using UI.Entities;
+
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Collections.Generic;
+    using Sales.EDM;
+
+    using Sales.DALInterface;
+    using Common;
+
+    public class SalesOrderDAL : ISalesOrderDAL
+    {
+        /// <summary>
+        /// This method is used to add or edit sales order
+        /// </summary>
+        /// <param name="orderData"></param>
+        /// <returns></returns>
+        public int AddUpdateOrder(SalesOrderForm orderData)
+        {
+            int autoId = 0;
+            //Add sales order
+            SalesOrder obj = new SalesOrder();
+            obj.ID = orderData.Order.ID;
+            obj.Cus_Id = orderData.Order.CustomerID;
+            //obj.SO_Conv_to_SO = orderData.Order.SO_Conv_to_SO;
+            obj.SO_Conv_to_SI = orderData.Order.SO_Conv_to_SI;
+            obj.SO_Date = orderData.Order.OrderDate;
+            obj.SO_GST_Amt = Convert.ToDecimal(orderData.Order.TotalTax);
+            obj.SO_No = orderData.Order.OrderNo;
+            obj.SO_TandC = orderData.Order.TermsAndConditions;
+            obj.SO_Tot_aft_Tax = Convert.ToDecimal(orderData.Order.TotalAfterTax);
+            obj.SO_Tot_bef_Tax = Convert.ToDecimal(orderData.Order.TotalBeforeTax);
+            //obj.SO_Valid_for = orderData.Order.ValidForDays;
+            obj.SO_Del_Date = orderData.Order.DeliveryDate;
+            obj.Cus_PO_No = orderData.Order.Cus_Po_No;
+            obj.Exc_Inc_GST = orderData.Order.ExcIncGST;
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    if (entities.SalesOrders.AsNoTracking().FirstOrDefault(x => x.ID == orderData.Order.ID) == null)
+                    {
+                        //obj.CreatedBy = orderData.SOModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.SalesOrders.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = orderData.SOModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    if (autoId > 0)
+                    {
+                        SalesOrderDetail SODetails;
+                        if (orderData.OrderDetails != null)
+                        {
+                            foreach (SalesOrderDetailEntity SODetailEntity in orderData.OrderDetails)
+                            {
+                                SODetails = new SalesOrderDetail();
+                                SODetails.SO_ID = autoId;
+                                SODetails.SO_No = SODetailEntity.SONo;
+                                SODetails.PandS_Code = SODetailEntity.PandSCode;
+                                SODetails.PandS_Name = SODetailEntity.PandSName;
+                                SODetails.SO_Amount = SODetailEntity.SOAmount;
+                                SODetails.SO_Discount = SODetailEntity.SODiscount;
+                                SODetails.SO_No = SODetailEntity.SONo;
+                                SODetails.SO_Price = Convert.ToDecimal(SODetailEntity.SOPrice);
+                                SODetails.SO_Qty = SODetailEntity.SOQty;
+                                SODetails.GST_Code = SODetailEntity.GSTCode;
+                                SODetails.GST_Rate = SODetailEntity.GSTRate;
+
+                                if (entities.SalesOrderDetails.AsNoTracking().FirstOrDefault(x => x.ID == SODetailEntity.ID) == null)
+                                {
+                                    entities.SalesOrderDetails.Add(SODetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(SODetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                                int PSId = Convert.ToInt32(SODetailEntity.SONo);
+                                if (PSId != 0)
+                                {
+                                    ProductsAndService ps = entities.ProductsAndServices.SingleOrDefault(e => e.ID == PSId);
+                                    if (ps != null)
+                                    {
+                                        ps.PandS_Qty_for_SO = ps.PandS_Qty_for_SO + SODetailEntity.SOQty;
+                                        entities.SaveChanges();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public int UpdationOrder(SalesOrderForm orderData)
+        {
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    SalesOrder obj = entities.SalesOrders.Where(e => e.SO_No == orderData.Order.OrderNo
+                    ).SingleOrDefault();
+                    if (obj != null)
+                    {
+                        //obj.ID = orderData.Order.ID;
+                        obj.Cus_Id = orderData.Order.CustomerID;
+                        // obj.SO_Conv_to_SO = orderData.Order.SO_Conv_to_SO;
+                        // obj.SO_Conv_to_SI = orderData.Order.SO_Conv_to_SI;
+                        obj.SO_Date = orderData.Order.OrderDate;
+                        obj.SO_GST_Amt = Convert.ToDecimal(orderData.Order.TotalTax);
+                        obj.SO_No = orderData.Order.OrderNo;
+                        obj.SO_TandC = orderData.Order.TermsAndConditions;
+                        obj.SO_Tot_aft_Tax = Convert.ToDecimal(orderData.Order.TotalAfterTax);
+                        obj.SO_Tot_bef_Tax = Convert.ToDecimal(orderData.Order.TotalBeforeTax);
+                        //obj.SO_Valid_for = orderData.Order.ValidForDays;
+                        obj.SO_Del_Date = orderData.Order.DeliveryDate;
+                        obj.Cus_PO_No = orderData.Order.Cus_Po_No;
+                        obj.Exc_Inc_GST = orderData.Order.ExcIncGST;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+
+                    var objSales = entities.SalesOrderDetails.Where
+                        (e => e.SO_ID == obj.ID).ToList();
+                    if (objSales != null)
+                    {
+                        foreach (var item in objSales)
+                        {
+                            int PSId = Convert.ToInt32(item.SO_No);
+                            if (PSId != 0)
+                            {
+                                ProductsAndService ps = entities.ProductsAndServices.SingleOrDefault(e => e.ID == PSId);
+                                if (ps != null)
+                                {
+                                    ps.PandS_Qty_for_SO = ps.PandS_Qty_for_SO - item.SO_Qty;
+                                    entities.SaveChanges();
+                                }
+                            }
+                            entities.SalesOrderDetails.Remove(item);
+                            entities.SaveChanges();
+                        }
+                    }
+                    SalesOrderDetail SODetails;
+                    if (orderData.OrderDetails != null)
+                    {
+                        foreach (SalesOrderDetailEntity SODetailEntity in orderData.OrderDetails)
+                        {
+                            SODetails = new SalesOrderDetail();
+                            SODetails.SO_ID = obj.ID;
+                            SODetails.SO_No = SODetailEntity.SONo;
+                            SODetails.PandS_Code = SODetailEntity.PandSCode;
+                            SODetails.PandS_Name = SODetailEntity.PandSName;
+                            SODetails.SO_Amount = SODetailEntity.SOAmount;
+                            SODetails.SO_Discount = SODetailEntity.SODiscount;
+                            SODetails.SO_No = SODetailEntity.SONo;
+                            SODetails.SO_Price = Convert.ToDecimal(SODetailEntity.SOPrice);
+                            SODetails.SO_Qty = SODetailEntity.SOQty;
+                            SODetails.GST_Code = SODetailEntity.GSTCode;
+                            SODetails.GST_Rate = SODetailEntity.GSTRate;
+
+                            entities.SalesOrderDetails.Add(SODetails);
+                            entities.SaveChanges();
+
+                            int PSId = Convert.ToInt32(SODetailEntity.SONo);
+                            if (PSId != 0)
+                            {
+                                ProductsAndService ps = entities.ProductsAndServices.SingleOrDefault(e => e.ID == PSId);
+                                if (ps != null)
+                                {
+                                    ps.PandS_Qty_for_SO = ps.PandS_Qty_for_SO + SODetailEntity.SOQty;
+                                    entities.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                    return obj.ID;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool CanDeleteOrder(int pqID)
+        {
+            byte deposited = Convert.ToByte(PO_Status.Collected);
+            byte refunded = Convert.ToByte(PO_Status.Refunded);
+            bool allowDelete = true;
+            using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+            {
+                var SO_SI = entities.SalesOrders.Where(x => (x.SO_Conv_to_SI == true) && x.ID == pqID).FirstOrDefault();
+                var SO = entities.SalesOrders.Where(x => (x.SO_Status == deposited || x.SO_Status == refunded) && x.ID == pqID).FirstOrDefault();
+                if (SO_SI != null || SO != null)
+                {
+                    allowDelete = false;
+                }
+
+            }
+            return allowDelete;
+        }
+
+        public bool DeleteQuotatoin(int pqID)
+        {
+            bool result = false;
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    var detailList = entities.SalesOrderDetails.Where(x => x.SO_ID == pqID).ToList();
+                    if (detailList != null)
+                    {
+                        foreach (SalesOrderDetail pqdetail in detailList)
+                        {
+                            int PSId = Convert.ToInt32(pqdetail.SO_No);
+                            if (PSId != 0)
+                            {
+                                ProductsAndService ps = entities.ProductsAndServices.SingleOrDefault(e => e.ID == PSId);
+                                if (ps != null)
+                                {
+                                    ps.PandS_Qty_for_SO = ps.PandS_Qty_for_SO - pqdetail.SO_Qty;
+                                    entities.SaveChanges();
+                                }
+                            }
+
+                            pqdetail.SO_Qty = 0;
+                            pqdetail.SO_Price = 0;
+                            pqdetail.SO_Discount = 0;
+                            pqdetail.SO_Amount = 0;
+                            pqdetail.GST_Rate = 0;
+                            entities.SaveChanges();
+                        }
+
+                    }
+                    var obj = entities.SalesOrders.Where(x => x.ID == pqID).FirstOrDefault();
+                    //entities.SalesOrders.Remove(obj);
+                    if (obj != null)
+                    {
+                        obj.SO_Status = Convert.ToByte(PO_Status.Cancelled);
+                        obj.SO_Tot_bef_Tax = 0;
+                        obj.SO_Tot_aft_Tax = 0;
+                        obj.SO_GST_Amt = 0;
+                        //obj.IsDeleted = true;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+                }
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return result;
+
+        }
+
+        public int GetLastInvoiceNo()
+        {
+            int qno = 0;
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    var pq = (from pqs in entities.SalesInvoices
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate
+                              }
+
+                             );
+                    if (pq != null)
+                    {
+                        qno = pq.Take(1).SingleOrDefault().ID;
+                    }
+                    else
+                    {
+                        qno = 0;
+                    }
+                }
+                return qno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get category content 
+        /// </summary>
+        /// <returns></returns>
+        public string GetCategoryContent(string catType)
+        {
+            string tandCContent = string.Empty;
+            using (SDNSalesDBEntities objProdEntities = new SDNSalesDBEntities())
+            {
+                try
+                {
+                    var tandC = (from content in objProdEntities.TermsAndConditions
+                                 where content.Cat_Code == catType
+                                 select new ContentModel
+                                 {
+                                     ContentName = content.Cat_Content,
+                                     ContentID = content.ID
+                                 });
+                    if (tandC != null)
+                    {
+                        tandCContent = tandC.SingleOrDefault().ContentName;
+                    }
+                    return tandCContent;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            }
+        }
+
+
+
+        public int GetLastOrderNo()
+        {
+            int qno = 0;
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    var pq = (from pqs in entities.SalesOrders
+                              orderby pqs.ID descending
+                              select new
+                              {
+                                  pqs.ID,
+                                  pqs.CreatedDate
+                              }
+
+                             );
+                    if (pq != null)
+                    {
+                        qno = pq.Take(1).SingleOrDefault().ID;
+                    }
+                    else
+                    {
+                        qno = 0;
+                    }
+                }
+                return qno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        ///// <summary>
+        ///// This method is used to get latest quitation no
+        ///// </summary>
+        ///// <returns></returns>
+        //public int GetLastOrderNo()
+        //{
+        //    int qno = 0;
+        //    try
+        //    {
+        //        using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+        //        {
+        //            var pq = (from pqs in entities.SalesOrders
+        //                      orderby pqs.ID descending
+        //                      select new
+        //                      {
+        //                          pqs.ID,
+        //                          pqs.CreatedDate
+        //                      }
+
+        //                     );
+        //            if (pq != null)
+        //            {
+        //                qno = pq.Take(1).SingleOrDefault().ID;
+        //            }
+        //            else
+        //            {
+        //                qno = 0;
+        //            }
+        //        }
+        //        return qno;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        /// <summary>
+        /// This method is used to get all sales orders
+        /// </summary>
+        /// <returns></returns>
+        public List<SalesOrderEntity> GetAllSalesOrders()
+        {
+            // List<SalesOrderModel> lstSOF = new List<SalesOrderForm>();
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    var lstSOs = (from pq in entities.SalesOrders
+                                  where (pq.IsDeleted == false || pq.IsDeleted == null)
+
+                                  select new SalesOrderEntity
+                                  {
+                                      CustomerID = pq.Cus_Id,
+                                      OrderNo = pq.SO_No,
+                                      OrderDate = pq.SO_Date,
+                                      //ValidForDays = pq.SO_Valid_for,,
+                                      DeliveryDate = pq.SO_Del_Date,
+                                      Cus_Po_No = pq.Cus_PO_No,
+                                      TotalBeforeTax = pq.SO_Tot_bef_Tax,
+                                      TotalTax = pq.SO_GST_Amt,
+                                      TotalAfterTax = pq.SO_Tot_aft_Tax,
+                                      TermsAndConditions = pq.SO_TandC,
+                                      CreatedBy = pq.CreatedBy,
+                                      CreatedDate = pq.CreatedDate
+
+                                  }).ToList<SalesOrderEntity>();
+
+                    return lstSOs;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public int ConvertToSalesInvoice(SalesOrderForm orderData)
+        {
+            int autoId = 0;
+            //Add sales order
+            SalesInvoice obj = new SalesInvoice();
+            // obj.ID = orderData.Order.ID;
+            obj.Cus_Id = orderData.Order.CustomerID;
+            obj.SI_Date = orderData.Order.OrderDate;
+
+            obj.SI_GST_Amt = Convert.ToDecimal(orderData.Order.TotalTax);
+            obj.SI_No = "SI-" + (GetLastInvoiceNo() + 1);
+            obj.SI_TandC = orderData.Order.TermsAndConditions;
+            obj.SI_Tot_aft_Tax = Convert.ToDecimal(orderData.Order.TotalAfterTax);
+            obj.SI_Tot_bef_Tax = Convert.ToDecimal(orderData.Order.TotalBeforeTax);
+            obj.SI_Status = 2;
+            obj.Exc_Inc_GST = orderData.Order.ExcIncGST;
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    if (entities.SalesInvoices.AsNoTracking().FirstOrDefault(x => x.ID == orderData.Order.ID) == null)
+                    {
+                        //obj.CreatedBy = orderData.SOModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.SalesInvoices.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = orderData.SOModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    if (autoId > 0)
+                    {
+                        SalesInvoiceDetail SODetails;
+                        if (orderData.OrderDetails != null)
+                        {
+                            foreach (SalesOrderDetailEntity SODetailEntity in orderData.OrderDetails)
+                            {
+                                SODetails = new SalesInvoiceDetail();
+                                SODetails.SI_ID = autoId;
+                                SODetails.SI_No = SODetailEntity.SONo;
+                                SODetails.PandS_Code = SODetailEntity.PandSCode;
+                                SODetails.PandS_Name = SODetailEntity.PandSName;
+                                SODetails.SI_Amount = SODetailEntity.SOAmount;
+                                SODetails.SI_Discount = SODetailEntity.SODiscount;
+                                SODetails.SI_No = SODetailEntity.SONo;
+                                SODetails.SI_Price = Convert.ToDecimal(SODetailEntity.SOPrice);
+                                SODetails.SI_Qty = SODetailEntity.SOQty;
+                                SODetails.GST_Code = SODetailEntity.GSTCode;
+                                SODetails.GST_Rate = SODetailEntity.GSTRate;
+
+                                if (entities.SalesInvoiceDetails.AsNoTracking().FirstOrDefault(x => x.ID == SODetailEntity.ID) == null)
+                                {
+                                    entities.SalesInvoiceDetails.Add(SODetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(SODetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+                                int PSId = Convert.ToInt32(SODetailEntity.SONo);
+                                if (PSId != 0)
+                                {
+                                    ProductsAndService ps = entities.ProductsAndServices.SingleOrDefault(e => e.ID == PSId);
+                                    if (ps != null)
+                                    {
+                                        ps.PandS_Qty_in_stock = ps.PandS_Qty_in_stock + SODetailEntity.SOQty;
+                                        entities.SaveChanges();
+                                    }
+                                }
+                            }
+                        }
+
+                        SalesOrder objQ = entities.SalesOrders.Where(e => e.SO_No == orderData.Order.OrderNo
+                           ).SingleOrDefault();
+                        if (objQ != null)
+                        {
+                            objQ.SO_Conv_to_SI = true;
+                            objQ.Conv_to_No = obj.SI_No;
+                            objQ.ModifiedDate = DateTime.Now;
+                            entities.SaveChanges();
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// This method is used to convert the Sales order to order
+        /// </summary>
+        /// <param name="orderData"></param>
+        /// <returns></returns>
+        public int ConvertToSalesOrder(SalesOrderForm orderData)
+        {
+            int autoId = 0;
+            //Add sales order
+            SalesOrder obj = new SalesOrder();
+            //obj.ID = orderData.Order.ID;
+            obj.Cus_Id = orderData.Order.CustomerID;
+            obj.SO_Date = orderData.Order.OrderDate;
+            obj.SO_Del_Date = DateTime.Now;
+            obj.SO_GST_Amt = Convert.ToDecimal(orderData.Order.TotalTax);
+            obj.SO_No = "SO-" + GetLastOrderNo();
+            obj.SO_TandC = orderData.Order.TermsAndConditions;
+            obj.SO_Tot_aft_Tax = Convert.ToDecimal(orderData.Order.TotalAfterTax);
+            obj.SO_Tot_bef_Tax = Convert.ToDecimal(orderData.Order.TotalBeforeTax);
+
+            obj.Exc_Inc_GST = orderData.Order.ExcIncGST;
+            obj.IsDeleted = false;
+
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    if (entities.SalesOrders.AsNoTracking().FirstOrDefault(x => x.ID == orderData.Order.ID) == null)
+                    {
+                        //obj.CreatedBy = orderData.SOModel.CreatedBy;
+                        obj.CreatedDate = DateTime.Now;
+                        entities.SalesOrders.Add(obj);
+                        entities.SaveChanges();
+                        autoId = obj.ID;
+                    }
+                    else
+                    {
+                        // obj.ModifiedBy = orderData.SOModel.ModifiedBy;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.Entry(obj).State = EntityState.Modified;
+                        autoId = entities.SaveChanges();
+                    }
+                    if (autoId > 0)
+                    {
+                        SalesOrderDetail SODetails;
+                        if (orderData.OrderDetails != null)
+                        {
+                            foreach (SalesOrderDetailEntity SODetailEntity in orderData.OrderDetails)
+                            {
+                                SODetails = new SalesOrderDetail();
+                                SODetails.SO_ID = autoId;
+                                SODetails.SO_No = SODetailEntity.SONo;
+                                SODetails.PandS_Code = SODetailEntity.PandSCode;
+                                SODetails.PandS_Name = SODetailEntity.PandSName;
+                                SODetails.SO_Amount = SODetailEntity.SOAmount;
+                                SODetails.SO_Discount = SODetailEntity.SODiscount;
+                                SODetails.SO_No = SODetailEntity.SONo;
+                                SODetails.SO_Price = Convert.ToDecimal(SODetailEntity.SOPrice);
+                                SODetails.SO_Qty = SODetailEntity.SOQty;
+                                SODetails.GST_Code = SODetailEntity.GSTCode;
+                                SODetails.GST_Rate = SODetailEntity.GSTRate;
+
+                                if (entities.SalesOrderDetails.AsNoTracking().FirstOrDefault(x => x.ID == SODetailEntity.ID) == null)
+                                {
+                                    entities.SalesOrderDetails.Add(SODetails);
+                                    entities.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    entities.Entry(SODetails).State = EntityState.Modified;
+                                    entities.SaveChanges();
+                                }
+
+                            }
+                        }
+
+                        SalesOrder objQ = entities.SalesOrders.Where(e => e.SO_No == orderData.Order.OrderNo
+                           ).SingleOrDefault();
+                        if (objQ != null)
+                        {
+                            //objQ.SO_Conv_to_SO = true;
+                            objQ.ModifiedDate = DateTime.Now;
+                            entities.SaveChanges();
+                        }
+                    }
+                }
+                return autoId;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method is used to get Sales Order details
+        /// </summary>
+        /// <param name="pqId"></param>
+        /// <returns></returns>
+        public SalesOrderForm GetSalesOrder(string pqno)
+        {
+            SalesOrderForm pqf = new SalesOrderForm();
+
+            try
+            {
+                using (SDNSalesDBEntities entities = new SDNSalesDBEntities())
+                {
+                    var pq = (from pqs in entities.SalesOrders
+                              where pqs.SO_No == pqno && (pqs.IsDeleted == false || pqs.IsDeleted == null)
+                              select new SalesOrderEntity
+                              {
+                                  ID = pqs.ID,
+                                  CustomerID = pqs.Cus_Id,
+                                  OrderNo = pqs.SO_No,
+                                  OrderDate = pqs.SO_Date,
+                                  //ValidForDays = pqs.SO_Valid_for,
+
+                                  TermsAndConditions = pqs.SO_TandC,
+                                  TotalBeforeTax = pqs.SO_Tot_bef_Tax,
+                                  TotalTax = pqs.SO_GST_Amt,
+                                  TotalAfterTax = pqs.SO_Tot_aft_Tax,
+                                  ExcIncGST = pqs.Exc_Inc_GST,
+                                  SO_Conv_to_SI = pqs.SO_Conv_to_SI,
+                                  DeliveryDate = pqs.SO_Del_Date,
+                                  Cus_Po_No = pqs.Cus_PO_No,
+                                  SalesmanID = pqs.Salesman,
+                                  Status = pqs.SO_Status
+                                  //SO_Conv_to_SO = pqs.SO_Conv_to_SO
+
+                              }).SingleOrDefault();
+
+                    if (pq != null)
+                    {
+                        pqf.Order = pq;
+                    }
+
+
+                    var pqd = (from pqds in entities.SalesOrderDetails
+                               where pqds.SO_ID == pq.ID
+                               select new SalesOrderDetailEntity
+                               {
+                                   ID = pqds.ID,
+                                   SOID = pqds.SO_ID,
+                                   SONo = pqds.SO_No,
+                                   PandSCode = pqds.PandS_Code,
+                                   PandSName = pqds.PandS_Name,
+                                   SOQty = pqds.SO_Qty,
+                                   Price = pqds.SO_Price,
+                                   SODiscount = pqds.SO_Discount,
+                                   SOAmount = pqds.SO_Amount,
+                                   GSTRate = pqds.GST_Rate
+                               }).ToList<SalesOrderDetailEntity>();
+
+                    if (pqd != null)
+                    {
+
+                        pqf.OrderDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+    }
+}

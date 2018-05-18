@@ -1,0 +1,22 @@
+﻿using SDN.UI.Entities.ProductandServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Products.DALInterface
+{
+    public interface IPandSPurchaseDAL
+    {
+        //List<PandSPurchaseEntity> GetPandSPurchaseList();
+        //List<PandSPurchaseEntity> SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName);
+
+        List<PandSPurchaseEntity> GetAllSalesInvoice();
+        List<PandSPurchaseEntity> GetAllSalesInvoiceJson(string jsondata, bool? ExcincTax,bool? IsSummary);
+        bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName);
+        string GetLastSelectionData(int ScreenId);
+        string GetDateFormat();
+        string getTotalCount(int ScreenId);
+    }
+}

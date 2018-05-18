@@ -1,0 +1,74 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Customers.Services
+{
+    using SASBAL.Customers;
+    using SDN.Settings.DAL;
+    using SDN.Settings.DALInterface;
+    using SDN.UI.Entities;
+    using SDN.UI.Entities.Customers;
+    public class InvoiceCreditPaymentsRepository: IInvoiceCreditPaymentsRepository
+    {
+        public List<InvoiceCreditPaymentsEntity> GetCustomersList(string json)
+        {
+            IInvoiceCreditPaymentsBL pBL = new InvoiceCreditPaymentsBL();
+            return pBL.GetCustomersList(json);
+        }
+        public List<InvCreditPaymentsDetailsEntity> GetUnPaidInvoices(int supplierID, string json)
+        {
+            IInvoiceCreditPaymentsBL pBL = new InvoiceCreditPaymentsBL();
+            return pBL.GetUnPaidInvoices(supplierID, json);
+        }
+        public bool SaveSearchJson(string jsonSearch, int ScreenId, string ScreenName)
+        {
+            IInvoiceCreditPaymentsBL pBL = new InvoiceCreditPaymentsBL();
+            return pBL.SaveSearchJson(jsonSearch, ScreenId, ScreenName);
+        }
+        public string GetLastSelectionData(int ScreenId)
+        {
+            IInvoiceCreditPaymentsBL pBL = new InvoiceCreditPaymentsBL();
+            return pBL.GetLastSelectionData(ScreenId);
+        }
+
+        public List<YearEntity> GetYearRange()
+        {
+            IOptionsDAL YearInfo = new OptionsDAL();
+            var StartYear = YearInfo.GetYearStart();
+            List<YearEntity> YearRange = new List<YearEntity>();
+            YearEntity obj = new YearEntity();
+            if (StartYear == 0)
+            {
+                obj.Year = (DateTime.Today.Year - 1).ToString();
+                YearRange.Add(obj);
+
+                obj.Year = DateTime.Today.Year.ToString();
+                YearRange.Add(obj);
+                return YearRange;
+            }
+            else
+            {
+                int diff = DateTime.Now.Year - StartYear;
+                for (int i = 0; i <= diff; i++)
+                {
+                    obj = new YearEntity();
+                    obj.Year = StartYear.ToString();
+                    obj.ID = i;
+                    YearRange.Add(obj);
+                    StartYear++;
+                }
+                return YearRange;
+            }
+        }
+
+        public InvoiceCreditPaymentsEntity GetPrintSalesInvoiceCreditPayement(int CustomerID, string json)
+        {
+            IInvoiceCreditPaymentsBL pBL = new InvoiceCreditPaymentsBL();
+            return pBL.GetPrintSalesInvoiceCreditPayement(CustomerID,json);
+        }
+    }
+}

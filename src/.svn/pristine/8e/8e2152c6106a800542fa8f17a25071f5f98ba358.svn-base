@@ -1,0 +1,148 @@
+﻿using SASClient.Accounts.Services;
+using SDN.Common;
+using SDN.UI.Entities.Accounts;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SASClient.Accounts.ViewModel
+{
+    public class StockGridViewModel : ViewModelBase
+    {
+        #region private property
+        private int? _ID;
+        private int _CountQty;
+
+        private string _ProductCode;
+        private string _ProductName;
+        private int? _QtyInStock;
+        private decimal? _AverageCost;
+        private decimal? _Amount;
+        private int? _SelectedSupplierID;
+        private ObservableCollection<StockEntity> _StockService;
+        private IStockRepository stockRepository = new StockRepository();
+        #endregion
+        #region public property
+        public int? ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public string ProductCode
+        {
+            get
+            {
+                return _ProductCode;
+            }
+            set
+            {
+                _ProductCode = value;
+                OnPropertyChanged("ProductCode");
+            }
+        }
+        public string ProductName
+        {
+            get
+            {
+                return _ProductName;
+            }
+            set
+            {
+                _ProductName = value;
+                OnPropertyChanged("ProductName");
+            }
+        }
+        public int CountQty
+        {
+            get
+            {
+                return _CountQty;
+            }
+            set
+            {
+                _CountQty = value;
+                OnPropertyChanged("CountQty");
+            }
+        }
+        public int? QtyInStock
+        {
+            get
+            {
+                return _QtyInStock;
+            }
+            set
+            {
+                _QtyInStock = value;
+                OnPropertyChanged("QtyInStock");
+            }
+        }
+        public decimal? AverageCost
+        {
+            get
+            {
+                return _AverageCost;
+            }
+            set
+            {
+                _AverageCost = value;
+                OnPropertyChanged("AverageCost");
+            }
+        }
+        public decimal? Amount
+        {
+            get
+            {
+                return _Amount;
+            }
+            set
+            {
+                _Amount = value;
+                OnPropertyChanged("Amount");
+            }
+        }
+        public int? SelectedSupplierID
+        {
+            get
+            {
+                return _SelectedSupplierID;
+            }
+            set
+            {
+                _SelectedSupplierID = value;
+                OnPropertyChanged("SelectedSupplierID");
+            }
+        }
+        public ObservableCollection<StockEntity> StockService
+        {
+            get
+            {
+                return _StockService;
+            }
+            set
+            {
+                _StockService = value;
+                OnPropertyChanged("StockService");
+            }
+        }
+        public StockGridViewModel(IEnumerable<StockEntity> StockList)
+        {
+            if (StockList == null)
+            {
+                StockList = stockRepository.getStockList();
+            }
+            SelectedSupplierID = 0;
+            StockService = new ObservableCollection<StockEntity>(StockList);
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,160 @@
+﻿using SDN.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.UI.Entities.Accounts
+{
+    public class UndeliveredSalesOrdersWithDepositsViewEntity :ViewModelBase
+    {
+        #region private property
+        private int _SIGridHeight;
+        private int? _ID;
+        private string _CustomerName;
+        private string _OrderNo;
+        private DateTime? _OrderDate;
+        private decimal? _DepositAmount;
+        private decimal? _UndeliveredAmount;
+        private List<UndeliveredSalesOrdersWithDepositsViewEntity> _CustomerList;
+        #endregion
+        #region public property
+        public int? ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                _ID = value;
+                OnPropertyChanged("ID");
+            }
+        }
+        public int SIGridHeight
+        {
+            get
+            {
+                return _SIGridHeight;
+            }
+            set
+            {
+                _SIGridHeight = value;
+                OnPropertyChanged("SIGridHeight");
+            }
+        }
+        public List<UndeliveredSalesOrdersWithDepositsViewEntity> CustomerList
+        {
+            get
+            {
+                return _CustomerList;
+            }
+            set
+            {
+                _CustomerList = value;
+                OnPropertyChanged("CustomerList");
+            }
+        }
+        public string CustomerName
+        {
+            get
+            {
+                return _CustomerName;
+            }
+            set
+            {
+                _CustomerName = value;
+                OnPropertyChanged("CustomerName");
+            }
+        }
+        public string OrderNo
+        {
+            get
+            {
+                return _OrderNo;
+            }
+            set
+            {
+                _OrderNo = value;
+                OnPropertyChanged("OrderNo");
+            }
+        }
+
+        public DateTime? OrderDate
+        {
+            get
+            {
+                return _OrderDate;
+            }
+            set
+            {
+                _OrderDate = value;
+                OnPropertyChanged("OrderDate");
+            }
+        }
+        public decimal? DepositAmount
+        {
+            get
+            {
+                return _DepositAmount;
+            }
+            set
+            {
+                _DepositAmount = value;
+                OnPropertyChanged("DepositAmount");
+            }
+        }
+        public decimal? UndeliveredAmount
+        {
+            get
+            {
+                return _UndeliveredAmount;
+            }
+            set
+            {
+                _UndeliveredAmount = value;
+                OnPropertyChanged("UndeliveredAmount");
+            }
+        }
+        #endregion
+        #region constructor property
+
+        #endregion
+        #region public property
+
+        #endregion
+    }
+    public class UndeliveredSalesOrdersWithDepositsModel : ViewModelBase
+    {
+        #region "Private members"
+        //private UnpaidSalesInvoiceEntity _UnpaidSalesInvoiceData;
+        private List<UndeliveredSalesOrdersWithDepositsViewEntity> _UnpaidSalesInvoiceDetailsData;
+        #endregion
+
+        #region "Properties"
+
+        //public UnpaidSalesInvoiceEntity UnpaidSalesInvoiceData
+        //{
+        //    get { return _UnpaidSalesInvoiceData; }
+        //    set
+        //    {
+        //        _UnpaidSalesInvoiceData = value;
+        //        OnPropertyChanged("UnpaidSalesInvoiceData");
+        //    }
+        //}
+
+        public List<UndeliveredSalesOrdersWithDepositsViewEntity> UnpaidSalesInvoiceDetailsData
+        {
+            get { return _UnpaidSalesInvoiceDetailsData; }
+            set
+            {
+                _UnpaidSalesInvoiceDetailsData = value;
+                OnPropertyChanged("UnpaidSalesInvoiceDetailsData");
+            }
+        }
+
+        #endregion
+    }
+}
+

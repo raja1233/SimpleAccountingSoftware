@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="SASClient.File.Views.BackupDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SASClient.File.Views"
+              xmlns:helpers="clr-namespace:SDN.Common.Converter;assembly=SDN.Common"
+             xmlns:my="clr-namespace:SDN.Common;assembly=SDN.Common"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             Height="180" Width="400" BorderBrush="Black" BorderThickness="1">
+
+    <Grid>
+        <Grid.Resources>
+            <helpers:TextInputToVisibilityConverter x:Key="TextInputToVisibilityConverter"/>
+            <helpers:DateTimeConverter x:Key="DateTimeFormatter"></helpers:DateTimeConverter>
+            <helpers:MultipleParameterConverter x:Key="MultiParamterConverter"></helpers:MultipleParameterConverter>
+            <SolidColorBrush x:Key="brushWatermarkForeground" Color="LightSteelBlue" />
+
+            <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+            </Style>
+
+            <!--Watermark style start here-->
+
+            <SolidColorBrush x:Key="brushWatermarkBackground"    Color="White" />
+            <SolidColorBrush x:Key="brushWatermarkForeground1" Color="Gray" />
+            <SolidColorBrush x:Key="brushWatermarkBorder" Color="Black" />
+
+            <!--Watermark style End here-->
+
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+        <StackPanel  Grid.Row="0" Grid.Column="0">
+            <TextBlock Width="100" HorizontalAlignment="Left" Margin="5 ,10,0,0" Text="Select Database"></TextBlock>
+            <ComboBox Grid.Row="0" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}"  Margin="40,-12,0,0" MaxWidth="200" MinWidth="200"  Grid.RowSpan="1"
+                      ItemsSource="{Binding DataBaseList}"   
+                      DisplayMemberPath="Name" SelectedValuePath="Name" Name="cmbSuppNameSearch"
+                      SelectedValue="{Binding Name ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Height="28" Width="200"/>
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top"  Grid.Row="0" Height="24"  Style="{StaticResource WaterMarkStyle}" Margin="125,-28,0,0"  Text="Select" Foreground="{StaticResource brushWatermarkForeground}" Width="50"  >
+                <TextBlock.Visibility>
+                    <MultiBinding Converter="{StaticResource TextInputToVisibilityConverter}">
+                        <Binding ElementName="cmbSuppNameSearch" Path="Text.IsEmpty" />
+                        <Binding ElementName="cmbSuppNameSearch" Path="IsFocused" />
+                    </MultiBinding>
+                </TextBlock.Visibility>
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <Button Content="Backup" Command="{Binding BackupCommand}" CommandParameter="{Binding Name}" HorizontalAlignment="Center"  Margin="0,0,0,0" Style="{DynamicResource ButtonStyle}"/>
+            <Button Content="Close" Command="{Binding CloseCommand}"  HorizontalAlignment="Center"  Margin="180,-25,0,2" Style="{DynamicResource ButtonStyle}"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

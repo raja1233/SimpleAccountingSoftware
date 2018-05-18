@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="2fdbabf0190d403faee8342438cd089e" Name="Diagram1" ZoomLevel="89">
+        <EntityTypeShape EntityType="simpleaccountingModel.CustomerDetail" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Customer" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CustomersBusinessCard" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="simpleaccountingModel.ShippingAddress" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <AssociationConnector Association="simpleaccountingModel.FK_CustomersBusinessCard_Customers" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="simpleaccountingModel.CategoriesContent" Width="1.5" PointX="5.375" PointY="7.75" />
+        <EntityTypeShape EntityType="simpleaccountingModel.Category" Width="1.5" PointX="3.125" PointY="11.375" />
+        <AssociationConnector Association="simpleaccountingModel.FK_CategoriesContent_Categories" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

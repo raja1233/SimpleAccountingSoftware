@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f9fc979b702b473eb56e7db3e55a05eb" Name="Diagram1">
+        <EntityTypeShape EntityType="SimpleAccountingModel.Account" Width="1.5" PointX="2.75" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.AccountsTransaction" Width="1.5" PointX="17.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.AccountType" Width="1.5" PointX="17.75" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CashAndBank" Width="1.5" PointX="17.75" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CashAndBankDetail" Width="1.5" PointX="19.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CashAndBankHistory" Width="1.5" PointX="9.75" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CashAndBankStatement" Width="1.5" PointX="19.75" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CashAndBankTransaction" Width="1.5" PointX="19.75" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CashFlowCalendar" Width="1.5" PointX="5.75" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.Category" Width="1.5" PointX="17.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CategoriesContent" Width="1.5" PointX="20" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CompanyDetail" Width="1.5" PointX="21.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.Country" Width="1.5" PointX="11.75" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CountryCurrency" Width="1.5" PointX="13.75" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CreditNote" Width="1.5" PointX="15" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CustomerDetail" Width="1.5" PointX="15.75" PointY="24.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.Customer" Width="1.5" PointX="3.75" PointY="25.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CustomersBusinessCard" Width="1.5" PointX="6" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CustomersCreditDaysPaidInDay" Width="1.5" PointX="21.75" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CustomersHistory" Width="1.5" PointX="22.75" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CustomersPaymentDueDay" Width="1.5" PointX="0.75" PointY="25.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.CustomersStatement" Width="1.5" PointX="23.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.DebitNote" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.InvoicesCreditNotesPayment" Width="1.5" PointX="23.75" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.InvoicesDebitNotesPayment" Width="1.5" PointX="23.75" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.LastSelectionHistory" Width="1.5" PointX="21.75" PointY="26.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.MasterModule" Width="1.5" PointX="23.75" PointY="26.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.Option" Width="1.5" PointX="8.75" PointY="27.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PandSHistory" Width="1.5" PointX="25.75" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PandSPurchase" Width="1.5" PointX="25.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PandSPurchasedFromSupplier" Width="1.5" PointX="25.75" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PandSSold" Width="1.5" PointX="17.75" PointY="28.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PandSSoldToCustomer" Width="1.5" PointX="25.75" PointY="21.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.ProductsAndService" Width="1.5" PointX="25.75" PointY="27.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseAndSales_Categories" Width="1.5" PointX="15.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseAndSales_CategoriesContent" Width="1.5" PointX="18" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseInvoice" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseInvoiceDetail" Width="1.5" PointX="3" PointY="35.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseOrder" Width="1.5" PointX="6" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseOrderDetail" Width="1.5" PointX="8.25" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseQuotation" Width="1.5" PointX="12.75" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.PurchaseQuotationDetail" Width="1.5" PointX="15" PointY="19.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.Role" Width="1.5" PointX="10.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SalesInvoice" Width="1.5" PointX="12.75" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SalesInvoiceDetail" Width="1.5" PointX="15" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SalesOrder" Width="1.5" PointX="6" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SalesOrderDetail" Width="1.5" PointX="8.25" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SalesQuotation" Width="1.5" PointX="7.75" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SalesQuotationDetail" Width="1.5" PointX="10" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.ShippingAddress" Width="1.5" PointX="3.75" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.State" Width="1.5" PointX="0.75" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.StockCount" Width="1.5" PointX="10.75" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.StockInOutCard" Width="1.5" PointX="12.75" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SupplierDetail" Width="1.5" PointX="19.75" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.Supplier" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SuppliersBusinessCard" Width="1.5" PointX="3" PointY="20.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SuppliersCreditDaysPaidInDay" Width="1.5" PointX="21.75" PointY="29.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SuppliersHistory" Width="1.5" PointX="27.75" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.SuppliersStatement" Width="1.5" PointX="27.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.sysdiagram" Width="1.5" PointX="27.75" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.TaxCodesAndRate" Width="1.5" PointX="27.75" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.TermsAndCondition" Width="1.5" PointX="27.75" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.TopCustomer" Width="1.5" PointX="27.75" PointY="25.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.TopPand" Width="1.5" PointX="27.75" PointY="31.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.TopSupplier" Width="1.5" PointX="29.75" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.TransferMoney" Width="1.5" PointX="5" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.UserRole" Width="1.5" PointX="13" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.User" Width="1.5" PointX="10.75" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SimpleAccountingModel.UserSecurity" Width="1.5" PointX="5.75" PointY="32.25" IsExpanded="true" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_TransferMoney_Accounts" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_TransferMoney_Accounts1" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_CategoriesContent_Categories" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_CreditNotes_SalesInvoice" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_CustomersBusinessCard_Customers" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_SalesOrder_Customers" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_DebitNotes_PurchaseInvoice" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_DebitNotes_Suppliers" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_PurchaseAndSales_CategoriesContent_PurchaseAndSales_Categories" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_PurchaseInvoiceDetails_PurchaseInvoice" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_PurchaseOrder_ShippingAddress" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_PurchaseOrder_Suppliers" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_PurchaseOrderDetails_PurchaseOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_PurchaseQuotationDetails_PurchaseQuotation" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_UserRoles_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_SalesInvoiceDetails_SalesInvoice" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_SalesOrder_ShippingAddress" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_SalesOrderDetails_SalesOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_SalesQuotationDetails_SalesQuotation" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_SuppliersBusinessCard_Suppliers" ManuallyRouted="false" />
+        <AssociationConnector Association="SimpleAccountingModel.FK_UserRoles_Users" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

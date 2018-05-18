@@ -1,0 +1,236 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SDN.Sales.DAL
+{
+     
+    using SDN.Sales.DALInterface;
+    using UI.Entities.Sales;
+    using SASDAL;
+    public class CreditNoteDAL: ICreditNoteDAL
+    {
+        /// <summary>
+        /// This method is used to get Purchase Invoice details
+        /// </summary>
+        /// <param name="pqId"></param>
+        /// <returns></returns>
+        public CreditNoteForm GetCreditNoteDetails(string cnNo)
+        {
+            CreditNoteForm pqf = new CreditNoteForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pq = (from pqs in entities.SalesInvoices
+                              join dn in entities.CreditNotes on pqs.ID equals dn.SI_Id
+                              where dn.CN_No == cnNo && (pqs.IsDeleted == false || pqs.IsDeleted == null)
+                              select new CreditNoteEntity
+                              {
+                                  SalesInvoiceID = pqs.ID,
+                                  SalesInvoiceNo=pqs.SI_No,
+                                  ID = dn.ID,
+                                  CustomerDebitNoteNo = dn.Cus_DN_No,
+                                  CustomerDebitNoteDate = dn.Cus_DN_Date,
+                                  CDNAmount = dn.Cus_DN_Amount,
+                                  CustomerID = pqs.Cus_Id,
+                                  CreditNo = dn.CN_No,
+                                  CreditDate = dn.CN_Date,
+                                  TermsAndConditions = dn.CN_Reason,
+                                  TotalBeforeTax = pqs.SI_Tot_bef_Tax,
+                                  TotalTax = pqs.SI_GST_Amt,
+                                  TotalAfterTax = pqs.SI_Tot_aft_Tax,
+                                 
+
+                                  Status = dn.CN_Status
+
+                              }).SingleOrDefault();
+
+                    if (pq != null)
+                    {
+                        pq.CustomerDebitNoteAmount = Convert.ToString(pq.CDNAmount);
+                        pqf.CreditNote = pq;
+                    }
+
+
+                    var pqd = (from pqds in entities.SalesInvoiceDetails
+                               where pqds.SI_ID == pq.SalesInvoiceID
+                               select new SalesInvoiceDetailEntity
+                               {
+                                   ID = pqds.ID,
+                                   SIID = pqds.SI_ID,
+                                   SINo = pqds.SI_No,
+                                   PandSCode = pqds.PandS_Code,
+                                   PandSName = pqds.PandS_Name,
+                                   SIQty = pqds.SI_Qty,
+                                   Price = pqds.SI_Price,
+                                   SIDiscount = pqds.SI_Discount,
+                                   SIAmount = pqds.SI_Amount,
+                                   GSTRate = pqds.GST_Rate
+                               }).ToList<SalesInvoiceDetailEntity>();
+
+                    if (pqd != null)
+                    {
+                        pqf.InvoiceDetails = pqd;
+                    }
+
+                    return pqf;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void UpdateCreditNote(CreditNoteForm CreditNote)
+        {
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    CreditNote obj = entities.CreditNotes.Where(e => e.CN_No == CreditNote.CreditNote.CreditNo
+                   ).SingleOrDefault();
+                    if (obj != null)
+                    {
+                        if (!string.IsNullOrEmpty(CreditNote.CreditNote.CustomerDebitNoteAmount))
+                        {
+                            CreditNote.CreditNote.CDNAmount = Convert.ToDecimal(CreditNote.CreditNote.CustomerDebitNoteAmount);
+                        }
+                        obj.CN_Reason = CreditNote.CreditNote.TermsAndConditions;
+                        obj.Cus_DN_No = CreditNote.CreditNote.CustomerDebitNoteNo;
+                        obj.Cus_DN_Date = CreditNote.CreditNote.CustomerDebitNoteDate;
+                        obj.Cus_DN_Amount = CreditNote.CreditNote.CDNAmount;
+                        obj.ModifiedDate = DateTime.Now;
+                        entities.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public CreditNoteForm GetPrintCreditNote(string pino)
+        {
+            CreditNoteForm pif = new CreditNoteForm();
+
+            try
+            {
+                using (SASEntitiesEDM entities = new SASEntitiesEDM())
+                {
+                    var pi = (from pis in entities.SalesInvoices
+                              join Cus in entities.Customers on pis.Cus_Id equals Cus.ID
+                              join Sal in entities.CreditNotes on pis.ID equals Sal.SI_Id
+                              where Sal.CN_No == pino && (pis.IsDeleted == false || pis.IsDeleted == null)
+                              select new CreditNoteEntity
+                              {
+                                  SalesInvoiceID = pis.ID,
+                                  SalesInvoiceNo = pis.SI_No,
+                                  ID = pis.ID,
+                                  CustomerID = pis.Cus_Id,
+                                  CustomerName = Cus.Cus_Name,
+                                  CustomerBillAddress1 = Cus.Cus_Bill_to_line1,
+                                  CustomerBillAddress2 = Cus.Cus_Bill_to_line2,
+                                  CustomerBillAddressCity = Cus.Cus_Bill_to_city,
+                                  CustomerBillAddressState = Cus.Cus_Bill_to_state,
+                                  CustomerBillAddressCountary = Cus.Cus_Bill_to_country,
+                                  CustomerBillPostCode = Cus.Cus_Bill_to_post_code,
+                                  CreditNo = Sal.CN_No,
+                                  CreditDate = Sal.CN_Date,
+                                  CustomerDebitNoteNo = Sal.Cus_DN_No,
+                                  CustomerDebitNoteDate = Sal.Cus_DN_Date,
+                                  CustomerDebitNoteAmount = Sal.Cus_DN_Amount.ToString(), 
+                                  TermsAndConditions = pis.SI_TandC,
+                                  TotalBeforeTax = pis.SI_Tot_bef_Tax,
+                                  TotalTax = pis.SI_GST_Amt,
+                                  TotalAfterTax = pis.SI_Tot_aft_Tax,
+                                
+
+                              }).SingleOrDefault();
+                    //var PaymentDueDate1 =pi.InvoiceDate.AddDays(Convert.ToInt32(pi.CreditDays));
+
+                    if (pi != null)
+                    {
+                        pif.CreditNote = pi;
+                    }
+
+                    //for comapany details
+
+                    var company = (from com in entities.CompanyDetails
+                                   where (com.IsDeleted == false || com.IsDeleted == null)
+                                   select new CreditNoteEntity
+                                   {
+                                       CompanyName = com.Comp_Name,
+                                       CompanyRegNumber = com.Comp_Reg_No,
+                                       CompanyLogo = com.Comp_Logo,
+                                       CompanyGstNumber = com.Comp_GST_Reg_No,
+                                       CompanyBillToAddressLine1 = com.Comp_Bill_to_line1,
+                                       CompanyBillToAddressLine2 = com.Comp_Bill_to_line2,
+                                       CompanyBillToCity = com.Comp_Bill_to_city,
+                                       CompanyBillToState = com.Comp_Bill_to_state,
+                                       CompanyBillToCountary = com.Comp_Bill_to_country,
+                                       CompanyBillToPostCode = com.Comp_Bill_to_post_code,
+                                       CompanyEmail = com.Comp_Email,
+                                       CompanyFax = com.Comp_Fax
+                                   }).SingleOrDefault();
+
+                    pif.CreditNote.CompanyName = company.CompanyName;
+                    pif.CreditNote.CompanyLogo = company.CompanyLogo;
+                    pif.CreditNote.CompanyRegNumber = company.CompanyRegNumber;
+                    pif.CreditNote.CompanyGstNumber = company.CompanyGstNumber;
+                    pif.CreditNote.CompanyBillToAddressLine1 = company.CompanyBillToAddressLine1;
+                    pif.CreditNote.CompanyBillToAddressLine2 = company.CompanyBillToAddressLine2;
+                    pif.CreditNote.CompanyBillToCity = company.CompanyBillToCity;
+                    pif.CreditNote.CompanyBillToState = company.CompanyBillToState;
+                    pif.CreditNote.CompanyBillToCountary = company.CompanyBillToCountary;
+                    pif.CreditNote.CompanyBillToPostCode = company.CompanyBillToPostCode;
+                    pif.CreditNote.CompanyEmail = company.CompanyEmail;
+                    pif.CreditNote.CompanyFax = company.CompanyFax;
+                    //end for comapany details
+
+                    //option details
+                    var optiondata = (from option in entities.Options
+                                      select new CreditNoteEntity
+                                      {
+                                          CurrencyCode = option.Currency_Code
+                                      }).SingleOrDefault();
+                    pif.CreditNote.CurrencyCode = optiondata.CurrencyCode;
+                    //end options details
+
+                    var pid = (from pids in entities.SalesInvoiceDetails
+                               where pids.SI_ID == pi.SalesInvoiceID
+                               select new SalesInvoiceDetailEntity
+                               {
+                                   ID = pids.ID,
+                                   SIID = pids.SI_ID,
+                                   SINo = pids.SI_No,
+                                   PandSCode = pids.PandS_Code,
+                                   PandSName = pids.PandS_Name,
+                                   SIQty = pids.SI_Qty,
+                                   Price = pids.SI_Price,
+                                   SIDiscount = pids.SI_Discount,
+                                   SIAmount = pids.SI_Amount,
+                                   GSTRate = pids.GST_Rate
+                               }).ToList<SalesInvoiceDetailEntity>();
+
+                    if (pid != null)
+                    {
+
+                        pif.InvoiceDetails = pid;
+                    }
+
+                    return pif;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
+}
